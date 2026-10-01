@@ -36,7 +36,7 @@
   height: var(--control-sm);
   padding: 0 var(--space-3);
   font-size: 13px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 .btn--sm iconify-icon {
   font-size: 16px;
@@ -80,9 +80,10 @@
 /* outlined */
 .btn--outlined {
   background: var(--bg-surface);
-  border-color: var(--border-strong);
+  border-color: var(--border);
 }
 .btn--outlined:hover {
+  border-color: var(--border-strong);
   background: var(--bg-hover);
 }
 .btn--outlined.btn--primary {
@@ -178,7 +179,7 @@
 .icon-btn--sm {
   width: var(--control-sm);
   height: var(--control-sm);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 .icon-btn--sm iconify-icon {
   font-size: 18px;
@@ -199,6 +200,10 @@
 }
 .icon-btn--outlined {
   border-color: var(--border);
+  background: var(--bg-surface);
+}
+.icon-btn--outlined:hover {
+  border-color: var(--border-strong);
 }
 .icon-btn[aria-pressed="true"],
 .icon-btn[aria-expanded="true"] {

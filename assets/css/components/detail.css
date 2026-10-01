@@ -253,7 +253,10 @@
 }
 .dialog--xl .dialog__body {
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border);
+}
+/* A scrolling body ends at the action bar's top border */
+.dialog__body + .dialog__actions {
+  margin-top: var(--space-4);
 }
 
 /* ---------- Summary v2: identity row + aligned label/value rows ---------- */

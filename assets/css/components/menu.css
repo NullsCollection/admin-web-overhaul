@@ -11,7 +11,7 @@
   overflow-y: auto;
   padding: var(--space-1);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--bg-surface);
 }
 .menu[hidden] {
@@ -77,14 +77,15 @@
   display: inline-flex;
   gap: 2px;
   padding: 2px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  background: var(--bg-muted);
+  background: var(--bg-subtle);
 }
 .segmented__btn {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1-5);
-  height: 28px;
+  height: 26px;
   padding: 0 var(--space-2-5, 10px);
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -100,6 +101,10 @@
   border-color: var(--border);
   background: var(--bg-surface);
   color: var(--text-primary);
+}
+:root[data-mode="dark"] .segmented__btn[aria-pressed="true"] {
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
 }
 .segmented__btn iconify-icon {
   font-size: 16px;
@@ -143,8 +148,8 @@
 .tabs__tab[aria-current="page"]::after {
   content: "";
   position: absolute;
-  left: var(--space-2);
-  right: var(--space-2);
+  left: var(--space-3);
+  right: var(--space-3);
   bottom: -1px;
   height: 2px;
   border-radius: 2px 2px 0 0;

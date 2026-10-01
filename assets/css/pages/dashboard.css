@@ -5,7 +5,7 @@
 /* ---------- Filters ---------- */
 .filters {
   margin-bottom: var(--space-6);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-5);
 }
 /* < 600: one field per row */
 .filters__grid {
@@ -66,69 +66,108 @@
   }
 }
 
-/* The page's one bold moment: brand tile. Everything inside uses --on-primary. */
+/* The page's one brand moment: a tinted tile (soft brand fill, ink text) with the profit trend.
+   Calmer than a solid brand block, and the same recipe works for gold / blue × light / dark. */
 .overview__hero {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: var(--space-5);
   padding: var(--space-6);
-  background: var(--primary);
-  color: var(--on-primary);
+  border-bottom: 1px solid var(--border);
+  background: var(--primary-soft);
+  color: var(--text-primary);
+}
+@media (min-width: 900px) {
+  .overview__hero {
+    border-bottom: 0;
+    border-right: 1px solid var(--border);
+  }
 }
 .hero__label {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
-  opacity: 0.72;
+  font-weight: var(--fw-semibold);
+  color: var(--primary-soft-text);
 }
 .hero__label iconify-icon {
-  font-size: 18px;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 15px;
 }
 .hero__value {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   font-size: 40px;
   line-height: 44px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .hero__value .stat__dec {
-  color: inherit;
-  opacity: 0.5;
+  color: var(--text-muted);
+}
+.hero__value.is-negative {
+  color: var(--error-text);
 }
 .hero__note {
   margin-top: var(--space-1);
   font-size: 13px;
   line-height: 20px;
-  opacity: 0.72;
+  color: var(--text-secondary);
+}
+/* Profit trend (decorative; the Win & loss card has the full chart + table) */
+.hero__spark {
+  display: block;
+  width: 100%;
+  height: 56px;
+  overflow: visible;
+  color: var(--viz-1);
+}
+.hero__spark path:first-child {
+  fill: currentColor;
+  opacity: 0.12;
+}
+.hero__spark path:last-child {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
 .hero__roi {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--space-2);
   align-items: baseline;
+  padding-top: var(--space-4);
+  border-top: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
   font-size: 13px;
 }
 .hero__roi-label {
-  opacity: 0.72;
+  color: var(--text-secondary);
 }
 .hero__roi-value {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
 }
 .hero__roi .meter {
   grid-column: 1 / -1;
-  background: color-mix(in srgb, var(--on-primary) 18%, transparent);
-  --meter-fill: var(--on-primary);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 .overview__hero .skeleton {
-  background: color-mix(in srgb, var(--on-primary) 16%, transparent);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .overview__grid {
@@ -141,6 +180,15 @@
   justify-content: center;
   padding: var(--space-5) var(--space-6);
   background: var(--bg-surface);
+}
+.overview__grid > .stat {
+  container-type: inline-size;
+}
+/* Long amounts shrink to fit their cell instead of wrapping mid-number */
+.overview__grid .stat__value {
+  margin-top: var(--space-1);
+  font-size: min(22px, 11.5cqi);
+  white-space: nowrap;
 }
 @media (min-width: 480px) {
   .overview__grid {
@@ -185,7 +233,7 @@
   font-size: 32px;
   line-height: 40px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
 }
 .tickets__list {

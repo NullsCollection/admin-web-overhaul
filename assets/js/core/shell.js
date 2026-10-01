@@ -108,6 +108,7 @@
           return t.label;
         })
       );
+  var isMac = /Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
   var topbar = document.getElementById("app-topbar");
   if (topbar) {
     topbar.innerHTML =
@@ -124,6 +125,9 @@
         .join("") +
       "</nav>" +
       '<div class="topbar__end">' +
+      '<button type="button" class="search-trigger" data-action="palette" aria-haspopup="dialog" aria-label="Search pages">' +
+      '<iconify-icon icon="tabler:search"></iconify-icon><span class="search-trigger__text">Search pages…</span>' +
+      '<span class="kbd" aria-hidden="true">' + (isMac ? "⌘" : "Ctrl") + " K</span></button>" +
       '<button type="button" class="icon-btn" data-action="mode"></button>' +
       DS.ui.langMenuHTML() +
       '<span class="topbar__sep" aria-hidden="true"></span>' +
@@ -181,8 +185,171 @@
       paintCollapsed();
     }
     if (action === "nav-open") setNav(true);
+    if (action === "palette") openPalette(a);
   });
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape" && app && app.classList.contains("is-nav-open")) setNav(false);
   });
+
+  /* ---------- Command palette (⌘K / Ctrl K, or "/" outside a field) ----------
+     Port: a MUI <Dialog> with an <Autocomplete open disablePortal> listing the nav config.
+     Jumps to any page by name; also runs a few account actions. */
+  var entries = [];
+  DS.nav.forEach(function (s) {
+    s.items.forEach(function (it) {
+      (it.children || [it]).forEach(function (leaf) {
+        if (!leaf.href) return;
+        entries.push({
+          group: s.section,
+          label: leaf.label,
+          hint: it.children ? it.label : "",
+          icon: leaf.icon || it.icon || "tabler:file",
+          href: base + "pages/" + leaf.href,
+          current: leaf.id === page,
+        });
+      });
+    });
+  });
+  entries.push(
+    { group: "Account", label: "Toggle dark mode", icon: "tabler:contrast-2", run: function () {
+      DS.settings.set("mode", DS.settings.get("mode") === "dark" ? "light" : "dark");
+    } },
+    { group: "Account", label: "Change password", icon: "tabler:key", href: base + "pages/change-password.html" },
+    { group: "Account", label: "Log out", icon: "tabler:logout", href: base + "pages/login.html" }
+  );
+
+  var pal = null;
+  var palOpener = null;
+  var palIndex = 0;
+  var palShown = [];
+
+  function buildPalette() {
+    pal = document.createElement("div");
+    pal.className = "cmdk-backdrop";
+    pal.hidden = true;
+    pal.innerHTML =
+      '<div class="cmdk" role="dialog" aria-modal="true" aria-label="Search pages">' +
+      '<div class="cmdk__search"><iconify-icon icon="tabler:search" aria-hidden="true"></iconify-icon>' +
+      '<input type="text" role="combobox" aria-expanded="true" aria-controls="cmdk-list" aria-autocomplete="list" ' +
+      'autocomplete="off" spellcheck="false" placeholder="Search pages and actions" aria-label="Search pages and actions">' +
+      '<span class="kbd" aria-hidden="true">Esc</span></div>' +
+      '<div class="cmdk__list" id="cmdk-list" role="listbox" aria-label="Results"></div>' +
+      '<div class="cmdk__foot" aria-hidden="true"><span><span class="kbd">↑</span><span class="kbd">↓</span>Move</span>' +
+      '<span><span class="kbd">↵</span>Open</span><span><span class="kbd">Esc</span>Close</span></div></div>';
+    document.body.appendChild(pal);
+
+    var input = pal.querySelector("input");
+    input.addEventListener("input", function () {
+      palIndex = 0;
+      paintPalette(input.value);
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!palShown.length) return;
+        palIndex = (palIndex + (e.key === "ArrowDown" ? 1 : -1) + palShown.length) % palShown.length;
+        paintActive();
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (palShown[palIndex]) runEntry(palShown[palIndex]);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        closePalette();
+      } else if (e.key === "Tab") {
+        e.preventDefault(); // focus stays in the search box (the list is driven by arrows)
+      }
+    });
+    pal.addEventListener("mousedown", function (e) {
+      if (e.target === pal) closePalette();
+    });
+    pal.addEventListener("mousemove", function (e) {
+      var o = e.target.closest(".cmdk__item");
+      if (!o) return;
+      var i = Number(o.getAttribute("data-index"));
+      if (i !== palIndex) {
+        palIndex = i;
+        paintActive(true);
+      }
+    });
+    pal.addEventListener("click", function (e) {
+      var o = e.target.closest(".cmdk__item");
+      if (o) runEntry(palShown[Number(o.getAttribute("data-index"))]);
+    });
+  }
+
+  function paintPalette(q) {
+    q = (q || "").trim().toLowerCase();
+    palShown = entries.filter(function (en) {
+      return !q || (en.label + " " + en.hint + " " + en.group).toLowerCase().indexOf(q) > -1;
+    });
+    var list = pal.querySelector(".cmdk__list");
+    if (!palShown.length) {
+      list.innerHTML = '<div class="cmdk__empty">No pages match “' + esc(q) + "”</div>";
+      pal.querySelector("input").removeAttribute("aria-activedescendant");
+      return;
+    }
+    var html = "";
+    var group = null;
+    palShown.forEach(function (en, i) {
+      if (en.group !== group) {
+        if (group !== null) html += "</div>";
+        group = en.group;
+        html += '<div class="cmdk__group" role="group" aria-label="' + esc(group) + '"><div class="cmdk__group-title" aria-hidden="true">' + esc(group) + "</div>";
+      }
+      html +=
+        '<div class="cmdk__item" role="option" id="cmdk-' + i + '" data-index="' + i + '" aria-selected="false">' +
+        '<iconify-icon icon="' + en.icon + '" aria-hidden="true"></iconify-icon>' +
+        '<span class="cmdk__label">' + esc(en.label) + "</span>" +
+        (en.hint ? '<span class="cmdk__hint">' + esc(en.hint) + "</span>" : "") +
+        (en.current ? '<span class="cmdk__hint">Current page</span>' : "") +
+        '<iconify-icon class="cmdk__enter" icon="tabler:corner-down-left" aria-hidden="true"></iconify-icon></div>';
+    });
+    list.innerHTML = html + "</div>";
+    paintActive();
+  }
+
+  function paintActive(fromPointer) {
+    pal.querySelectorAll(".cmdk__item").forEach(function (o) {
+      o.setAttribute("aria-selected", String(Number(o.getAttribute("data-index")) === palIndex));
+    });
+    var active = document.getElementById("cmdk-" + palIndex);
+    pal.querySelector("input").setAttribute("aria-activedescendant", active ? active.id : "");
+    if (active && !fromPointer) active.scrollIntoView({ block: "nearest" });
+  }
+
+  function runEntry(en) {
+    closePalette();
+    if (en.run) en.run();
+    else if (en.href) location.href = en.href;
+  }
+
+  function openPalette(opener) {
+    if (!pal) buildPalette();
+    palOpener = opener || document.activeElement;
+    pal.hidden = false;
+    palIndex = 0;
+    var input = pal.querySelector("input");
+    input.value = "";
+    paintPalette("");
+    input.focus();
+  }
+  function closePalette() {
+    if (!pal || pal.hidden) return;
+    pal.hidden = true;
+    if (palOpener && document.contains(palOpener)) palOpener.focus();
+  }
+
+  if (topbar) {
+    document.addEventListener("keydown", function (e) {
+      var typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
+      if ((e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K")) {
+        e.preventDefault();
+        if (pal && !pal.hidden) closePalette();
+        else openPalette();
+      } else if (e.key === "/" && !typing && !document.querySelector(".dialog-backdrop")) {
+        e.preventDefault();
+        openPalette();
+      }
+    });
+  }
 })(window.DS);

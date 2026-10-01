@@ -372,11 +372,18 @@
   /* ---------- Brand logo (theme-aware; CSS in layout/shell.css → .brand-logo) ---------- */
   ui.logoHTML = function (base) {
     var p = base + "../../public/images/logos/";
+    // Logo files live in the app repo (public/). If they can't load (prototype opened on its own),
+    // the wrapper gets .is-fallback and a text wordmark shows instead of a broken image.
+    var fail = ' onerror="this.parentNode.classList.add(\'is-fallback\')"';
     return (
-      '<img class="rb7-on-light" src="' + p + 'RB7-dark.svg" alt="RB7">' +
-      '<img class="rb7-on-dark" src="' + p + 'RB7-light.svg" alt="RB7">' +
-      '<img class="lp-on-light" src="' + p + 'lottoplus-light.svg" alt="Lotto Plus">' +
-      '<img class="lp-on-dark" src="' + p + 'lottoplus-dark.svg" alt="Lotto Plus">'
+      '<img class="rb7-on-light" src="' + p + 'RB7-dark.svg" alt="RB7"' + fail + ">" +
+      '<img class="rb7-on-dark" src="' + p + 'RB7-light.svg" alt="RB7"' + fail + ">" +
+      '<img class="lp-on-light" src="' + p + 'lottoplus-light.svg" alt="Lotto Plus"' + fail + ">" +
+      '<img class="lp-on-dark" src="' + p + 'lottoplus-dark.svg" alt="Lotto Plus"' + fail + ">" +
+      '<span class="brand-word brand-word--rb7"><span class="brand-word__mark">RB7</span>' +
+      '<span class="brand-word__text">RB7 Admin</span></span>' +
+      '<span class="brand-word brand-word--lp"><span class="brand-word__mark">LP</span>' +
+      '<span class="brand-word__text">Lotto Plus</span></span>'
     );
   };
 

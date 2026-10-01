@@ -17,23 +17,24 @@
   line-height: 20px;
 }
 
+/* Header: sentence-case 12px labels on a faint band (no all-caps: easier to scan, calmer) */
 .table th {
-  padding: var(--space-2-5, 10px) var(--space-4);
+  height: 40px;
+  padding: var(--space-2) var(--space-4);
   background: var(--bg-subtle);
   border-bottom: 1px solid var(--border);
   color: var(--text-muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 16px;
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0;
   text-align: left;
   white-space: nowrap;
-  border-bottom: 1px solid var(--border);
 }
 .table td {
+  height: 52px;
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-subtle);
   color: var(--text-secondary);
   vertical-align: middle;
 }
@@ -49,7 +50,7 @@
   border-bottom: 0;
 }
 .table tbody tr:hover td {
-  background: var(--bg-hover);
+  background: var(--bg-row-hover);
 }
 
 .table .is-num {
@@ -75,6 +76,7 @@
 
 /* Compact: rows inside cards */
 .table--compact td {
+  height: 44px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -178,7 +180,7 @@ th[aria-sort="descending"] .th-sort iconify-icon {
   justify-content: flex-end;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-5);
-  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-6);
+  padding: var(--space-2-5) var(--space-4) var(--space-2-5) var(--space-6);
   border-top: 1px solid var(--border);
   font-size: 13px;
   color: var(--text-secondary);

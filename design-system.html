@@ -54,12 +54,12 @@
           <div class="ds-principle">
             <h3 class="t-h6">60 / 30 / 10</h3>
             <p>60% white and background, 30% ink for text and labels.
-              10% brand: the active nav pill, main buttons, badges, and chart accents.</p>
+              10% brand: the active nav marker, main buttons, the dashboard hero tint, and chart accents.</p>
           </div>
           <div class="ds-principle">
             <h3 class="t-h6">Borders, not shadows</h3>
-            <p>No shadows anywhere. Depth comes from a 1px border and the canvas vs. surface step. Focus uses
-              an outline.</p>
+            <p>No shadows anywhere. Depth comes from a 1px border and the canvas vs. surface step: sidebar and
+              top bar sit on the canvas, cards are the only white layer. Focus uses an outline.</p>
           </div>
           <div class="ds-principle">
             <h3 class="t-h6">Tokens only</h3>
@@ -121,8 +121,8 @@
       <!-- ============ Typography ============ -->
       <section class="ds-section" id="type">
         <h2 class="t-h4">Typography</h2>
-        <p class="ds-lead">IBM Plex Sans with IBM Plex Sans Thai, same metrics in both scripts. Tabular figures for
-          money. Class names match MUI variants.</p>
+        <p class="ds-lead">Inter for Latin text and figures, with IBM Plex Sans Thai for Thai glyphs (close x-heights).
+          Headings use tight negative tracking. Tabular figures for money. Class names match MUI variants.</p>
         <div class="card"><div class="card__content" id="type-rows"></div></div>
       </section>
 
@@ -180,7 +180,7 @@
 
         <div class="ds-block">
           <div class="ds-block__head"><div class="ds-block__title">Sizes</div>
-            <span class="ds-code">size="small" 32 · "medium" 40 · "large" 48</span></div>
+            <span class="ds-code">size="small" 32 · "medium" 38 · "large" 44</span></div>
           <div class="ds-demo">
             <button class="btn btn--contained btn--sm">Small</button>
             <button class="btn btn--contained">Medium</button>
@@ -249,8 +249,9 @@
       <!-- ============ Fields ============ -->
       <section class="ds-section" id="fields">
         <h2 class="t-h4">Fields</h2>
-        <p class="ds-lead">Label above the box, like <span class="ds-code">CustomTextField</span>. The 40px box
-          (MUI size="small") is the default everywhere. The focus ring is a 2px outline.</p>
+        <p class="ds-lead">Label above the box, like <span class="ds-code">CustomTextField</span>. The 38px box
+          (MUI size="small") is the default everywhere. Focus = brand border + a soft 3px halo drawn with
+          <span class="ds-code">outline</span> (<span class="ds-code">--focus-halo</span>), never box-shadow.</p>
         <div class="ds-demo ds-demo--col">
           <div class="grid" style="gap:16px">
             <div class="field col-md-4">
@@ -298,7 +299,7 @@
             </div>
             <div class="field col-md-6">
               <span class="field__label">Checkbox <span class="ds-code">&lt;FormControlLabel control={&lt;Checkbox/&gt;}&gt;</span></span>
-              <div class="ds-row" style="height:40px">
+              <div class="ds-row" style="height:38px">
                 <label class="checkbox"><input type="checkbox" checked><span class="check"><iconify-icon icon="tabler:check"></iconify-icon></span>Remember me</label>
                 <label class="checkbox"><input type="checkbox"><span class="check"><iconify-icon icon="tabler:check"></iconify-icon></span>Unchecked</label>
               </div>
@@ -363,8 +364,8 @@
       <!-- ============ Tables ============ -->
       <section class="ds-section" id="tables">
         <h2 class="t-h4">Tables</h2>
-        <p class="ds-lead">Header row on <span class="ds-code">--bg-subtle</span>, uppercase 11px muted labels, row hover
-          <span class="ds-code">--bg-hover</span>. Numbers right-aligned, tabular. DataGrid gets the same look.</p>
+        <p class="ds-lead">Header row on <span class="ds-code">--bg-subtle</span>, sentence-case 12px muted labels, hairline row
+          dividers (<span class="ds-code">--border-subtle</span>), row hover <span class="ds-code">--bg-row-hover</span>. Numbers right-aligned, tabular. DataGrid gets the same look.</p>
         <div class="card">
           <div class="table-wrap">
             <table class="table">
@@ -544,7 +545,7 @@
       <!-- ============ Navigation ============ -->
       <section class="ds-section" id="nav">
         <h2 class="t-h4">Navigation</h2>
-        <p class="ds-lead">Active item is the brand pill. Child items hang off a 1px guide line. Count badges use brand and flip colors on the active pill.</p>
+        <p class="ds-lead">Active item is a surface tile with a hairline border, a brand icon and a 3px brand marker on the left. Child items hang off a 1px guide line; the active child lights its stretch of it. Count badges are quiet neutral pills (brand-soft on the active item). <span class="ds-code">⌘K</span> / <span class="ds-code">Ctrl K</span> or <span class="ds-code">/</span> opens a page search over the same nav config.</p>
         <div class="ds-demo ds-demo--canvas">
           <div class="ds-nav">
             <div class="nav-section__title">Overview</div>
@@ -572,7 +573,7 @@
             <tr><td class="is-strong">Queue page</td><td><a href="pages/pending-round.html">Pending rounds</a>, <a href="pages/provider-activity.html">Provider activity</a></td><td>List template sorted by urgency (oldest / least active first); a derived urgency column (waiting time, severity signal); positive empty state ("All caught up"); header count doubles as a filter shortcut</td></tr>
             <tr><td class="is-strong">List page, many filters</td><td><a href="pages/tickets.html">Tickets</a></td><td>Wrapping filter bar (`.list-toolbar--wrap`), search with a "search by" picker (`.search-scope`), From/To date prefixes, multi-select filters; defaults (today) aren't counted as active and come back on Clear filters</td></tr>
             <tr><td class="is-strong">List page</td><td><a href="pages/providers.html">Providers</a></td><td>Header (title, live count, main action) → card: search + filters + Clear filters / table with sortable headers, row actions (View / Edit / Delete always visible and first, never in ⋮; other actions fill up to 2 icons; the rest go in ⋮) / pagination. Engine: core/list.js</td></tr>
-            <tr><td class="is-strong">App shell</td><td><a href="pages/dashboard.html">Dashboard</a></td><td>Sidebar 260 / 72 collapsed, drawer below 1200px, flat top bar</td></tr>
+            <tr><td class="is-strong">App shell</td><td><a href="pages/dashboard.html">Dashboard</a></td><td>Sidebar 256 / 68 collapsed on the canvas color, drawer below 1200px, flat 60px top bar with page search (⌘K)</td></tr>
             <tr><td class="is-strong">Auth (blank layout)</td><td><a href="pages/login.html">Login</a>, <a href="pages/forgot-password.html">Forgot</a>, <a href="pages/reset-password.html">Reset</a></td><td>Brand art left (hidden below 900px), 380px form right, one brand button, server errors inline</td></tr>
             <tr><td class="is-strong">Result screen</td><td><a href="pages/forgot-password.html?state=sent">Email sent</a>, <a href="pages/reset-password.html?state=expired">Link expired</a></td><td>Icon tile, title, one line of help, one main action, one way back</td></tr>
             <tr><td class="is-strong">Form card</td><td><a href="pages/change-password.html">Change password</a></td><td>Max 640px, fields stacked, footer: Cancel (outlined) + Save changes (contained)</td></tr>
@@ -615,7 +616,7 @@
             <tr><td class="is-strong">.card</td><td>MuiCard + overrides/card.ts</td><td>Drop 3px primary top border; elevation 0; radius 12</td></tr>
             <tr><td class="is-strong">.btn--contained</td><td>MuiButton color="primary"</td><td>Flat brand fill (no gradient, no shadow); gold takes ink text</td></tr>
             <tr><td class="is-strong">.btn--contained.btn--ink</td><td>MuiButton color="ink" (new palette color)</td><td>Neutral solid for secondary actions</td></tr>
-            <tr><td class="is-strong">.field</td><td>@core/components/mui/text-field</td><td>No focus shadow; 2px outline ring</td></tr>
+            <tr><td class="is-strong">.field</td><td>@core/components/mui/text-field</td><td>No focus shadow; brand border + 3px outline halo</td></tr>
             <tr><td class="is-strong">.field__control--select + .select-menu</td><td>MUI Select / CustomTextField select → Menu (MenuProps: no elevation, border)</td><td>Our menu replaces the browser popup: brand-soft selected row + check, open = focus ring + flipped chevron, search box at 8+ options, type-ahead, Esc closes only the menu (also inside dialogs). One shared floating menu (z above dialogs). The native select still holds the value</td></tr>
             <tr><td class="is-strong">.multiselect</td><td>@core/components/mui/autocomplete</td><td>Show 1 tag + "+N" to keep one line</td></tr>
             <tr><td class="is-strong">.chip</td><td>@core/components/mui/chip skin="light"</td><td>Pill, 24px, dot + label</td></tr>
@@ -665,10 +666,10 @@
             <tr><td class="is-strong">.pagination / .th-sort</td><td>DataGrid footer + column header</td><td>Sort arrow shows on hover and when active</td></tr>
             <tr><td class="is-strong">.list-progress</td><td>DataGrid loading (LinearProgress)</td><td>2px brand bar while a page/sort/filter loads</td></tr>
             <tr><td class="is-strong">.segmented</td><td>MuiToggleButtonGroup</td><td>New look; selected = surface + border</td></tr>
-            <tr><td class="is-strong">.nav-item.is-active</td><td>VerticalNavLink</td><td>Flat brand pill instead of gradient + glow</td></tr>
+            <tr><td class="is-strong">.nav-item.is-active</td><td>VerticalNavLink</td><td>Surface tile + brand marker instead of gradient + glow</td></tr>
             <tr><td class="is-strong">.topbar</td><td>vertical/appBar</td><td>Flat full-width bar, no blur, no float</td></tr>
             <tr><td class="is-strong">shadows</td><td>theme/shadows</td><td>All 25 entries → "none"</td></tr>
-            <tr><td class="is-strong">font</td><td>theme/typography + _document.tsx</td><td>IBM Plex Sans + Plex Sans Thai</td></tr>
+            <tr><td class="is-strong">font</td><td>theme/typography + _document.tsx</td><td>Inter + IBM Plex Sans Thai</td></tr>
           </tbody>
         </table></div></div>
       </section>

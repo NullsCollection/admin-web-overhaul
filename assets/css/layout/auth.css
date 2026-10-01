@@ -27,6 +27,147 @@
   background-image: url("../../../../../public/images/lottoplus-bg.png");
 }
 
+/* ---------- Fallback art (auth.js adds .is-fallback when the image can't load) ----------
+   Soft brand field + faint grid, a short product pitch and a sample stat card. Borders only. */
+.auth__art {
+  position: relative;
+  overflow: hidden;
+}
+.showcase {
+  display: none;
+}
+.auth__art.is-fallback {
+  background-color: var(--primary-soft);
+  background-image: none;
+}
+.auth__art.is-fallback::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--primary) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--primary) 14%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: -1px -1px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 30% 40%, black 20%, transparent 75%);
+  mask-image: radial-gradient(ellipse 80% 70% at 30% 40%, black 20%, transparent 75%);
+}
+.auth__art.is-fallback .showcase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-12);
+  height: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: var(--space-16) var(--space-10);
+}
+.showcase__kicker {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 var(--space-2-5);
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  color: var(--primary-soft-text);
+  font-size: 12px;
+  font-weight: var(--fw-semibold);
+}
+.showcase__title {
+  margin-top: var(--space-4);
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.035em;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+.showcase__points {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-8) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--text-secondary);
+}
+.showcase__points li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.showcase__points iconify-icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 1px solid color-mix(in srgb, var(--primary) 26%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--primary-text);
+  font-size: 18px;
+}
+.showcase__card {
+  width: min(100%, 360px);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+  color: var(--viz-1);
+}
+.showcase__card-head {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.showcase__delta {
+  color: var(--success-text);
+  font-variant-numeric: tabular-nums;
+}
+.showcase__card-value {
+  margin: var(--space-1) 0 var(--space-4);
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.showcase__card-value span {
+  color: var(--text-faint);
+}
+.showcase__card svg {
+  width: 100%;
+  height: 60px;
+}
+.showcase__card path:first-child {
+  fill: currentColor;
+  opacity: 0.12;
+}
+.showcase__card path:last-child {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+@media (max-width: 1199.98px) {
+  .showcase__title {
+    font-size: 30px;
+    line-height: 38px;
+  }
+  .auth__art.is-fallback .showcase {
+    padding: var(--space-12) var(--space-8);
+  }
+}
+
 .auth__panel {
   display: flex;
   flex-direction: column;
@@ -68,7 +209,7 @@
   font-size: 28px;
   line-height: 36px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.03em;
   color: var(--text-primary);
 }
 .auth__lead {

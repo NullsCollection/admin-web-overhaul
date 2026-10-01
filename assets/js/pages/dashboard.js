@@ -212,6 +212,26 @@
     return Math.max(1, Math.round((b - a) / 864e5) + 1);
   }
 
+  /* Daily profit as a tiny area + line (decorative, aria-hidden). Port: Recharts <AreaChart> with no axes. */
+  function sparkHTML(values) {
+    if (values.length < 2) return "";
+    var W = 300;
+    var H = 56;
+    var min = Math.min.apply(null, values.concat(0));
+    var max = Math.max.apply(null, values);
+    var span = max - min || 1;
+    var pts = values.map(function (v, i) {
+      return [(i / (values.length - 1)) * W, H - 3 - ((v - min) / span) * (H - 6)];
+    });
+    var line = pts.map(function (p, i) {
+      return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1);
+    }).join("");
+    return (
+      '<svg class="hero__spark" viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
+      '<path d="' + line + "L" + W + " " + H + "L0 " + H + 'Z"></path><path d="' + line + '"></path></svg>'
+    );
+  }
+
   function renderOverview(d) {
     var p = d.betPerformance;
     var days = daysInRange();
@@ -224,11 +244,14 @@
     $("ov-hero").innerHTML =
       "<div>" +
       '<div class="hero__label"><iconify-icon icon="tabler:coins"></iconify-icon>Profit</div>' +
-      '<div class="hero__value">' + fmt.moneyHTML(p.profitTotalAmount) + "</div>" +
+      '<div class="hero__value' + (p.profitTotalAmount < 0 ? " is-negative" : "") + '">' + fmt.moneyHTML(p.profitTotalAmount) + "</div>" +
       '<div class="hero__note">' +
       (p.profitTotalAmount < 0 ? "Net loss across " : "Across ") + days +
       (days === 1 ? " day" : " days") + "</div>" +
       "</div>" +
+      sparkHTML(d.winLossStatics.map(function (r) {
+        return r.profitAmount;
+      })) +
       '<div class="hero__roi"><span class="hero__roi-label">ROI</span>' +
       '<span class="hero__roi-value">' + fmt.pct(p.roi) + "</span>" +
       '<div class="meter" role="meter" aria-label="ROI" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' +
