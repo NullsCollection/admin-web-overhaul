@@ -1,0 +1,85 @@
+/* ==========================================================================
+   Dialog → MUI <Dialog> (src/components/Modal: ConfirmModal, ErrorDialog)
+   Bordered panel on a scrim. No shadow. Max 440px (MUI maxWidth="xs").
+   ========================================================================== */
+
+.dialog-backdrop {
+  position: fixed;
+  z-index: var(--z-menu);
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--bg-scrim);
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 440px;
+  /* Never taller than the screen: the title and buttons stay, the body scrolls (MUI scroll="paper") */
+  max-height: calc(100vh - var(--space-8));
+  max-height: calc(100dvh - var(--space-8));
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.dialog__header,
+.dialog__actions {
+  flex: none;
+}
+.dialog:focus {
+  outline: none;
+}
+
+.dialog__header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) 0;
+}
+.dialog__title {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.dialog__text {
+  margin-top: var(--space-1);
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-secondary);
+}
+.dialog__text strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-6);
+}
+
+@media (max-width: 479.98px) {
+  .dialog__header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .dialog__actions {
+    flex-direction: column-reverse;
+  }
+  .dialog__actions .btn {
+    width: 100%;
+  }
+}
+
+/* A short list inside a dialog body (games that block a delete) */
+.dialog__list {
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: 14px;
+  line-height: 24px;
+  color: var(--text-secondary);
+}

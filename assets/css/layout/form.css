@@ -1,0 +1,866 @@
+/* ==========================================================================
+   Form page template → Card per section + GenericForm-style grid + save bar
+   Engine: assets/js/core/form.js. First used by pages/provider-form.html.
+
+   back link → page header → [tabs on edit] → section cards (2-col grid ≥ 600px)
+   → sticky save bar (Cancel / Save) that says when there are unsaved changes
+   ========================================================================== */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.back-link:hover {
+  color: var(--text-primary);
+}
+.back-link iconify-icon {
+  font-size: 16px;
+}
+
+.page-header__title-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.form-width {
+  max-width: 960px;
+}
+.form-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: 960px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5) var(--space-6);
+}
+.form-grid__full {
+  grid-column: 1 / -1;
+}
+@media (min-width: 600px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Sections with short fields in one line (form engine `columns: 3 | 5`)
+   Port: Grid item xs / sm / md sizes (5 → xs={4} md; 3 → xs={12} md={4}) */
+.form-cols-5 .form-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.form-cols-4 .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 900px) {
+  .form-cols-3 .form-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .form-cols-5 .form-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .form-cols-4 .form-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Error summary above the sections (replaces "Please fix the validation errors below" toast) */
+.form-summary {
+  scroll-margin-top: calc(var(--topbar-h) + var(--space-4));
+}
+.form-summary ul {
+  margin: var(--space-1) 0 0;
+  padding-left: var(--space-5);
+}
+.form-summary a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.field {
+  scroll-margin-top: calc(var(--topbar-h) + var(--space-6));
+}
+/* When a field has an error, its error text replaces the normal helper */
+.field--error .field__helper:not([data-error]) {
+  display: none;
+}
+/* Multi-select menu inside a form field */
+.form-menu {
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+}
+
+/* ---------- Sticky save bar ---------- */
+.form-bar {
+  position: sticky;
+  z-index: 5;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  max-width: 960px;
+  margin-top: calc(var(--space-2) * -1);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.form-bar__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.form-bar__status.is-dirty {
+  color: var(--text-primary);
+}
+.form-bar__status.is-dirty::before {
+  content: "";
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warning);
+}
+.form-bar__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex: none;
+}
+@media (max-width: 599.98px) {
+  .form-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .form-bar__actions {
+    flex-wrap: wrap;
+  }
+  .form-bar__actions .btn {
+    flex: 1;
+  }
+  /* A third, secondary action (e.g. Restore) takes its own row above Cancel / Save */
+  .form-bar__actions .btn--text {
+    flex-basis: 100%;
+    order: -1;
+  }
+}
+
+/* Skeleton for the edit page while the provider loads */
+.form-skeleton {
+  display: grid;
+  gap: var(--space-5) var(--space-6);
+}
+@media (min-width: 600px) {
+  .form-skeleton {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Card that holds a small table (API keys, users) */
+.card .list-body .table {
+  min-width: 640px;
+}
+
+/* ---------- Tabs inside a section card (one per language) ---------- */
+.form-tabs {
+  margin: calc(var(--space-2) * -1) 0 var(--space-5);
+}
+.form-tabs .req {
+  color: var(--error-text);
+  margin-left: -4px;
+}
+.form-tabs__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--error);
+}
+
+/* ---------- Read-only preview of a linked record (game form → the chosen config's rates) ---------- */
+.rate-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+.rate-preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.rate-preview__head .btn {
+  margin-left: auto;
+}
+.rate-preview__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3) var(--space-4);
+  margin: 0;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+@media (min-width: 900px) {
+  .rate-preview__grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+.rate-preview__grid dt {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.rate-preview__grid dd {
+  margin: 2px 0 0;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+
+/* Tabs that link between pages of one record (game sub-pages) */
+.page-tabs {
+  margin-bottom: var(--space-6);
+}
+
+/* ---------- Custom price: provider picker row + rate table with inputs ---------- */
+.price-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3) var(--space-5);
+}
+.price-toolbar .field {
+  flex: 1 1 280px;
+  max-width: 400px;
+}
+.price-toolbar__status {
+  display: flex;
+  align-items: center;
+  min-height: var(--control-md);
+  margin-top: 22px; /* label height + gap, so it lines up with the select */
+}
+/* Phones: one block per rate: name + config rate on top, the input under it */
+@media (max-width: 599.98px) {
+  .price-table thead {
+    display: none;
+  }
+  .price-table tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-table td {
+    display: block;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+  .price-table td:nth-child(2) {
+    text-align: right;
+  }
+  .price-table td:nth-child(2)::before {
+    content: "Config ";
+  }
+  .price-table td:nth-child(3) {
+    text-align: left;
+  }
+  .price-field {
+    width: 100%;
+  }
+}
+.price-table td {
+  vertical-align: middle;
+}
+.price-table td:first-child {
+  white-space: nowrap;
+}
+.price-field {
+  display: inline-flex;
+  width: 180px;
+  max-width: 100%;
+  text-align: left;
+}
+.price-field .field__control input {
+  text-align: right;
+}
+.price-table tr.is-custom .field__control input {
+  font-weight: var(--fw-medium);
+}
+.price-table tr.is-custom .field__control {
+  border-color: var(--primary-border);
+}
+/* Prefix inside an input (currency) → InputAdornment position="start" */
+.field__prefix {
+  flex: none;
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+
+/* Provider cost: the numbers you're overriding, above the input */
+.cost-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-8);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+.cost-facts dt {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.cost-facts dd {
+  margin: 2px 0 0;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.cost-field {
+  max-width: 320px;
+}
+
+/* Current assignment banner (limit groups): what applies now, and the fallback when nothing does */
+.assign-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+}
+.assign-banner.is-set {
+  border-style: solid;
+  border-color: var(--primary-border);
+  background: var(--primary-soft);
+}
+.assign-banner > iconify-icon {
+  flex: none;
+  font-size: 20px;
+  color: var(--text-muted);
+}
+.assign-banner.is-set > iconify-icon {
+  color: var(--primary-text);
+}
+.assign-banner__text {
+  flex: 1 1 240px;
+  min-width: 0;
+}
+
+/* ---------- Round schedule: builder, exclusions, preview ---------- */
+.sched-builder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.sched-builder .segmented {
+  align-self: flex-start;
+}
+.sched-builder__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+}
+.sched-builder__row--cron .field__control {
+  flex: 1 1 240px;
+  max-width: 320px;
+}
+.sched-builder__label {
+  width: 56px;
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.sched-builder__time {
+  width: 140px;
+}
+.sched-builder__hint {
+  flex-basis: 100%;
+  padding-left: calc(56px + var(--space-3));
+  font-size: 12px;
+  color: var(--text-muted);
+}
+/* Toggle buttons (days, dates) → MUI ToggleButtonGroup (multiple) */
+.toggle-set {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1-5);
+}
+.toggle-set--dates {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 36px)); /* shrinks on phones */
+  flex: 1 1 auto;
+  max-width: 300px;
+}
+.toggle {
+  min-width: 44px;
+  height: 32px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.toggle-set--dates .toggle {
+  min-width: 0;
+  padding: 0;
+}
+.toggle:hover {
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+/* Selected = soft brand tint (MUI ToggleButton selected), not a solid fill: 5 solid days is too much brand */
+.toggle[aria-pressed="true"] {
+  border-color: var(--primary-border);
+  background: var(--primary-soft);
+  color: var(--primary-soft-text);
+}
+.toggle:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.exclude-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-1);
+  padding: 0;
+  list-style: none;
+}
+.exclude-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+}
+.exclude-row > .field__control--select {
+  width: 160px;
+}
+.exclude-row__time {
+  width: 120px;
+}
+.exclude-row__note {
+  min-width: 48px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.exclude-empty {
+  margin: 0 0 var(--space-1);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.sched-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+.sched-preview--empty {
+  padding: var(--space-4);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.sched-preview__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.sched-preview__head iconify-icon {
+  font-size: 18px;
+  color: var(--text-muted);
+}
+.sched-preview__runs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  list-style: none;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.sched-preview__runs span {
+  display: inline-block;
+  width: 36px;
+  color: var(--text-muted);
+}
+.sched-preview__foot {
+  padding: 0 var(--space-4) var(--space-3);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.sched-builder__cron {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+/* ---------- Round result (8c) ---------- */
+.result-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (min-width: 1200px) {
+  .result-layout {
+    grid-template-columns: minmax(0, 1fr) 340px;
+  }
+}
+/* Progress strip → MUI <Stepper alternativeLabel={false}> */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
+  padding: 0;
+  list-style: none;
+}
+.steps__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+.steps__dot {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+}
+.steps__label {
+  display: block;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.steps__hint {
+  display: block;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.steps__item.is-current {
+  border-color: var(--primary-border);
+}
+.steps__item.is-current .steps__dot {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+.steps__item.is-done .steps__dot {
+  background: var(--success-soft);
+  color: var(--success-text);
+}
+.steps__item.is-todo .steps__label {
+  color: var(--text-secondary);
+}
+@media (max-width: 599.98px) {
+  .steps__hint {
+    display: none;
+  }
+  .steps__item {
+    flex-direction: column;
+    text-align: center;
+    padding: var(--space-3) var(--space-2);
+  }
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-5) var(--space-4);
+}
+/* Result digits: big, mono, spaced so each digit is easy to check */
+.result-input {
+  height: 48px;
+}
+.result-input input {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 20px;
+  letter-spacing: 0.3em;
+}
+.result-input.is-derived {
+  background: var(--bg-subtle);
+  border-style: dashed;
+}
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.result-readout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+}
+.result-readout > div {
+  min-width: 108px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.result-readout dt {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.result-readout dd {
+  margin: 2px 0 0;
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 20px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.2em;
+  color: var(--text-primary);
+}
+.result-current__head,
+.result-history__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.result-history {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.result-history > li + li {
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border);
+}
+.result-history .result-readout dd {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+/* Side column facts: label left, value right */
+.facts {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.facts > div:last-child {
+  border-bottom: 0;
+}
+.facts dt {
+  color: var(--text-muted);
+}
+.facts dd {
+  margin: 0;
+  text-align: right;
+  color: var(--text-primary);
+}
+.facts--rates dd {
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-medium);
+}
+
+/* Result action (8c): every result as a bordered item: id + status + time / numbers / its actions */
+.result-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.result-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.result-item.is-pending {
+  border-color: color-mix(in srgb, var(--warning) 45%, var(--border));
+}
+.result-item__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.result-item__time {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.result-item__time strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+.result-item .result-readout {
+  padding: var(--space-4);
+}
+.result-item.is-canceled .result-readout dd {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.result-item__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+  background: var(--bg-subtle);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+}
+
+/* ---------- Limit set form (9a): bet type cards + special number cards ----------
+   Port: Grid of outlined Cards; TextField size="small"; Table size="small" with inputs */
+/* Full content width, so cards line up with the header actions (Copy from a global set) */
+.form-page--wide,
+.form-page--wide .form-bar {
+  max-width: none;
+}
+.limit-grid--edit {
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+}
+.limit-grid--edit-wide {
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+  margin-top: var(--space-4);
+}
+.limit-edit.is-invalid {
+  border-color: var(--error);
+}
+.limit-edit__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: 0 var(--space-3) var(--space-3);
+}
+.limit-edit__max {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.limit-edit__max .field__control {
+  width: 128px;
+}
+.limit-edit__ranges {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.limit-edit__ranges th {
+  padding: var(--space-1) var(--space-1) var(--space-1) 0;
+  font-size: 11px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.04em;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.limit-edit__ranges th:last-child {
+  width: 32px;
+}
+.limit-edit__ranges td {
+  padding: 2px var(--space-1) 2px 0;
+}
+.limit-edit__ranges td:last-child {
+  padding-right: 0;
+}
+.limit-edit__ranges input,
+.limit-edit__max input {
+  font-variant-numeric: tabular-nums;
+}
+.limit-edit__none {
+  margin: 0;
+}
+.limit-edit__add {
+  align-self: flex-start;
+  margin-left: calc(var(--space-2) * -1);
+}
+.limit-edit__error {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--error-text);
+}
+.limit-edit__error[hidden] {
+  display: none;
+}
+.limit-edit__types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin: 0 0 var(--space-1);
+  padding: 0;
+  border: 0;
+}
+.limit-edit__types legend {
+  width: 100%;
+  margin-bottom: var(--space-1);
+  padding: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.limit-edit__types .checkbox {
+  font-size: 13px;
+}
+.special-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.special-add__field {
+  flex: 1 1 160px;
+  max-width: 240px;
+}
+.special-add > .btn {
+  margin-top: 26px; /* lines up with the input under its label */
+}
+.special-empty {
+  margin: var(--space-4) 0 0;
+}

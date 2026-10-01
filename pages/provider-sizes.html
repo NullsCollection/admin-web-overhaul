@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provider sizes | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Provider sizes  (Phase 11b, list template)
+  Source: src/pages/provider-sizes/index.tsx → views/pages/provider-size/hooks/useProviderSizeTable.tsx
+  Data:   useFetchProviderSizes({ page, pageSize, filter: {} })
+  Engine: core/list.js   Logic: pages/provider-sizes.js   Mock: mock/providers.js (providerSizeList) + mock/lotto.js (limit sets)
+-->
+<body data-page="provider-sizes" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Provider sizes</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+          <a class="btn btn--contained" href="provider-size-form.html"><iconify-icon icon="tabler:plus"></iconify-icon>New provider size</a>
+        </div>
+
+        <section class="card list-card" id="sizes-card" aria-label="Provider sizes">
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/pages/provider-sizes.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

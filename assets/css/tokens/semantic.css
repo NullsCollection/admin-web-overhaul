@@ -1,0 +1,140 @@
+/* ==========================================================================
+   Semantic tokens: roles, not colors. Components and pages use ONLY these.
+   Switched by <html data-theme="gold|blue" data-mode="light|dark">.
+
+   MUI mapping (for the Phase 13 port) is noted on each line as → palette path.
+   ========================================================================== */
+
+/* ---------- Mode: light (default) ---------- */
+:root,
+:root[data-mode="light"] {
+  color-scheme: light;
+
+  /* Backgrounds (the 60%) */
+  --bg-canvas:  var(--ink-100); /* → palette.background.default */
+  --bg-surface: var(--ink-0);   /* → palette.background.paper */
+  --bg-subtle:  var(--ink-50);  /* → customColors.tableHeaderBg */
+  --bg-hover:   var(--ink-100); /* → palette.action.hover */
+  --bg-selected: var(--ink-100); /* → palette.action.selected */
+  --bg-muted:   var(--ink-100); /* icon tiles, tracks, skeleton base */
+  --bg-inverse: var(--ink-950); /* → palette.ink.main (new): ink buttons, checkbox, toast, avatar */
+  --bg-inverse-hover: var(--ink-800);
+  --bg-scrim:   var(--scrim);   /* → MuiBackdrop */
+
+  /* Text (the 30%) */
+  --text-primary:   var(--ink-950); /* → palette.text.primary */
+  --text-secondary: var(--ink-600); /* → palette.text.secondary */
+  --text-muted:     var(--ink-500); /* → customColors.textMuted (new): table headers, captions */
+  --text-faint:     var(--ink-400); /* → palette.text.disabled: placeholder, disabled */
+  --text-inverse:   var(--ink-0);   /* → palette.ink.contrastText */
+
+  /* Borders */
+  --border:        var(--ink-200); /* → palette.divider */
+  --border-strong: var(--ink-300); /* → customColors.borderStrong (new): input hover */
+  --border-inverse: var(--ink-800);
+
+  /* Status: fill (icons, dots), text (on surface), soft (tinted bg) */
+  --success: var(--green-500);  --success-text: var(--green-600);  --success-soft: var(--green-50);
+  --error:   var(--red-500);    --error-text:   var(--red-600);    --error-soft:   var(--red-50);
+  --warning: var(--amber-500);  --warning-text: var(--amber-600);  --warning-soft: var(--amber-50);
+  --info:    var(--sky-500);    --info-text:    var(--sky-600);    --info-soft:    var(--sky-50);
+  --on-error: var(--ink-0); /* → palette.error.contrastText: text on a filled red button */
+
+  /* Chart chrome */
+  --chart-grid: var(--ink-200);
+  --chart-axis: var(--ink-300);
+  --chart-cross: var(--ink-400);
+}
+
+/* ---------- Mode: dark ---------- */
+:root[data-mode="dark"] {
+  color-scheme: dark;
+
+  --bg-canvas:  var(--ink-950);
+  --bg-surface: var(--ink-900);
+  --bg-subtle:  color-mix(in srgb, var(--ink-900), var(--ink-800)); /* halfway step */
+  --bg-hover:   var(--ink-800);
+  --bg-selected: var(--ink-800);
+  --bg-muted:   var(--ink-800);
+  --bg-inverse: var(--ink-50);
+  --bg-inverse-hover: var(--ink-200);
+
+  --text-primary:   var(--ink-50);
+  --text-secondary: var(--ink-300);
+  --text-muted:     var(--ink-400);
+  --text-faint:     var(--ink-500);
+  --text-inverse:   var(--ink-950);
+
+  --border:        var(--ink-800);
+  --border-strong: var(--ink-700);
+  --border-inverse: var(--ink-300);
+
+  --success: var(--green-400);  --success-text: var(--green-300);  --success-soft: var(--green-a14);
+  --error:   var(--red-400);    --error-text:   var(--red-300);    --error-soft:   var(--red-a14);
+  --warning: var(--amber-400);  --warning-text: var(--amber-300);  --warning-soft: var(--amber-a14);
+  --info:    var(--sky-400);    --info-text:    var(--sky-300);    --info-soft:    var(--sky-a14);
+  --on-error: var(--ink-950);
+
+  --chart-grid: var(--ink-800);
+  --chart-axis: var(--ink-700);
+  --chart-cross: var(--ink-500);
+}
+
+/* ---------- Theme: gold (the 10%) ---------- */
+:root,
+:root[data-theme="gold"] {
+  --primary:        var(--gold-500); /* → palette.primary.main */
+  --primary-hover:  var(--gold-600); /* → palette.primary.dark */
+  --on-primary:     var(--ink-950);  /* → palette.primary.contrastText */
+  --primary-text:   var(--gold-700); /* → customColors.primaryText (new): links, brand text */
+  --primary-soft:   var(--gold-50);  /* → customColors.primarySoft (new): tonal fills */
+  --primary-soft-text: var(--gold-800);
+  --primary-border: var(--gold-300);
+  --focus-ring:     var(--gold-600);
+
+  --viz-1: var(--viz-gold-light);    /* profit (always the brand) */
+  --viz-2: var(--viz-blue-light);    /* win */
+  --viz-3: var(--viz-magenta-light); /* loss */
+}
+:root[data-theme="gold"][data-mode="dark"] {
+  --primary-hover:  var(--gold-400);
+  --primary-text:   var(--gold-400);
+  --primary-soft:   var(--gold-a12);
+  --primary-soft-text: var(--gold-300);
+  --primary-border: var(--gold-700);
+  --focus-ring:     var(--gold-400);
+
+  --viz-1: var(--viz-gold-dark);
+  --viz-2: var(--viz-blue-dark);
+  --viz-3: var(--viz-magenta-dark);
+}
+
+/* ---------- Theme: blue ---------- */
+:root[data-theme="blue"] {
+  --primary:        var(--blue-600);
+  --primary-hover:  var(--blue-700);
+  --on-primary:     var(--ink-0);
+  --primary-text:   var(--blue-700);
+  --primary-soft:   var(--blue-50);
+  --primary-soft-text: var(--blue-800);
+  --primary-border: var(--blue-200);
+  --focus-ring:     var(--blue-600);
+
+  --viz-1: var(--viz-brandblue-light);
+  --viz-2: var(--viz-gold-light);
+  --viz-3: var(--viz-magenta-light);
+}
+:root[data-theme="blue"][data-mode="dark"] {
+  --primary:        var(--blue-500);
+  --primary-hover:  var(--blue-400);
+  --on-primary:     var(--ink-950);
+  --primary-text:   var(--blue-400);
+  --primary-soft:   var(--blue-a14);
+  --primary-soft-text: var(--blue-300);
+  --primary-border: var(--blue-800);
+  --focus-ring:     var(--blue-400);
+
+  --viz-1: var(--viz-brandblue-dark);
+  --viz-2: var(--viz-gold-dark);
+  --viz-3: var(--viz-magenta-dark);
+}

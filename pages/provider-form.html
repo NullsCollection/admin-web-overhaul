@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provider | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Provider new / edit  (Phase 4, the FORM TEMPLATE)
+  New:  provider-form.html          → src/pages/providers/new.tsx
+  Edit: provider-form.html?id=101   → src/pages/providers/[id]/edit.tsx
+  Form: src/views/pages/provider/ProviderForm.tsx (react-hook-form + yup)
+  Edit extras: ProviderKeyTable (generate / revoke / enable). ProviderUsersTable (reset password) moved to the
+  provider Users page (11a, option A).
+  Engine: core/form.js (+ core/list.js for the two tables). Page logic: pages/provider-form.js
+-->
+<body data-page="providers" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Header ============ -->
+        <a class="back-link" href="providers.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Provider management</a>
+        <div class="page-header">
+          <div>
+            <div class="page-header__title-row">
+              <h1 class="page-header__title" id="form-title">New provider</h1>
+              <span id="form-status-chip"></span>
+            </div>
+            <p class="page-header__sub" id="form-sub">Fill in the details, then create the provider.</p>
+          </div>
+        </div>
+
+        <!-- ============ Provider page tabs (edit only): Details · API keys · Users · Players (11a, option A) ============ -->
+        <div id="provider-tabs" hidden></div>
+
+        <!-- ============ Details: the form ============ -->
+        <div id="panel-details">
+          <form class="form-page" id="provider-form" novalidate>
+            <div class="alert alert--error form-summary" data-form-summary role="alert" hidden>
+              <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+              <div class="alert__body">
+                <div class="alert__title"></div>
+                <ul class="alert__text"></ul>
+              </div>
+            </div>
+
+            <div class="stack" data-form-body></div>
+
+            <div class="form-bar">
+              <div class="form-bar__status" data-form-status aria-live="polite"></div>
+              <div class="form-bar__actions">
+                <button type="button" class="btn btn--outlined" data-form-cancel>Cancel</button>
+                <button type="submit" class="btn btn--contained" data-form-submit id="form-submit">Create provider</button>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <!-- ============ API keys (edit) → ProviderKeyTable ============ -->
+        <div id="panel-keys" hidden>
+          <section class="card list-card form-width" id="keys-card" aria-labelledby="keys-title">
+            <header class="card__header card__header--divided">
+              <div class="card__heading">
+                <h2 class="card__title" id="keys-title">API keys</h2>
+                <p class="card__subheader">Generate a key for this provider, or revoke one that's no longer used.</p>
+              </div>
+              <div class="card__actions">
+                <button type="button" class="btn btn--contained btn--sm" id="generate-key">
+                  <iconify-icon icon="tabler:plus"></iconify-icon>Generate key
+                </button>
+              </div>
+            </header>
+            <div class="list-body"></div>
+            <div data-list-pager></div>
+          </section>
+        </div>
+
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/core/form.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/users.js"></script>
+  <script src="../assets/js/domain/providers.js"></script>
+  <script src="../assets/js/pages/provider-form.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

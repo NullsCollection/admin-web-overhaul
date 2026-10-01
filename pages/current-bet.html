@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Current bet | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Current bet  (Phase 10, pulled into Phase 8 by the user)
+  Route:  /lotto/current-bet/[id]   (current-bet.html?id=8422)
+  Source: src/views/pages/lotto/current-bet/useCurrentBetTable.tsx (+ CurrentBetDetails detail panel)
+  Engine: core/list.js   Logic: pages/current-bet.js   Mock: mock/rounds.js (currentBet, currentBetDetails)
+-->
+<body data-page="lotto-rounds" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title, live count, main action (canCreate) ============ -->
+        <a class="back-link" href="rounds.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Round management</a>
+        <div class="page-header">
+          <div>
+            <div class="page-header__title-row">
+              <h1 class="page-header__title">Current bet</h1>
+              <span id="round-chip"></span>
+            </div>
+            <p class="page-header__sub" id="round-sub"></p>
+          </div>
+        </div>
+
+        <!-- ============ List card: toolbar / table / pagination ============ -->
+        <section class="card list-card" id="bets-card" aria-labelledby="bets-title">
+          <header class="card__header card__header--divided">
+            <div class="card__heading">
+              <h2 class="card__title" id="bets-title">Current bet by provider</h2>
+              <p class="card__subheader">Max bet per bet type in this round, by provider. Open a provider to see the numbers that hit their limit.</p>
+            </div>
+          </header>
+          <div class="list-toolbar">
+            <!-- Search (GenericFilters "search-text") -->
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by provider" aria-label="Search providers">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/domain/tickets.js"></script>
+  <script src="../assets/js/pages/current-bet.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

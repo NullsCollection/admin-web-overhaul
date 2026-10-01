@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yeekee round | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Yeekee round result  (Phase 8e, detail template)
+  Route:  /lotto/yeekees/[id]   (yeekee-round.html?id=9650)
+  Source: src/pages/lotto/yeekees/[id]/index.tsx → views/pages/lotto/yeekee/results/
+            YeekeeResult (yeekee games) + YeekeeResultTable, YeekeeMalta (encrypt_game)
+  Data:   useGetYeekeeRoundDetail(id) + useGetYeekeeRoundResult(id, { page, pageSize })
+  Logic:  pages/yeekee-round.js   Mock: mock/rounds.js (yeekeeRounds, yeekeeShots)
+-->
+<body data-page="lotto-yeekees" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div id="y-root"></div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/yeekee-round.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round schedules | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Round schedules  (Phase 8a, list template)
+  Source: src/pages/lotto/round-schedules/index.tsx → src/views/pages/lotto/round-schedule/RoundScheduleTable.tsx
+  Data:   useGetRoundSchedules({ page, pageSize, search, orderedBy })
+  Engine: core/list.js   Page config: pages/round-schedules.js   Mock: mock/rounds.js (+ mock/lotto.js)
+-->
+<body data-page="lotto-round-schedules" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title, live count, main action (canCreate) ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Round schedules</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+          <a class="btn btn--contained" href="round-schedule-form.html">
+            <iconify-icon icon="tabler:plus"></iconify-icon>New schedule
+          </a>
+        </div>
+
+        <!-- ============ List card: toolbar / table / pagination ============ -->
+        <section class="card list-card" id="schedules-card" aria-label="Round schedules">
+          <div class="list-toolbar">
+            <!-- Search (GenericFilters "search-text") -->
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by name, game or ID" aria-label="Search schedules">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/cron.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/round-schedules.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

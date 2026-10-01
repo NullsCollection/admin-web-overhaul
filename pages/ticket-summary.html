@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket summary | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/pages/dashboard.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Ticket summary  (Phase 10a)
+  Source: src/pages/lotto/bet-tickets/summary/index.tsx → views/pages/bet-ticket/summary/index.tsx
+          (FilterTextField + dashboard/BetPerformance)
+  Data:   useGetBetTicketSummary({ filter: { start_date, end_date, id, search_user, provider_ids[], lotto_game_ids[], status } })
+          → { betPerformance, betTicketCountOverview, newPlayerCount }
+  Logic:  pages/ticket-summary.js   Reuses the dashboard's overview / tickets / cancellations styles (pages/dashboard.css)
+-->
+<body data-page="ticket-summary" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Ticket summary</h1>
+            <p class="page-header__sub" id="range-summary" aria-live="polite">Loading…</p>
+          </div>
+        </div>
+
+        <!-- ============ Filters in the open (same as the ticket list), applied as they change ============ -->
+        <section class="card" style="margin-bottom:24px" aria-label="Filters">
+          <div class="list-toolbar list-toolbar--wrap" id="filters" style="border-bottom:0">
+            <!-- Search by: Ticket ID / User ID or username (filter fields "id", "search_user") -->
+            <div class="list-toolbar__grow">
+              <div class="field__control search-scope">
+                <span class="search-scope__select">
+                  <select id="f-scope" aria-label="Search by">
+                    <option value="id">Ticket ID</option>
+                    <option value="user">User ID or username</option>
+                  </select>
+                  <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+                </span>
+                <input type="search" id="f-search" placeholder="Search ticket ID" aria-label="Search">
+              </div>
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">From</span>
+              <input type="datetime-local" id="f-start" value="2026-09-24T00:00" aria-label="From date and time">
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">To</span>
+              <input type="datetime-local" id="f-end" value="2026-09-24T23:59" aria-label="To date and time">
+            </div>
+            <div class="field" id="f-providers">
+              <button type="button" class="field__control multiselect" data-menu="providers-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Providers">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu form-menu" id="providers-menu" role="menu" hidden><div data-options></div></div>
+            </div>
+            <div class="field" id="f-games">
+              <button type="button" class="field__control multiselect" data-menu="games-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Lotto games">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu form-menu" id="games-menu" role="menu" hidden><div data-options></div></div>
+            </div>
+            <div class="field__control field__control--select">
+              <select id="f-status" aria-label="Status">
+                <option value="all">All statuses</option>
+                <option value="waiting">Waiting</option>
+                <option value="approved">Waiting for result</option>
+                <option value="rejected">Rejected</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="settled">Resulted</option>
+              </select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" id="f-clear" hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <div class="alert alert--error" id="sum-error" role="alert" hidden style="margin-bottom:24px">
+          <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+          <div class="alert__body">
+            <div class="alert__title">Couldn't load the summary</div>
+            <div class="alert__text">The server didn't respond. Your filters are kept.</div>
+          </div>
+          <div class="alert__actions"><button type="button" class="btn btn--outlined btn--sm" id="sum-retry"><iconify-icon icon="tabler:refresh"></iconify-icon>Try again</button></div>
+        </div>
+
+        <div class="stack" id="sum" aria-live="polite">
+          <!-- BetPerformance "Overview": profit, wagers, settled, not settled, wins, bonus, ROI, new players -->
+          <section class="card overview" aria-label="Overview">
+            <div class="overview__hero" id="ov-hero"></div>
+            <div class="overview__grid" id="ov-stats"></div>
+          </section>
+
+          <div class="grid">
+            <!-- betTicketCountOverview -->
+            <section class="card col-lg-5" aria-labelledby="tickets-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="tickets-title">Tickets</h2>
+                  <p class="card__subheader">Share of all tickets that match</p>
+                </div>
+              </header>
+              <div class="card__content" id="tickets-body"></div>
+            </section>
+
+            <!-- BetPerformance "Cancellations": amount cards → one table -->
+            <section class="card col-lg-7" aria-labelledby="cancel-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="cancel-title">Cancellations</h2>
+                  <p class="card__subheader">Tickets and amounts, by reason</p>
+                </div>
+              </header>
+              <div class="card__content card__content--flush" id="cancel-body"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/tickets.js"></script>
+  <script src="../assets/js/pages/ticket-summary.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

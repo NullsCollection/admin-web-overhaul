@@ -1,0 +1,685 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Design system | Admin prototype</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/design-system.css">
+  <script src="assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  LIVING STYLE GUIDE. Every component used by a page must appear here with its MUI mapping.
+  Switch theme/mode with the toolbar (bottom right); everything below re-colors live.
+-->
+<body data-base="">
+  <div class="ds">
+
+    <!-- ============ Table of contents ============ -->
+    <nav class="ds__toc" aria-label="Sections">
+      <a class="ds__back btn btn--text btn--sm" href="index.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>All pages</a>
+      <div class="ds__toc-title">Foundations</div>
+      <a href="#principles">Principles</a>
+      <a href="#color">Color</a>
+      <a href="#type">Typography</a>
+      <a href="#space">Spacing &amp; radius</a>
+      <div class="ds__toc-title">Components</div>
+      <a href="#buttons">Buttons</a>
+      <a href="#chips">Chips, badges, avatars</a>
+      <a href="#fields">Fields</a>
+      <a href="#cards">Cards &amp; stats</a>
+      <a href="#tables">Tables</a>
+      <a href="#dialogs">Dialogs &amp; pagination</a>
+      <a href="#detail">Detail components</a>
+      <a href="#menus">Menus &amp; toggles</a>
+      <a href="#feedback">Feedback</a>
+      <a href="#charts">Charts</a>
+      <a href="#nav">Navigation</a>
+      <a href="#patterns">Patterns</a>
+      <div class="ds__toc-title">Port</div>
+      <a href="#mui">MUI mapping</a>
+    </nav>
+
+    <main class="ds__main">
+
+      <!-- ============ Intro + principles ============ -->
+      <section class="ds__intro" id="principles">
+        <h1 class="t-h2">Design system</h1>
+        <p>Tokens and components for the admin redesign. Built to map 1:1 onto MUI v5, so each piece here
+          has a known home in <span class="ds-code">src/@core/theme</span>. Two themes (gold, blue), two modes
+          (light, dark).</p>
+
+        <div class="ds-principles">
+          <div class="ds-principle">
+            <h3 class="t-h6">60 / 30 / 10</h3>
+            <p>60% white and background, 30% ink for text and labels.
+              10% brand: the active nav pill, main buttons, badges, and chart accents.</p>
+          </div>
+          <div class="ds-principle">
+            <h3 class="t-h6">Borders, not shadows</h3>
+            <p>No shadows anywhere. Depth comes from a 1px border and the canvas vs. surface step. Focus uses
+              an outline.</p>
+          </div>
+          <div class="ds-principle">
+            <h3 class="t-h6">Tokens only</h3>
+            <p>Components use semantic roles like <span class="ds-code">--text-muted</span>. Hex values live
+              in one file, so a theme swap is one attribute.</p>
+          </div>
+          <div class="ds-principle">
+            <h3 class="t-h6">One bold moment</h3>
+            <p>Each screen gets one loud element (on the dashboard, the brand-colored profit tile). Everything else stays
+              quiet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Color ============ -->
+      <section class="ds-section" id="color">
+        <h2 class="t-h4">Color</h2>
+        <p class="ds-lead">Toggle theme and mode in the toolbar. Swatches that use semantic roles update live.</p>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">The 60 / 30 / 10 split</div></div>
+          <div class="ratio" aria-hidden="true">
+            <div class="ratio__60">60 background</div>
+            <div class="ratio__30">30 ink</div>
+            <div class="ratio__10">10</div>
+          </div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Ink (neutral)</div>
+            <span class="ds-code">tokens/primitives.css</span></div>
+          <div class="swatches" id="sw-ink"></div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Gold</div>
+            <span class="ds-code">500 = #FFAD1B brand · fill takes ink text</span></div>
+          <div class="swatches" id="sw-gold"></div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Blue</div>
+            <span class="ds-code">500 = #369DED brand · fills use 600 + white</span></div>
+          <div class="swatches" id="sw-blue"></div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Semantic roles (live)</div>
+            <span class="ds-code">tokens/semantic.css</span></div>
+          <div class="card"><div class="table-wrap"><table class="table table--compact" id="tbl-roles"></table></div></div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Status and chart series (live)</div></div>
+          <div class="swatches" id="sw-status"></div>
+        </div>
+      </section>
+
+      <!-- ============ Typography ============ -->
+      <section class="ds-section" id="type">
+        <h2 class="t-h4">Typography</h2>
+        <p class="ds-lead">IBM Plex Sans with IBM Plex Sans Thai, same metrics in both scripts. Tabular figures for
+          money. Class names match MUI variants.</p>
+        <div class="card"><div class="card__content" id="type-rows"></div></div>
+      </section>
+
+      <!-- ============ Spacing & radius ============ -->
+      <section class="ds-section" id="space">
+        <h2 class="t-h4">Spacing &amp; radius</h2>
+        <p class="ds-lead">4px grid. <span class="ds-code">--space-4</span> = <span class="ds-code">theme.spacing(4)</span> = 16px.
+          Cards 12px radius, controls 8px, small controls 6px.</p>
+        <div class="grid">
+          <div class="col-md-6 ds-demo ds-demo--col" id="space-rows"></div>
+          <div class="col-md-6 ds-demo">
+            <div class="stack" style="gap:6px;align-items:center"><div class="radius-box" style="border-radius:var(--radius-xs)"></div><span class="t-caption t-muted">xs 4</span></div>
+            <div class="stack" style="gap:6px;align-items:center"><div class="radius-box" style="border-radius:var(--radius-sm)"></div><span class="t-caption t-muted">sm 6</span></div>
+            <div class="stack" style="gap:6px;align-items:center"><div class="radius-box" style="border-radius:var(--radius-md)"></div><span class="t-caption t-muted">md 8 · shape</span></div>
+            <div class="stack" style="gap:6px;align-items:center"><div class="radius-box" style="border-radius:var(--radius-lg)"></div><span class="t-caption t-muted">lg 12 · card</span></div>
+            <div class="stack" style="gap:6px;align-items:center"><div class="radius-box" style="border-radius:var(--radius-pill)"></div><span class="t-caption t-muted">pill</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Buttons ============ -->
+      <section class="ds-section" id="buttons">
+        <h2 class="t-h4">Buttons</h2>
+        <p class="ds-lead">Filled buttons use the brand color (MUI default <span class="ds-code">color="primary"</span>).
+          Use the ink fill only for a second solid action next to a brand one.</p>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Variants</div>
+            <span class="ds-code">&lt;Button variant="contained|outlined|text|tonal" color="primary|ink"&gt;</span></div>
+          <div class="ds-demo ds-demo--col">
+            <div class="ds-row"><span class="ds-row__label">Primary</span>
+              <button class="btn btn--contained"><iconify-icon icon="tabler:plus"></iconify-icon>Add provider</button>
+              <button class="btn btn--outlined btn--primary">Preview</button>
+              <button class="btn btn--tonal btn--primary">Duplicate</button>
+              <button class="btn btn--text btn--primary">Learn more</button>
+            </div>
+            <div class="ds-row"><span class="ds-row__label">Neutral</span>
+              <button class="btn btn--contained btn--ink">Save draft</button>
+              <button class="btn btn--outlined">Export</button>
+              <button class="btn btn--tonal">Reset</button>
+              <button class="btn btn--text">Cancel</button>
+            </div>
+            <div class="ds-row"><span class="ds-row__label">Error</span>
+              <button class="btn btn--contained btn--error">Delete provider</button>
+              <button class="btn btn--outlined btn--error"><iconify-icon icon="tabler:trash"></iconify-icon>Delete</button>
+              <button class="btn btn--text btn--error">Remove</button>
+            </div>
+            <div class="ds-row"><span class="ds-row__label">Disabled</span>
+              <button class="btn btn--contained" disabled>Apply</button>
+              <button class="btn btn--outlined" disabled>Export</button>
+              <button class="btn btn--text" disabled>Cancel</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Sizes</div>
+            <span class="ds-code">size="small" 32 · "medium" 40 · "large" 48</span></div>
+          <div class="ds-demo">
+            <button class="btn btn--contained btn--sm">Small</button>
+            <button class="btn btn--contained">Medium</button>
+            <button class="btn btn--contained btn--lg">Large</button>
+          </div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Icon buttons</div>
+            <span class="ds-code">&lt;IconButton aria-label="…"&gt;</span></div>
+          <div class="ds-demo">
+            <button class="icon-btn" aria-label="Edit"><iconify-icon icon="tabler:pencil"></iconify-icon></button>
+            <button class="icon-btn" aria-label="View"><iconify-icon icon="tabler:eye"></iconify-icon></button>
+            <button class="icon-btn" aria-label="More"><iconify-icon icon="tabler:dots-vertical"></iconify-icon></button>
+            <button class="icon-btn icon-btn--outlined" aria-label="Refresh"><iconify-icon icon="tabler:refresh"></iconify-icon></button>
+            <button class="icon-btn icon-btn--sm" aria-label="Close"><iconify-icon icon="tabler:x"></iconify-icon></button>
+            <button class="icon-btn icon-btn--sm icon-btn--danger" aria-label="Delete" title="Delete"><iconify-icon icon="tabler:trash"></iconify-icon></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Chips / badges / avatars ============ -->
+      <section class="ds-section" id="chips">
+        <h2 class="t-h4">Chips, badges, avatars</h2>
+        <p class="ds-lead">Status always pairs color with a word (and a dot), never color alone.</p>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Status chips</div>
+            <span class="ds-code">&lt;CustomChip skin="light" size="small" color="…"&gt;</span></div>
+          <div class="ds-demo">
+            <span class="chip chip--success"><span class="chip__dot"></span>Active</span>
+            <span class="chip chip--warning"><span class="chip__dot"></span>Pending</span>
+            <span class="chip chip--error"><span class="chip__dot"></span>Cancelled</span>
+            <span class="chip chip--info"><span class="chip__dot"></span>Scheduled</span>
+            <span class="chip"><span class="chip__dot"></span>Inactive</span>
+            <span class="chip chip--primary">Featured</span>
+            <span class="chip chip--outlined">Outlined</span>
+            <span class="chip chip--md chip--success"><iconify-icon icon="tabler:check"></iconify-icon>Medium</span>
+            <span class="code">GD01</span>
+            <span class="severity severity--1"><span class="severity__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>At risk</span>
+            <span class="severity severity--2"><span class="severity__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Warning</span>
+            <span class="severity severity--3"><span class="severity__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Critical</span>
+            <span class="severity severity--4"><span class="severity__bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Severe</span>
+            <span class="waiting is-late"><iconify-icon icon="tabler:alert-triangle"></iconify-icon>1d 4h</span>
+          </div>
+        </div>
+
+        <div class="ds-block">
+          <div class="ds-block__head"><div class="ds-block__title">Badges &amp; avatars</div>
+            <span class="ds-code">nav badgeContent · &lt;CustomAvatar skin="light" variant="rounded"&gt;</span></div>
+          <div class="ds-demo">
+            <span class="badge">12</span>
+            <span class="badge badge--neutral">3</span>
+            <span class="badge badge--dot" aria-label="New"></span>
+            <span class="avatar avatar--sm">SA</span>
+            <span class="avatar">SA</span>
+            <span class="avatar avatar--lg avatar--inverse">SA</span>
+            <span class="avatar avatar--square"><iconify-icon icon="tabler:cash"></iconify-icon></span>
+            <span class="avatar avatar--square avatar--primary"><iconify-icon icon="tabler:coins"></iconify-icon></span>
+            <span class="avatar avatar--square avatar--success"><iconify-icon icon="tabler:circle-check"></iconify-icon></span>
+            <span class="avatar avatar--square avatar--error"><iconify-icon icon="tabler:alert-triangle"></iconify-icon></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Fields ============ -->
+      <section class="ds-section" id="fields">
+        <h2 class="t-h4">Fields</h2>
+        <p class="ds-lead">Label above the box, like <span class="ds-code">CustomTextField</span>. The 40px box
+          (MUI size="small") is the default everywhere. The focus ring is a 2px outline.</p>
+        <div class="ds-demo ds-demo--col">
+          <div class="grid" style="gap:16px">
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-name">Provider name<span class="req">*</span></label>
+              <div class="field__control"><input id="ds-name" placeholder="e.g. Golden Dragon"></div>
+              <div class="field__helper">Shown to players.</div>
+            </div>
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-search">Search</label>
+              <div class="field__control"><iconify-icon icon="tabler:search"></iconify-icon><input id="ds-search" type="search" placeholder="Search tickets"></div>
+            </div>
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-select">Currency</label>
+              <div class="field__control field__control--select">
+                <select id="ds-select"><option>THB</option><option>USD</option></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+            <div class="field field--error col-md-4">
+              <label class="field__label" for="ds-code">Code</label>
+              <div class="field__control"><input id="ds-code" value="GD 01" aria-invalid="true" aria-describedby="ds-code-h"></div>
+              <div class="field__helper" id="ds-code-h">Use letters and numbers only, no spaces.</div>
+            </div>
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-date">Start</label>
+              <div class="field__control"><input id="ds-date" type="datetime-local" value="2026-09-11T00:00"></div>
+            </div>
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-rate">Number (payout rate)</label>
+              <div class="field__control field__control--number"><input id="ds-rate" inputmode="decimal" value="900" placeholder="0.00"></div>
+            </div>
+            <div class="field col-md-4">
+              <label class="field__label" for="ds-dis">Disabled</label>
+              <div class="field__control"><input id="ds-dis" value="Locked value" disabled></div>
+            </div>
+            <div class="field col-md-6" id="ds-multi">
+              <span class="field__label" id="ds-multi-label">Providers (multi-select)</span>
+              <button type="button" class="field__control multiselect" data-menu="ds-multi-menu" aria-haspopup="menu" aria-expanded="false" aria-labelledby="ds-multi-label">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu" id="ds-multi-menu" role="menu" hidden style="position:absolute;top:calc(100% + 4px);left:0;width:100%">
+                <div data-options></div>
+              </div>
+            </div>
+            <div class="field col-md-6">
+              <span class="field__label">Checkbox <span class="ds-code">&lt;FormControlLabel control={&lt;Checkbox/&gt;}&gt;</span></span>
+              <div class="ds-row" style="height:40px">
+                <label class="checkbox"><input type="checkbox" checked><span class="check"><iconify-icon icon="tabler:check"></iconify-icon></span>Remember me</label>
+                <label class="checkbox"><input type="checkbox"><span class="check"><iconify-icon icon="tabler:check"></iconify-icon></span>Unchecked</label>
+              </div>
+            </div>
+            <div class="field col-md-6">
+              <label class="field__label" for="ds-pw">Password (end adornment)</label>
+              <div class="field__control field__control--adorned">
+                <input id="ds-pw" type="password" value="secret123">
+                <button type="button" class="icon-btn icon-btn--sm field__adornment" data-toggle-password aria-label="Show password" aria-pressed="false"><iconify-icon icon="tabler:eye"></iconify-icon></button>
+              </div>
+            </div>
+            <div class="field col-md-6">
+              <span class="field__label">Switch <span class="ds-code">&lt;FormControlLabel control={&lt;Switch/&gt;}&gt;</span></span>
+              <div class="stack" style="gap:12px">
+                <label class="switch"><input type="checkbox" role="switch" checked><span class="switch__track"><span class="switch__thumb"></span></span><span><span class="switch__label">Enabled</span></span></label>
+                <label class="switch"><input type="checkbox" role="switch" disabled><span class="switch__track"><span class="switch__thumb"></span></span><span><span class="switch__label">Owner provider</span><span class="switch__helper">Disabled, with helper text.</span></span></label>
+              </div>
+            </div>
+            <div class="field col-md-6">
+              <span class="field__label">Tabs <span class="ds-code">&lt;Tabs&gt;</span></span>
+              <div class="tabs" role="tablist" aria-label="Demo tabs">
+                <button type="button" class="tabs__tab" role="tab" aria-selected="true" aria-controls="ds-tab-a"><iconify-icon icon="tabler:file-description"></iconify-icon>Details</button>
+                <button type="button" class="tabs__tab" role="tab" aria-selected="false" aria-controls="ds-tab-b" tabindex="-1"><iconify-icon icon="tabler:key"></iconify-icon>API keys <span class="badge badge--neutral">2</span></button>
+              </div>
+              <div id="ds-tab-a" role="tabpanel" class="t-body2 t-muted" style="padding-top:8px">Details panel</div>
+              <div id="ds-tab-b" role="tabpanel" class="t-body2 t-muted" style="padding-top:8px" hidden>API keys panel</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Cards & stats ============ -->
+      <section class="ds-section" id="cards">
+        <h2 class="t-h4">Cards &amp; stats</h2>
+        <p class="ds-lead">Flat card: 1px border, 12px radius, no top stripe, elevation 0. Header 20/24px padding, content 24px.</p>
+        <div class="grid">
+          <div class="card col-md-6">
+            <header class="card__header">
+              <div class="card__heading"><h3 class="card__title">Card title</h3><p class="card__subheader">Subheader in muted text</p></div>
+              <div class="card__actions"><button class="icon-btn icon-btn--sm" aria-label="More"><iconify-icon icon="tabler:dots-vertical"></iconify-icon></button></div>
+            </header>
+            <div class="card__content t-body2 t-secondary">Card content. <span class="ds-code">&lt;Card&gt;&lt;CardHeader action={…}/&gt;&lt;CardContent/&gt;&lt;/Card&gt;</span></div>
+            <div class="card__footer"><span>Footer note</span><button class="btn btn--text btn--sm">View all</button></div>
+          </div>
+          <div class="card col-md-6">
+            <div class="card__content stack" style="gap:20px">
+              <div class="stat">
+                <div class="stat__label"><iconify-icon icon="tabler:cash"></iconify-icon>Wagers</div>
+                <div class="stat__value">฿12,979,515<span class="stat__dec">.88</span></div>
+                <div class="stat__meta">50,114 tickets</div>
+              </div>
+              <div class="stack" style="gap:8px">
+                <div class="ds-row" style="justify-content:space-between"><span class="t-body2">Meter (primary, then ink)</span><span class="t-body2 t-muted t-num">64%</span></div>
+                <div class="meter"><div class="meter__fill" style="width:64%"></div></div>
+                <div class="meter" style="--meter-fill: var(--text-primary)"><div class="meter__fill" style="width:32%"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Tables ============ -->
+      <section class="ds-section" id="tables">
+        <h2 class="t-h4">Tables</h2>
+        <p class="ds-lead">Header row on <span class="ds-code">--bg-subtle</span>, uppercase 11px muted labels, row hover
+          <span class="ds-code">--bg-hover</span>. Numbers right-aligned, tabular. DataGrid gets the same look.</p>
+        <div class="card">
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th aria-sort="ascending"><button class="th-sort">Provider<iconify-icon icon="tabler:arrow-up"></iconify-icon></button></th><th aria-sort="none"><button class="th-sort">Status<iconify-icon icon="tabler:arrow-up"></iconify-icon></button></th><th class="is-num">Tickets</th><th class="is-num">Profit</th><th class="is-num"><span class="sr-only">Actions</span></th></tr></thead>
+              <tbody>
+                <tr><td class="is-strong">Golden Dragon (GD01)</td><td><span class="chip chip--success"><span class="chip__dot"></span>Active</span></td><td class="is-num">12,480</td><td class="is-num">฿842,110.00</td><td class="is-num"><button class="icon-btn icon-btn--sm" aria-label="More for Golden Dragon"><iconify-icon icon="tabler:dots-vertical"></iconify-icon></button></td></tr>
+                <tr><td class="is-strong">Siam 88 (S88)</td><td><span class="chip chip--warning"><span class="chip__dot"></span>Pending</span></td><td class="is-num">8,902</td><td class="is-num">฿511,406.50</td><td class="is-num"><button class="icon-btn icon-btn--sm" aria-label="More for Siam 88"><iconify-icon icon="tabler:dots-vertical"></iconify-icon></button></td></tr>
+                <tr><td class="is-strong">North Star (NS02)</td><td><span class="chip"><span class="chip__dot"></span>Inactive</span></td><td class="is-num">0</td><td class="is-num is-negative">−฿4,210.00</td><td class="is-num"><button class="icon-btn icon-btn--sm" aria-label="More for North Star"><iconify-icon icon="tabler:dots-vertical"></iconify-icon></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-section" id="dialogs">
+        <h2 class="t-h4">Dialogs &amp; pagination</h2>
+        <p class="ds-lead">Dialogs are bordered panels on a scrim (no shadow). Destructive confirms focus Cancel first.
+          Pagination is the DataGrid footer: rows per page, range, previous/next.</p>
+        <div class="grid">
+          <div class="col-md-6 ds-demo ds-demo--canvas" style="justify-content:center">
+            <div class="dialog" role="presentation">
+              <div class="dialog__header"><span class="avatar avatar--square avatar--error"><iconify-icon icon="tabler:trash"></iconify-icon></span>
+                <div><div class="dialog__title">Delete this provider?</div><div class="dialog__text"><strong>Golden Dragon (GD01)</strong> and its settings will be removed. This can't be undone.</div></div></div>
+              <div class="dialog__actions"><button class="btn btn--outlined">Cancel</button><button class="btn btn--contained btn--error">Delete provider</button></div>
+            </div>
+          </div>
+          <div class="col-md-6 stack" style="gap:12px">
+            <div class="ds-block__head" style="margin:0"><div class="ds-block__title">Pagination</div><span class="ds-code">&lt;TablePagination&gt;</span></div>
+            <div class="card"><div class="pagination" style="border-top:0">
+              <div class="pagination__size"><span>Rows per page</span><div class="field__control field__control--sm field__control--select"><select aria-label="Rows per page"><option>10</option><option>25</option></select><iconify-icon icon="tabler:chevron-down"></iconify-icon></div></div>
+              <span class="pagination__range">1–10 of 37</span>
+              <div class="pagination__nav"><button class="icon-btn icon-btn--sm" disabled aria-label="Previous page"><iconify-icon icon="tabler:chevron-left"></iconify-icon></button><button class="icon-btn icon-btn--sm" aria-label="Next page"><iconify-icon icon="tabler:chevron-right"></iconify-icon></button></div>
+            </div></div>
+            <p class="t-body2 t-muted">DS.dialog.open() in <span class="ds-code">core/dialog.js</span>. Pagination is rendered by <span class="ds-code">core/list.js</span>.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ds-section" id="detail">
+        <h2 class="t-h4">Detail components</h2>
+        <p class="ds-lead">Key–value facts, event timeline, code block, lotto bet number. First used on
+          <a href="pages/ticket-detail.html">Ticket details</a>.</p>
+        <div class="grid">
+          <div class="card col-md-6"><div class="card__content">
+            <div class="ds-block__head"><div class="ds-block__title">Key–value</div><span class="ds-code">.kv</span></div>
+            <dl class="kv">
+              <div class="kv__item"><dt>Player</dt><dd>somchai88<span class="t-muted t-num">#10293</span></dd></div>
+              <div class="kv__item"><dt>Status</dt><dd><span class="chip chip--success"><span class="chip__dot"></span>Won</span></dd></div>
+              <div class="kv__item"><dt>Round ID</dt><dd><a href="#detail">7781</a></dd></div>
+              <div class="kv__item"><dt>Bet number</dt><dd><span class="bet-number">583</span></dd></div>
+            </dl>
+          </div></div>
+          <div class="card col-md-6"><div class="card__content">
+            <div class="ds-block__head"><div class="ds-block__title">Timeline</div><span class="ds-code">@mui/lab Timeline</span></div>
+            <ol class="timeline">
+              <li class="timeline__item"><span class="timeline__dot timeline__dot--error"><iconify-icon icon="tabler:user"></iconify-icon></span>
+                <div class="timeline__body"><div class="timeline__head"><div class="timeline__title is-danger">Cancel bet<span class="timeline__actor">by Player</span><span class="chip chip--warning"><span class="chip__dot"></span>Processing</span></div></div>
+                <div class="timeline__meta"><span>Created 16 Sep 2026, 15:02:40</span></div></div></li>
+              <li class="timeline__item"><span class="timeline__dot"><iconify-icon icon="tabler:user"></iconify-icon></span>
+                <div class="timeline__body"><div class="timeline__head"><div class="timeline__title">Place bet<span class="timeline__actor">by Player</span><span class="chip chip--success"><span class="chip__dot"></span>Done</span></div></div>
+                <div class="timeline__meta"><span>Created 16 Sep 2026, 14:22:08</span><span class="is-warning"><iconify-icon icon="tabler:alert-triangle"></iconify-icon>Retried 2 times</span></div></div></li>
+            </ol>
+          </div></div>
+          <div class="col-12">
+            <div class="ds-block__head"><div class="ds-block__title">Code block</div><span class="ds-code">&lt;Box component="pre"&gt; + copy</span></div>
+            <pre class="code-block">curl -X POST 'https://api.goldendragon.com/wallet/settle' \
+  -H 'Content-Type: application/json' \
+  -d '{ "ticketId": 482193, "amount": 97660.00 }'<span class="code-block__copy"><button type="button" class="icon-btn icon-btn--sm" data-copy="curl …" data-copy-label="Request copied" aria-label="Copy request" title="Copy"><iconify-icon icon="tabler:copy"></iconify-icon></button></span></pre>
+          </div>
+          <div class="card col-md-6"><div class="card__content">
+            <div class="ds-block__head"><div class="ds-block__title">Worked sum</div><span class="ds-code">.calc</span></div>
+            <dl class="calc">
+              <div class="calc__row"><dt><span class="calc__op" aria-hidden="true"></span>Sum of all shot numbers<small>99 numbers</small></dt><dd>5,390,986</dd></div>
+              <div class="calc__row"><dt><span class="calc__op" aria-hidden="true">−</span>Row 16 number<small>by kittisak.w</small></dt><dd>99,979</dd></div>
+              <div class="calc__row calc__row--total"><dt><span class="calc__op" aria-hidden="true">=</span>Yeekee result</dt><dd>5,291,007</dd></div>
+            </dl>
+            <p class="t-body2 t-muted" style="margin-top:12px">First used on <a href="pages/yeekee-round.html">Yeekee round result</a>. Replaces the app's 4 colored tiles.</p>
+          </div></div>
+          <div class="card col-md-6"><div class="card__content stack" style="gap:12px">
+            <div class="ds-block__head"><div class="ds-block__title">Wrapping code block + inline tags</div><span class="ds-code">.code-block--wrap · .chip-row--inline</span></div>
+            <pre class="code-block code-block--wrap">e08693935d5e0b371ce04ba9a7243b7ff9efd0e0b36d94f1055b155759c601fc<span class="code-block__copy"><button type="button" class="icon-btn icon-btn--sm" data-copy="e086…" data-copy-label="Signature copied" aria-label="Copy signature" title="Copy"><iconify-icon icon="tabler:copy"></iconify-icon></button></span></pre>
+            <div>kittisak.w<span class="chip-row chip-row--inline"><span class="chip chip--info">Row 16</span><span class="chip chip--success"><iconify-icon icon="tabler:gift"></iconify-icon>Bonus</span></span></div>
+          </div></div>
+          <div class="card col-12"><div class="card__content">
+            <div class="ds-block__head"><div class="ds-block__title">Ticket status chips (proposed colors)</div><span class="ds-code">domain/tickets.js → TicketStatus</span></div>
+            <div class="ds-row">
+              <span class="chip chip--warning"><span class="chip__dot"></span>Waiting</span>
+              <span class="chip chip--warning"><span class="chip__dot"></span>Waiting for result</span>
+              <span class="chip chip--info"><span class="chip__dot"></span>Resulted</span>
+              <span class="chip chip--success"><span class="chip__dot"></span>Won</span>
+              <span class="chip"><span class="chip__dot"></span>Lost</span>
+              <span class="chip chip--error"><span class="chip__dot"></span>Rejected</span>
+              <span class="chip chip--error"><span class="chip__dot"></span>Bet failed</span>
+              <span class="chip"><span class="chip__dot"></span>Cancelled</span>
+              <span class="chip"><span class="chip__dot"></span>Round cancelled</span>
+              <span class="chip"><span class="chip__dot"></span>Cancelled by user</span>
+            </div>
+            <p class="t-body2 t-muted" style="margin-top:12px">Today the app paints every cancellation and "lose" red. Proposal: red only for real failures (rejected, bet failed); lost and cancelled are neutral.</p>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ============ Menus & toggles ============ -->
+      <section class="ds-section" id="menus">
+        <h2 class="t-h4">Menus &amp; toggles</h2>
+        <div class="grid">
+          <div class="col-md-6">
+            <div class="ds-block__head"><div class="ds-block__title">Menu</div><span class="ds-code">&lt;Menu&gt; (bordered, no shadow)</span></div>
+            <div class="ds-demo ds-demo--canvas">
+              <div class="menu" role="menu">
+                <div class="menu__header"><span class="avatar avatar--inverse">SA</span><div><div class="t-subtitle2">superadmin</div><div class="t-caption t-muted">Super admin</div></div></div>
+                <div class="menu__divider"></div>
+                <button class="menu__item" role="menuitem"><iconify-icon icon="tabler:key"></iconify-icon>Change password</button>
+                <button class="menu__item" role="menuitemradio" aria-checked="true"><iconify-icon icon="tabler:check"></iconify-icon>Selected item<span class="menu__trail">⌘K</span></button>
+                <div class="menu__divider"></div>
+                <button class="menu__item" role="menuitem"><iconify-icon icon="tabler:logout"></iconify-icon>Log out</button>
+                <button class="menu__item menu__item--danger" role="menuitem"><iconify-icon icon="tabler:trash"></iconify-icon>Delete (danger)</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="ds-block__head"><div class="ds-block__title">Segmented</div><span class="ds-code">&lt;ToggleButtonGroup exclusive size="small"&gt;</span></div>
+            <div class="ds-demo ds-demo--col" style="align-items:flex-start">
+              <div class="segmented" role="group" aria-label="Range">
+                <button class="segmented__btn" aria-pressed="false">Today</button>
+                <button class="segmented__btn" aria-pressed="true">7 days</button>
+                <button class="segmented__btn" aria-pressed="false">30 days</button>
+              </div>
+              <div class="segmented segmented--icon" role="group" aria-label="View as">
+                <button class="segmented__btn" aria-pressed="true" aria-label="Chart"><iconify-icon icon="tabler:chart-line"></iconify-icon></button>
+                <button class="segmented__btn" aria-pressed="false" aria-label="Table"><iconify-icon icon="tabler:table"></iconify-icon></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Feedback ============ -->
+      <section class="ds-section" id="feedback">
+        <h2 class="t-h4">Feedback</h2>
+        <p class="ds-lead">Errors say what happened and what to do next. Empty states point to the next action.</p>
+        <div class="stack" style="gap:12px">
+          <div class="alert alert--error" role="alert"><iconify-icon icon="tabler:alert-triangle"></iconify-icon><div class="alert__body"><div class="alert__title">Couldn't load the dashboard</div><div class="alert__text">The server didn't respond. Your filters are kept, so you can try again.</div></div><div class="alert__actions"><button class="btn btn--outlined btn--sm">Try again</button></div></div>
+          <div class="alert alert--warning"><iconify-icon icon="tabler:alert-circle"></iconify-icon><div class="alert__body"><div class="alert__title">3 providers are inactive</div><div class="alert__text">They haven't sent a bet in 24 hours.</div></div></div>
+          <div class="alert alert--success"><iconify-icon icon="tabler:circle-check"></iconify-icon><div class="alert__body"><div class="alert__title">Round result saved</div></div></div>
+          <div class="alert alert--info"><iconify-icon icon="tabler:info-circle"></iconify-icon><div class="alert__body"><div class="alert__text">Times are shown in Bangkok time (UTC+7).</div></div></div>
+        </div>
+        <div class="grid" style="margin-top:24px">
+          <div class="card col-md-6"><div class="empty"><span class="avatar avatar--lg avatar--square"><iconify-icon icon="tabler:inbox"></iconify-icon></span><div class="empty__title">No tickets yet</div><div class="empty__text">Tickets show up here once players place bets in this round.</div></div></div>
+          <div class="card col-md-6"><div class="card__content stack" style="gap:12px">
+            <span class="skeleton skeleton--text" style="--w:40%"></span>
+            <span class="skeleton skeleton--value"></span>
+            <span class="skeleton skeleton--block" style="--h:96px"></span>
+            <button class="btn btn--outlined btn--sm" style="align-self:flex-start" onclick="DS.ui.toast('Saved changes','tabler:circle-check')">Show toast</button>
+          </div></div>
+        </div>
+      </section>
+
+      <!-- ============ Charts ============ -->
+      <section class="ds-section" id="charts">
+        <h2 class="t-h4">Charts</h2>
+        <p class="ds-lead">Series 1 is always the brand color. Solid 1px grid, 2px lines, a 10% area only on the lead series,
+          columns up to 16px with a 4px rounded end. Every chart has a legend, a hover tooltip, and a table view.
+          Palette checked for color-blind safety in both themes and modes.</p>
+        <div class="card">
+          <div class="card__content">
+            <div class="legend chart-legend">
+              <span class="legend__item"><span class="legend__swatch legend__swatch--line" style="--c: var(--viz-1)"></span>Series 1 (brand)</span>
+              <span class="legend__item"><span class="legend__swatch legend__swatch--line" style="--c: var(--viz-2)"></span>Series 2</span>
+              <span class="legend__item"><span class="legend__swatch legend__swatch--line" style="--c: var(--viz-3)"></span>Series 3</span>
+            </div>
+            <div class="chart" id="ds-chart" style="--chart-h:220px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Navigation ============ -->
+      <section class="ds-section" id="nav">
+        <h2 class="t-h4">Navigation</h2>
+        <p class="ds-lead">Active item is the brand pill. Child items hang off a 1px guide line. Count badges use brand and flip colors on the active pill.</p>
+        <div class="ds-demo ds-demo--canvas">
+          <div class="ds-nav">
+            <div class="nav-section__title">Overview</div>
+            <ul class="nav-list">
+              <li><a class="nav-item is-active" href="#nav"><iconify-icon class="nav-item__icon" icon="tabler:layout-dashboard"></iconify-icon><span class="nav-item__label">Dashboard</span><span class="badge">4</span></a></li>
+              <li><a class="nav-item" href="#nav"><iconify-icon class="nav-item__icon" icon="tabler:clock-pause"></iconify-icon><span class="nav-item__label">Pending round</span><span class="badge">12</span></a></li>
+              <li><button class="nav-item is-trail" aria-expanded="true"><iconify-icon class="nav-item__icon" icon="tabler:ticket"></iconify-icon><span class="nav-item__label">Lotto tickets</span><iconify-icon class="nav-item__chevron" icon="tabler:chevron-right"></iconify-icon></button>
+                <ul class="nav-list nav-children">
+                  <li><a class="nav-item" href="#nav"><span class="nav-item__label">Ticket list</span></a></li>
+                  <li><a class="nav-item" href="#nav"><span class="nav-item__label">Ticket summary</span></a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ Patterns ============ -->
+      <section class="ds-section" id="patterns">
+        <h2 class="t-h4">Patterns</h2>
+        <p class="ds-lead">Page-level layouts. Each one is shown in full on its page.</p>
+        <div class="card"><div class="table-wrap"><table class="table table--compact">
+          <thead><tr><th>Pattern</th><th>Where</th><th>Rules</th></tr></thead>
+          <tbody>
+            <tr><td class="is-strong">Queue page</td><td><a href="pages/pending-round.html">Pending rounds</a>, <a href="pages/provider-activity.html">Provider activity</a></td><td>List template sorted by urgency (oldest / least active first); a derived urgency column (waiting time, severity signal); positive empty state ("All caught up"); header count doubles as a filter shortcut</td></tr>
+            <tr><td class="is-strong">List page, many filters</td><td><a href="pages/tickets.html">Tickets</a></td><td>Wrapping filter bar (`.list-toolbar--wrap`), search with a "search by" picker (`.search-scope`), From/To date prefixes, multi-select filters; defaults (today) aren't counted as active and come back on Clear filters</td></tr>
+            <tr><td class="is-strong">List page</td><td><a href="pages/providers.html">Providers</a></td><td>Header (title, live count, main action) → card: search + filters + Clear filters / table with sortable headers, row actions (View / Edit / Delete always visible and first, never in ⋮; other actions fill up to 2 icons; the rest go in ⋮) / pagination. Engine: core/list.js</td></tr>
+            <tr><td class="is-strong">App shell</td><td><a href="pages/dashboard.html">Dashboard</a></td><td>Sidebar 260 / 72 collapsed, drawer below 1200px, flat top bar</td></tr>
+            <tr><td class="is-strong">Auth (blank layout)</td><td><a href="pages/login.html">Login</a>, <a href="pages/forgot-password.html">Forgot</a>, <a href="pages/reset-password.html">Reset</a></td><td>Brand art left (hidden below 900px), 380px form right, one brand button, server errors inline</td></tr>
+            <tr><td class="is-strong">Result screen</td><td><a href="pages/forgot-password.html?state=sent">Email sent</a>, <a href="pages/reset-password.html?state=expired">Link expired</a></td><td>Icon tile, title, one line of help, one main action, one way back</td></tr>
+            <tr><td class="is-strong">Form card</td><td><a href="pages/change-password.html">Change password</a></td><td>Max 640px, fields stacked, footer: Cancel (outlined) + Save changes (contained)</td></tr>
+            <tr><td class="is-strong">Detail page</td><td><a href="pages/ticket-detail.html">Ticket details</a></td><td>Back link, title + status chip, one-line subtitle, summary card (identity row + aligned label/value rows + totals column), tabs with counts for sub-records, timeline for event logs, not-found + error states</td></tr>
+            <tr><td class="is-strong">Form page</td><td><a href="pages/provider-form.html">New provider</a>, <a href="pages/provider-form.html?id=101">Edit provider</a></td><td>Back link, section cards (2-col grid), error summary with links, sticky save bar (Unsaved changes, Save off until something changes), discard-changes confirm. Edit adds tabs. Engine: core/form.js</td></tr>
+            <tr><td class="is-strong">Form page, fields by type</td><td><a href="pages/lotto-config-form.html">New config</a>, <a href="pages/lotto-config-form.html?id=212">Edit config (Set lottery)</a></td><td>A select (Type) decides which sections and fields show (`showIf`). Hidden fields skip validation and aren't sent. Pairs (straight | flipped) side by side; fields that come and go sit at the end so pairs don't shift</td></tr>
+            <tr><td class="is-strong">Names per language</td><td><a href="pages/lotto-group-form.html?id=12">Edit group</a></td><td>Own card, one field per language (Thai, English required, then the rest). No language tabs: every name is visible at once. `DS.lotto.nameFields()`; replaces the uppercase primary-colored language headings + "Required" captions</td></tr>
+            <tr><td class="is-strong">Language tabs in a form card</td><td><a href="pages/lotto-game-form.html?id=301&state=errors">Edit game (errors)</a></td><td>When each language has more than a name (name + description). Required languages carry *, a tab with a bad field gets a red dot, summary links open the right tab</td></tr>
+            <tr><td class="is-strong">Linked record preview</td><td><a href="pages/lotto-game-form.html?id=301">Edit game</a></td><td>Read-only box under a picker showing what you picked (config → its payout rates) + a link to open it</td></tr>
+            <tr><td class="is-strong">Record page tabs (links)</td><td><a href="pages/lotto-game-custom-price.html?id=301">Game sub-pages</a></td><td>`nav.tabs.page-tabs` with `aria-current="page"`: tabs that are links between a record's pages (Details / Limits / Custom price / Provider cost). Port: MUI Tabs with component={Link}</td></tr>
+            <tr><td class="is-strong">Override table</td><td><a href="pages/lotto-game-custom-price.html?id=301&state=custom">Custom price</a></td><td>Default value next to each input, changed rows get a brand border + a "use default" button, save bar counts differences. Stacks per row below 600px</td></tr>
+            <tr><td class="is-strong">Selectable list</td><td><a href="pages/lotto-game-limit-numbers.html?id=301&state=library-selected">Limit number library</a></td><td>`selectable: true` in core/list.js: checkbox column, page select-all (indeterminate), tinted rows, `.selection-bar` with the bulk action</td></tr>
+            <tr><td class="is-strong">Assignment banner</td><td><a href="pages/lotto-game-limit-groups.html?id=323">Limit groups</a></td><td>Solid brand-soft box when something is assigned (with Unassign), dashed box that spells out the fallback when nothing is</td></tr>
+            <tr><td class="is-strong">Sortable tree</td><td><a href="pages/lotto-sort.html">Game sort</a></td><td>Group rows hold item rows; drag from the grip handle (or ↑ ↓ on it, announced to screen readers); drop spot = 2px brand line or brand outline; switch per row; hidden rows muted. Port: RichTreeViewPro itemsReordering + custom TreeItem2</td></tr>
+            <tr><td class="is-strong">Transfer list</td><td><a href="pages/lotto-blacklist.html?state=picked">Game blacklist</a></td><td>Two checkbox lists (search, select all, group headings, "2 of 21" count) with labelled move buttons between; stacks under 900px with the arrows turned. Port: src/components/TransferList</td></tr>
+            <tr><td class="is-strong">Schedule builder</td><td><a href="pages/round-schedule-form.html?state=filled">Round schedule</a></td><td>Segmented Daily / Weekly / Monthly / Cron; day and date toggles (soft brand when on); time; raw cron for anything else. A preview box says it in words and lists the next 5 runs, minus exclusions. Helpers: domain/cron.js. Port: react-js-cron → custom builder + cronstrue / cron-parser</td></tr>
+            <tr><td class="is-strong">Repeater rows</td><td><a href="pages/round-schedule-form.html?id=609">Schedule exclusions</a></td><td>One row per item (select, checkbox, time, red remove icon), "Add" text button, empty text. Form engine `type: "custom"` + `mount()`</td></tr>
+            <tr><td class="is-strong">Grouped select</td><td><a href="pages/rounds.html">Rounds game filter</a></td><td>`&lt;optgroup&gt;` → muted group headings in the select menu (MUI ListSubheader); form engine: `group` on options</td></tr>
+            <tr><td class="is-strong">Round status chips</td><td><a href="pages/rounds.html">Rounds</a></td><td>The app's set: Enabled (info), Pending result (warning), Resulted (success), Cancelled + Disabled (error). `DS.rounds.statusChip()`</td></tr>
+            <tr><td class="is-strong">Read-only record notice</td><td><a href="pages/round-form.html?id=8424">Resulted round</a></td><td>Info alert above the form ("…so it can't be edited"), every field off, Cancel stays as the way back</td></tr>
+            <tr><td class="is-strong">Progress strip</td><td><a href="pages/round-result.html?state=pending">Round result</a></td><td>`.steps`: 3 boxed steps (done = green check, current = brand dot + brand border, todo = grey). Port: MUI Stepper</td></tr>
+            <tr><td class="is-strong">Digit entry + readout</td><td><a href="pages/round-result.html?state=enter">Round result</a></td><td>`.result-input`: 48px mono, digits only, derived ones dashed + read-only with "The last 2 digits of …"; `.result-readout`: label over big mono digits (also in the send / payout dialogs)</td></tr>
+            <tr><td class="is-strong">Action list (results)</td><td><a href="pages/round-result.html?state=several-results">Result action</a></td><td>`.result-list` of bordered items: id + status + time / readout / an actions footer on bg-subtle (Confirm contained, Cancel red outline). Pending items get a warning border; canceled numbers are struck through</td></tr>
+            <tr><td class="is-strong">Side facts + danger card</td><td><a href="pages/round-result.html?state=enter">Round result</a></td><td>`.facts` label-left / value-right rows; `.card--danger` + `.btn--danger-outline` for "Cancel round (refund all)" with a line saying why it's off</td></tr>
+            <tr><td class="is-strong">Limit set preview (card grid)</td><td><a href="pages/round-limit-numbers.html?id=8422&state=preview">Limit set preview</a></td><td>`.limit-grid` of `.limit-card`s: bet type + "Max 5,000" + a compact Min / Max / Payout table with any number of rows; special limits as wider cards with number codes and bet type chips. Large dialog (`size: "xl"`, MUI maxWidth="lg")</td></tr>
+            <tr><td class="is-strong">Dialog scrolling</td><td>every dialog</td><td>Max height = the screen; title and buttons stay, the body scrolls (MUI scroll="paper")</td></tr>
+            <tr><td class="is-strong">Position picker</td><td><a href="pages/lotto-group-form.html">New group</a></td><td>Select of "Before {name}" + "At the end"; on edit the item's own entry reads "Current position"</td></tr>
+          </tbody>
+        </table></div></div>
+      </section>
+
+      <!-- ============ MUI mapping ============ -->
+      <section class="ds-section" id="mui">
+        <h2 class="t-h4">MUI mapping</h2>
+        <p class="ds-lead">Where each piece goes in Phase 13. Semantic token → theme path is also noted on every line of
+          <span class="ds-code">tokens/semantic.css</span>.</p>
+        <div class="card"><div class="table-wrap"><table class="table table--compact">
+          <thead><tr><th>Prototype</th><th>MUI / repo</th><th>Change from today</th></tr></thead>
+          <tbody>
+            <tr><td class="is-strong">.card</td><td>MuiCard + overrides/card.ts</td><td>Drop 3px primary top border; elevation 0; radius 12</td></tr>
+            <tr><td class="is-strong">.btn--contained</td><td>MuiButton color="primary"</td><td>Flat brand fill (no gradient, no shadow); gold takes ink text</td></tr>
+            <tr><td class="is-strong">.btn--contained.btn--ink</td><td>MuiButton color="ink" (new palette color)</td><td>Neutral solid for secondary actions</td></tr>
+            <tr><td class="is-strong">.field</td><td>@core/components/mui/text-field</td><td>No focus shadow; 2px outline ring</td></tr>
+            <tr><td class="is-strong">.field__control--select + .select-menu</td><td>MUI Select / CustomTextField select → Menu (MenuProps: no elevation, border)</td><td>Our menu replaces the browser popup: brand-soft selected row + check, open = focus ring + flipped chevron, search box at 8+ options, type-ahead, Esc closes only the menu (also inside dialogs). One shared floating menu (z above dialogs). The native select still holds the value</td></tr>
+            <tr><td class="is-strong">.multiselect</td><td>@core/components/mui/autocomplete</td><td>Show 1 tag + "+N" to keep one line</td></tr>
+            <tr><td class="is-strong">.chip</td><td>@core/components/mui/chip skin="light"</td><td>Pill, 24px, dot + label</td></tr>
+            <tr><td class="is-strong">.table</td><td>MuiTable* + MuiDataGrid overrides</td><td>Header on bg-subtle, muted 11px labels</td></tr>
+            <tr><td class="is-strong">.menu</td><td>MuiMenu / MuiPopover</td><td>Border instead of shadow</td></tr>
+            <tr><td class="is-strong">.summary__who + .kv-rows</td><td>Grid + Typography (UserInfo)</td><td>Identity row (avatar, name, ID, provider) on top; facts as label/value rows with one fixed label column so values line up; totals in their own column; no fact repeated from the header</td></tr>
+            <tr><td class="is-strong">.kv</td><td>Grid + Typography</td><td>Label over value, for short fact grids</td></tr>
+            <tr><td class="is-strong">.timeline</td><td>@mui/lab Timeline</td><td>Replaces the commands table; danger rows in red</td></tr>
+            <tr><td class="is-strong">.code-block</td><td>Box component="pre"</td><td>Monospace, copy button, used in rows and dialogs</td></tr>
+            <tr><td class="is-strong">.code-block--wrap</td><td>Box component="pre" sx={{ whiteSpace: "pre-wrap", wordBreak: "break-all" }}</td><td>Long one-line values (signature, encrypted result) wrap instead of scrolling</td></tr>
+            <tr><td class="is-strong">.result-split</td><td>Grid container (xs=12 / md auto + 1fr) + Divider orientation="vertical"</td><td>Winning numbers left, worked sum right ≥ 900px; stacked on phones</td></tr>
+            <tr><td class="is-strong">.calc</td><td>Box + Typography rows</td><td>A worked sum with an operator column (sum − row 16 = yeekee result); total row bold</td></tr>
+            <tr><td class="is-strong">.form-cols-3 / .form-cols-5</td><td>Grid item md={4} / 5 per row (xs={4})</td><td>Form engine <span class="ds-code">columns</span>: short fields on one line (bonus rows); 5 → 3 per line on phones</td></tr>
+            <tr><td class="is-strong">.chip-row--nowrap</td><td>Stack direction="row" flexWrap="nowrap"</td><td>Short chip lists stay on one line in table cells</td></tr>
+            <tr><td class="is-strong">.limit-edit</td><td>Outlined Card + TextField size="small" + Table size="small"</td><td>Limit set editor card: max limit, Min / Max / Payout % rows with remove, Add range, one plain error line; red border when wrong</td></tr>
+            <tr><td class="is-strong">.list-banner</td><td>Box between GenericFilters and the table</td><td>A note under the filters (the provider's active limit set + View)</td></tr>
+            <tr><td class="is-strong">.page-header__actions</td><td>Stack direction="row" in the page header</td><td>Two header actions (view pages: Delete + Edit)</td></tr>
+            <tr><td class="is-strong">.form-page--wide</td><td>Container maxWidth={false}</td><td>Forms with card grids (limit sets): full content width, lined up with the header actions (user)</td></tr>
+            <tr><td class="is-strong">.field__control.is-invalid</td><td>TextField error on one cell</td><td>Inline error on one input inside a custom widget (form engine <span class="ds-code">hideLabel</span> for widgets with their own title)</td></tr>
+            <tr><td class="is-strong">Row action disabled: "reason"</td><td>RowOptions item disabled + Tooltip on a span</td><td>A core action that can't run stays in place, greyed out, with why as its tooltip (e.g. "Turn it off before deleting")</td></tr>
+            <tr><td class="is-strong">.dialog__list</td><td>DialogContent + List dense</td><td>A short list inside a dialog (the games that block a delete)</td></tr>
+            <tr><td class="is-strong">.swatch / .swatch-preview</td><td>Box with bgcolor from data</td><td>A color that comes from data (transfer types): small square + its value; dashed preview box in the form</td></tr>
+            <tr><td class="is-strong">.cell-clip</td><td>DataGrid cell with noWrap + title</td><td>Long free text in a table cell (notes): one line, cut with …, full text on hover</td></tr>
+            <tr><td class="is-strong">.t-error</td><td>Typography color="error.dark"</td><td>Negative money and failed values (tokens, not the app's green / red hex)</td></tr>
+            <tr><td class="is-strong">.type-card (radio group)</td><td>Outlined Card + CardActionArea, role="radio"</td><td>Selectable summary cards (one per bet type): selected = 2px brand border + check, arrow keys move; no hover lift, no shadow; 2 per row on phones</td></tr>
+            <tr><td class="is-strong">list engine showActions()</td><td>DataGrid columnVisibilityModel</td><td>Show the actions column only when rows can have actions (3 tod flips)</td></tr>
+            <tr><td class="is-strong">Form engine type "password" / "email"</td><td>CustomTextField type="password" + InputAdornment (show / hide); type="email"</td><td>Password with the show / hide button (as on login); email checked as name@example.com</td></tr>
+            <tr><td class="is-strong">Provider page header (DS.providerPages)</td><td>&lt;ProviderPageHeader/&gt; + Tabs with Link</td><td>Name + status + "GD01 · THB · ID 101", link tabs Details · API keys · Users · Players with counts (same pattern as game pages)</td></tr>
+            <tr><td class="is-strong">.perm-grid</td><td>Table + Checkbox cells, tbody per section</td><td>Permissions as areas × Read / Create / Update / Delete + extras; filter, select all, per-section All, live count (replaces a 500-option Autocomplete)</td></tr>
+            <tr><td class="is-strong">.file-drop / .file-pick</td><td>Button component="label" + hidden input; a row with the picked file + IconButton</td><td>File upload (payment slip): click or drop, image or PDF; the picked file shows with its size and a remove button; red border when required and empty</td></tr>
+            <tr><td class="is-strong">.overview__grid[data-count]</td><td>Grid item xs sizes from the count</td><td>Stat grids with 4 or 5 tiles leave no empty cells (bill details)</td></tr>
+            <tr><td class="is-strong">Chart x labels cut with …</td><td>Recharts XAxis tick with a width + title</td><td>Long category names (games) never run into each other; full name on hover</td></tr>
+            <tr><td class="is-strong">list engine count: false</td><td>(page code)</td><td>A second list on the same page doesn't overwrite the page header count</td></tr>
+            <tr><td class="is-strong">.error-page / .auth--plain</td><td>BlankLayout + Box content-center</td><td>401 / 404 / 500: code, title, text, 2 actions, the app's illustration per theme × mode</td></tr>
+            <tr><td class="is-strong">.chip-row--inline</td><td>Stack direction="row" + CustomChip</td><td>Small tags after a cell value ("Row 16", "Bonus")</td></tr>
+            <tr><td class="is-strong">.skeleton--on-canvas</td><td>Skeleton sx={{ bgcolor: "divider" }}</td><td>Skeletons outside cards (page header), where bg-muted matches the canvas</td></tr>
+            <tr><td class="is-strong">.dialog--wide</td><td>Dialog maxWidth="md" (ResultModal)</td><td>For JSON results</td></tr>
+            <tr><td class="is-strong">.severity</td><td>StatusBadge + row className tint</td><td>4-step signal + label; one legend replaces StatusGuide</td></tr>
+            <tr><td class="is-strong">.field__control--number</td><td>CustomTextField inputProps={{ inputMode: "decimal" }}</td><td>Text input (not type="number": no spinners, no scroll-to-change); tabular figures; "Enter a number." when it isn't one</td></tr>
+            <tr><td class="is-strong">.richtext</td><td>src/components/TextEditor/Lexical</td><td>Toolbar on bg-subtle (bold, italic, underline, lists), 112px min height, same border/error states as inputs. Empty = no text</td></tr>
+            <tr><td class="is-strong">.imagepick</td><td>src/components/FlagSelect</td><td>Radio grid of image cards, search box, selected = brand ring + check badge (no purple overlay), scrolls past 3 rows</td></tr>
+            <tr><td class="is-strong">.field--readonly</td><td>InputProps readOnly + bg action.hover</td><td>Dashed border on bg-subtle; value comes from somewhere else (config)</td></tr>
+            <tr><td class="is-strong">.switch</td><td>MuiSwitch + FormControlLabel</td><td>Brand track when on; helper under the label</td></tr>
+            <tr><td class="is-strong">.tabs</td><td>MuiTabs / TabList</td><td>2px brand indicator, optional count badge</td></tr>
+            <tr><td class="is-strong">.form-bar</td><td>GenericForm SubmitButtonSet</td><td>Sticky, shows unsaved-changes status</td></tr>
+            <tr><td class="is-strong">.dialog</td><td>MuiDialog (ConfirmModal, ErrorDialog)</td><td>Border instead of shadow; icon tile; Cancel focused on destructive confirms</td></tr>
+            <tr><td class="is-strong">.pagination / .th-sort</td><td>DataGrid footer + column header</td><td>Sort arrow shows on hover and when active</td></tr>
+            <tr><td class="is-strong">.list-progress</td><td>DataGrid loading (LinearProgress)</td><td>2px brand bar while a page/sort/filter loads</td></tr>
+            <tr><td class="is-strong">.segmented</td><td>MuiToggleButtonGroup</td><td>New look; selected = surface + border</td></tr>
+            <tr><td class="is-strong">.nav-item.is-active</td><td>VerticalNavLink</td><td>Flat brand pill instead of gradient + glow</td></tr>
+            <tr><td class="is-strong">.topbar</td><td>vertical/appBar</td><td>Flat full-width bar, no blur, no float</td></tr>
+            <tr><td class="is-strong">shadows</td><td>theme/shadows</td><td>All 25 entries → "none"</td></tr>
+            <tr><td class="is-strong">font</td><td>theme/typography + _document.tsx</td><td>IBM Plex Sans + Plex Sans Thai</td></tr>
+          </tbody>
+        </table></div></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="assets/js/core/format.js"></script>
+  <script src="assets/js/core/ui.js"></script>
+  <script src="assets/js/core/charts.js"></script>
+  <script src="assets/js/pages/design-system.js"></script>
+  <script src="assets/js/core/devbar.js"></script>
+</body>
+</html>

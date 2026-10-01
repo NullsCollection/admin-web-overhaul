@@ -1,0 +1,464 @@
+/* ==========================================================================
+   List page template → Card + GenericFilters + GenericTable (DataGrid Pro)
+   page-header (title, count, main action) → card: toolbar / table / pagination
+   Reused by every list page (Phase 3 onward). Engine: assets/js/core/list.js
+   ========================================================================== */
+
+.list-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.list-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: center;
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+/* A note between the toolbar and the table (limit sets: the provider's active set) */
+.list-banner {
+  padding: var(--space-4) var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+.list-banner[hidden] {
+  display: none;
+}
+.list-toolbar__filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.list-toolbar__end {
+  display: flex;
+  justify-content: flex-end;
+}
+@media (min-width: 900px) {
+  .list-toolbar {
+    grid-template-columns: minmax(240px, 360px) auto 1fr;
+  }
+  .list-toolbar__filters {
+    display: flex;
+  }
+  .list-toolbar__filters .field__control {
+    width: 200px;
+  }
+}
+
+/* Clear-search button sits inside the search box */
+.list-toolbar__search .icon-btn {
+  margin-right: calc(var(--space-2) * -1);
+}
+
+/* Server fetch in progress → DataGrid loading overlay (LinearProgress) */
+.list-progress {
+  position: absolute;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  height: 2px;
+  overflow: hidden;
+  background: var(--primary-soft);
+}
+.list-progress::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  background: var(--primary);
+  animation: list-progress 1s var(--ease) infinite;
+}
+@keyframes list-progress {
+  from {
+    left: -40%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+.list-body {
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.list-body.is-fetching {
+  opacity: 0.55;
+}
+.list-body .table {
+  min-width: 860px;
+}
+.list-body .table td {
+  white-space: nowrap; /* DataGrid cells don't wrap; the table scrolls sideways instead */
+}
+.list-state {
+  min-height: 360px;
+}
+.list-state--error {
+  min-height: 0;
+}
+.list-state .alert {
+  margin: var(--space-6);
+}
+
+/* ---------- Wide filter bar (many filters): wraps, fixed widths ≥ 900px ---------- */
+.list-toolbar--wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.list-toolbar--wrap > * {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+@media (min-width: 600px) {
+  .list-toolbar--wrap > * {
+    flex: 1 1 calc(50% - var(--space-3));
+  }
+  .list-toolbar--wrap > .list-toolbar__grow {
+    flex-basis: 100%;
+  }
+}
+@media (min-width: 900px) {
+  .list-toolbar--wrap > * {
+    flex: 0 0 auto;
+    width: 200px;
+  }
+  .list-toolbar--wrap > .list-toolbar__grow {
+    flex: 1 1 320px;
+    width: auto;
+    max-width: 420px;
+  }
+  .list-toolbar--wrap > .list-toolbar__date {
+    width: 236px;
+  }
+  .list-toolbar--wrap > .list-toolbar__end {
+    flex: 1 0 auto;
+    width: auto;
+  }
+}
+
+/* Text prefix inside a control ("From", "To") */
+.field__prefix {
+  flex: none;
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+
+/* Search with a "search by" picker on the left */
+.search-scope {
+  padding-left: 0;
+}
+.search-scope__select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 100%;
+  border-right: 1px solid var(--border);
+}
+.search-scope__select select {
+  height: 100%;
+  padding: 0 var(--space-8) 0 var(--space-3);
+  border: 0;
+  background: transparent;
+  appearance: none;
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+  cursor: pointer;
+  outline: none;
+}
+.search-scope__select iconify-icon {
+  position: absolute;
+  right: var(--space-2-5);
+  font-size: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.search-scope input {
+  padding-left: var(--space-1);
+}
+
+/* ---------- Queue helpers ---------- */
+/* Time a row has been waiting (pending rounds); late = over a day */
+.waiting {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-variant-numeric: tabular-nums;
+}
+.waiting iconify-icon {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+.waiting.is-late {
+  color: var(--warning-text);
+  font-weight: var(--fw-medium);
+}
+.waiting.is-late iconify-icon {
+  color: var(--warning-text);
+}
+
+/* Header shortcut that jumps to a filter (e.g. "4 inactive providers") */
+.inactive-shortcut .badge {
+  background: var(--error);
+  color: var(--on-error);
+}
+
+/* ==========================================================================
+   Sortable tree (Game sort management) → @mui/x-tree-view-pro RichTreeViewPro itemsReordering
+   Group rows hold game rows; drag from the handle (or ↑ / ↓ on it). No shadows: the drop spot
+   is a 2px brand line (before / after) or a brand outline (into a group).
+   ========================================================================== */
+.sort-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-5);
+}
+.sort-toolbar .field {
+  flex: 1 1 260px;
+  max-width: 360px;
+}
+.sort-toolbar__end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+.sort-summary {
+  display: flex;
+  gap: var(--space-4);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.sort-summary strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+  font-variant-numeric: tabular-nums;
+}
+.sort-tree {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.sort-tree--games {
+  gap: 0;
+  margin: 0 0 var(--space-2) 44px;
+  padding-left: var(--space-3);
+  border-left: 1px solid var(--border);
+}
+.sort-item--group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+.sort-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
+}
+.sort-item--group > .sort-row {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+.sort-item--group > .sort-row .sort-row__label {
+  font-weight: var(--fw-semibold, 600);
+}
+.sort-tree--games > .sort-item + .sort-item > .sort-row {
+  border-top: 1px solid var(--border);
+}
+.sort-row > .icon-btn {
+  flex: none;
+}
+.sort-row__label {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.sort-row__meta {
+  flex: none;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.sort-switch {
+  flex: none;
+  margin-left: auto;
+}
+.sort-switch .switch__label {
+  min-width: 48px;
+  font-size: 13px;
+}
+.sort-handle {
+  cursor: grab;
+  color: var(--text-muted);
+}
+.sort-handle:active {
+  cursor: grabbing;
+}
+/* Hidden for this provider: muted, but still movable */
+.sort-item.is-hidden > .sort-row .sort-row__label {
+  color: var(--text-muted);
+}
+.sort-item.is-dragging {
+  opacity: 0.4;
+}
+.sort-row.drop-before::before,
+.sort-row.drop-after::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--primary);
+}
+.sort-row.drop-before::before {
+  top: -1px;
+}
+.sort-row.drop-after::after {
+  bottom: -1px;
+}
+.sort-row.drop-into {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+.sort-empty {
+  padding: var(--space-3);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+@media (max-width: 599.98px) {
+  .sort-tree--games {
+    margin-left: var(--space-4);
+    padding-left: var(--space-2);
+  }
+  .sort-row__meta {
+    display: none; /* the summary line above the tree still has the totals */
+  }
+  .sort-switch .switch__label {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   Transfer list (Game blacklist) → src/components/TransferList
+   Two checkbox lists with a column of labelled move buttons between; stacks below 900px.
+   ========================================================================== */
+.transfer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  align-items: stretch;
+}
+@media (min-width: 900px) {
+  .transfer {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+}
+.transfer__list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.transfer__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.transfer__title {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.transfer__count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.transfer__search {
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+.transfer__items {
+  height: 360px;
+  margin: 0;
+  padding: 0 0 var(--space-2);
+  overflow-y: auto;
+  list-style: none;
+}
+.transfer__group {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: var(--space-2) var(--space-4) var(--space-1);
+  background: var(--bg-surface);
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.transfer__item {
+  display: flex;
+  width: 100%;
+  padding: var(--space-2) var(--space-4);
+  color: var(--text-primary);
+}
+.transfer__item:hover {
+  background: var(--bg-muted);
+}
+.transfer__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.transfer__empty {
+  display: grid;
+  place-items: center;
+  height: 360px;
+  margin: 0;
+  padding: var(--space-4);
+  font-size: 13px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.transfer__moves {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+}
+@media (max-width: 899.98px) {
+  .transfer__moves {
+    flex-direction: row;
+    justify-content: center;
+  }
+  .transfer__arrow {
+    transform: rotate(90deg);
+  }
+  .transfer__items,
+  .transfer__empty {
+    height: 280px;
+  }
+}

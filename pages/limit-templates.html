@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Limit number sets | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Limit number sets  (Phase 9a, list template)
+  Source: src/pages/lotto/limit-templates/index.tsx → views/pages/lotto/limit-template/useLimitTemplateTable.tsx
+  Data:   useGetLimitTemplate({ page, pageSize, orderedBy, search, filter: { providerId } })
+  Engine: core/list.js   Page config: pages/limit-templates.js   Mock: mock/lotto.js (limitTemplates)
+-->
+<body data-page="lotto-limit-templates" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title, live count, main action ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Limit number sets</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+          <a class="btn btn--contained" href="limit-template-form.html">
+            <iconify-icon icon="tabler:plus"></iconify-icon>New limit set
+          </a>
+        </div>
+
+        <!-- ============ List card: toolbar / active set / table / pagination ============ -->
+        <section class="card list-card" id="sets-card" aria-label="Limit number sets">
+          <div class="list-toolbar">
+            <!-- Search (GenericFilters "search-text") -->
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by set name" aria-label="Search limit sets">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Provider (useGetProviderFilter, searchable) -->
+            <div class="list-toolbar__filters">
+              <div class="field__control field__control--select">
+                <select id="f-provider" data-list-filter="providerId" aria-label="Provider"></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <!-- "Active Template" + View (provider size → limit template). Shown when a provider is picked -->
+          <div class="list-banner" id="active-set" hidden></div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/pages/limit-templates.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

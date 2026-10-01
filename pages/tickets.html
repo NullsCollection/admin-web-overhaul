@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tickets | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Ticket list  (pulled forward from Phase 10; parent of ticket-detail.html)
+  Source: src/pages/lotto/bet-tickets/index.tsx → src/views/pages/bet-ticket/table/BetTicketTable.tsx
+  Filters (FilterTextField): start/end date (default today), ticket ID, user ID, username,
+          providers (multi), lotto games (multi), status   + free search
+  Columns: ID, Member, Provider name, Game name, Date/Time, Bet amount, Status, View ticket
+  Engine: core/list.js   Page config: assets/js/pages/tickets.js
+-->
+<body data-page="ticket-list" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Tickets</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+        </div>
+
+        <section class="card list-card" id="tickets-card" aria-label="Tickets">
+          <!-- ============ Filters: shown in the open instead of a filter builder ============ -->
+          <div class="list-toolbar list-toolbar--wrap">
+            <!-- Search with "search by" (Ticket ID / User ID / Username filter fields) -->
+            <div class="list-toolbar__grow">
+              <div class="field__control search-scope">
+                <span class="search-scope__select">
+                  <select data-list-search-scope aria-label="Search by">
+                    <option value="id">Ticket ID</option>
+                    <option value="userId">User ID</option>
+                    <option value="username">Username</option>
+                  </select>
+                  <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+                </span>
+                <input type="search" data-list-search placeholder="Search ticket ID" aria-label="Search tickets">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Date range: defaults to today (getDefaultDateFilters) -->
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">From</span>
+              <input type="datetime-local" data-list-filter="start" value="2026-09-24T00:00" aria-label="From date and time">
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">To</span>
+              <input type="datetime-local" data-list-filter="end" value="2026-09-24T23:59" aria-label="To date and time">
+            </div>
+
+            <!-- Providers (multiselect) -->
+            <div class="field" id="f-providers">
+              <button type="button" class="field__control multiselect" data-menu="providers-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Providers">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu form-menu" id="providers-menu" role="menu" hidden><div data-options></div></div>
+            </div>
+
+            <!-- Lotto games (multiselect) -->
+            <div class="field" id="f-games">
+              <button type="button" class="field__control multiselect" data-menu="games-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Lotto games">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu form-menu" id="games-menu" role="menu" hidden><div data-options></div></div>
+            </div>
+
+            <!-- Status (dropdown) -->
+            <div class="field__control field__control--select">
+              <select data-list-filter="status" aria-label="Status">
+                <option value="all">All statuses</option>
+                <option value="waiting">Waiting</option>
+                <option value="approved">Waiting for result</option>
+                <option value="rejected">Rejected</option>
+                <option value="cancelled">Cancelled</option>
+                <option value="settled">Resulted</option>
+              </select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/tickets.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/tickets.js"></script>
+  <script src="../assets/js/pages/tickets.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

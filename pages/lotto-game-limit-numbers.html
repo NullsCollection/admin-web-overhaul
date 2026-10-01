@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Limit numbers | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Limit numbers  (Phase 7d, game sub-page)
+  Route:  /lotto/games/[id]/limit-numbers
+  Source: src/views/pages/lotto/game/GameLimitTemplateTabs.tsx (+ components/QuickAssignTemplate, BrowseLimitTemplate, CreateLimitTemplate)
+  Header: DS.lotto.gameHeader() → back link, game name + status, tabs between the game's pages
+  Logic:  pages/lotto-game-limit-numbers.js
+-->
+<body data-page="lotto-games" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div id="game-header"></div>
+        <div class="tabs" role="tablist" aria-label="Limit number sets" style="margin-bottom:24px">
+          <button type="button" class="tabs__tab" role="tab" id="tab-assigned" aria-controls="panel-assigned" aria-selected="true">
+            <iconify-icon icon="tabler:checklist"></iconify-icon>Used by this game <span class="badge badge--neutral" id="assigned-count">0</span>
+          </button>
+          <button type="button" class="tabs__tab" role="tab" id="tab-library" aria-controls="panel-library" aria-selected="false" tabindex="-1">
+            <iconify-icon icon="tabler:books"></iconify-icon>Add from library
+          </button>
+        </div>
+        <div role="tabpanel" id="panel-assigned" aria-labelledby="tab-assigned">
+        <section class="card list-card" id="assigned-card" aria-labelledby="assigned-card-title">
+          <header class="card__header card__header--divided">
+            <div class="card__heading">
+              <h2 class="card__title" id="assigned-card-title">Limit number sets used by this game</h2>
+              <p class="card__subheader">Turn a set on to apply its limits. Global sets apply to every provider; local sets to one provider.</p>
+            </div>
+            <div class="card__actions"><a class="btn btn--outlined btn--sm" href="limit-template-form.html"><iconify-icon icon="tabler:plus"></iconify-icon>Create limit set</a></div>
+          </header>
+          <div class="list-toolbar">
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by name" aria-label="Search sets">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+            <div class="list-toolbar__filters">
+              <div class="field__control field__control--select">
+                <select data-list-filter="providerId" aria-label="Provider" data-provider-filter></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+          </div>
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+        </div>
+        <div role="tabpanel" id="panel-library" aria-labelledby="tab-library" hidden>
+        <section class="card list-card" id="library-card" aria-labelledby="library-card-title">
+          <header class="card__header card__header--divided">
+            <div class="card__heading">
+              <h2 class="card__title" id="library-card-title">Limit number set library</h2>
+              <p class="card__subheader">Sets this game doesn't use yet. Pick the ones to add; they start turned off.</p>
+            </div>
+            <div class="card__actions"></div>
+          </header>
+          <div class="list-toolbar">
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by name" aria-label="Search library">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+            <div class="list-toolbar__filters">
+              <div class="field__control field__control--select">
+                <select data-list-filter="providerId" aria-label="Provider" data-provider-filter></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+          </div>
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+          <div class="selection-bar" id="library-bar" hidden>
+            <span id="library-picked"></span>
+            <div class="selection-bar__actions">
+              <button type="button" class="btn btn--text btn--sm" id="library-clear">Clear</button>
+              <button type="button" class="btn btn--contained btn--sm" id="library-add"><iconify-icon icon="tabler:plus"></iconify-icon>Add to game</button>
+            </div>
+          </div>
+        </section>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/pages/lotto-game-limit-numbers.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

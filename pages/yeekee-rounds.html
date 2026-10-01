@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yeekee rounds | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Yeekee rounds  (Phase 8e, list template)
+  Source: src/pages/lotto/yeekees/index.tsx → src/views/pages/lotto/yeekee/useYeekeeTable.tsx
+  Data:   useGetYeekeeRound({ page, pageSize, orderedBy, filter: { lottoGameId, providerId, closeAt: { date } } })
+  Engine: core/list.js   Page config: pages/yeekee-rounds.js   Mock: mock/rounds.js (yeekeeRounds)
+-->
+<body data-page="lotto-yeekees" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title + live count (no create: rounds come from the system) ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Yeekee rounds</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+        </div>
+
+        <!-- ============ List card: toolbar / table / pagination ============ -->
+        <section class="card list-card" id="yeekee-card" aria-label="Yeekee rounds">
+          <div class="list-toolbar list-toolbar--wrap">
+            <!-- Game: useGetGameFilter(…, ["encrypt_game", "yeekee"]) → yeekee + encrypted games only -->
+            <div class="field__control field__control--select">
+              <select id="f-game" data-list-filter="lottoGameId" aria-label="Game"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <!-- Close date: one day, default today, from 3 months ago to today (getThreeMonthsAgo) -->
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">Closes on</span>
+              <input type="date" id="f-date" data-list-filter="closeAt" aria-label="Close date">
+            </div>
+            <!-- Provider: only when the user has providers (doesHaveProvider), searchable -->
+            <div class="field__control field__control--select">
+              <select id="f-provider" data-list-filter="providerId" aria-label="Provider"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/yeekee-rounds.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

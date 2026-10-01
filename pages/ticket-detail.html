@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ticket 482193 | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Ticket details  (Phase 5, the DETAIL TEMPLATE)
+  Source: src/pages/lotto/bet-tickets/[id]/details.tsx
+          → UserInfo (facts), BetTicketDetails (lines + totals),
+            TicketCommandsTable (commands, seamless request, retry), TicketBetRequest
+  Data:   useGetBetTicket(id) + useGetBetTicketDetails(id)   Mock: assets/js/mock/tickets.js
+  Logic:  assets/js/pages/ticket-detail.js
+-->
+<body data-page="ticket-list" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <!-- ============ Header ============ -->
+        <a class="back-link" href="tickets.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Tickets</a>
+        <div class="page-header">
+          <div>
+            <div class="page-header__title-row">
+              <h1 class="page-header__title" id="t-title">Ticket 482193</h1>
+              <span id="t-status"></span>
+            </div>
+            <p class="page-header__sub" id="t-sub"></p>
+          </div>
+        </div>
+
+        <!-- ============ Error / not found ============ -->
+        <div id="t-problem" hidden></div>
+
+        <div class="stack" id="t-content">
+          <!-- ============ Summary (UserInfo + totals) ============ -->
+          <section class="card summary" aria-label="Ticket information" id="t-summary"></section>
+
+          <!-- ============ Tabs ============ -->
+          <div>
+            <div class="tabs" role="tablist" aria-label="Ticket sections" style="margin-bottom:24px">
+              <button type="button" class="tabs__tab" role="tab" id="tab-lines" aria-controls="panel-lines" aria-selected="true">
+                <iconify-icon icon="tabler:list-numbers"></iconify-icon>Bet numbers <span class="badge badge--neutral" id="c-lines">0</span>
+              </button>
+              <button type="button" class="tabs__tab" role="tab" id="tab-commands" aria-controls="panel-commands" aria-selected="false" tabindex="-1">
+                <iconify-icon icon="tabler:timeline-event"></iconify-icon>Commands <span class="badge badge--neutral" id="c-commands">0</span>
+              </button>
+              <button type="button" class="tabs__tab" role="tab" id="tab-requests" aria-controls="panel-requests" aria-selected="false" tabindex="-1">
+                <iconify-icon icon="tabler:api"></iconify-icon>Bet requests <span class="badge badge--neutral" id="c-requests">0</span>
+              </button>
+            </div>
+
+            <!-- Bet numbers → BetTicketDetails -->
+            <section class="card" role="tabpanel" id="panel-lines" aria-labelledby="tab-lines">
+              <div class="table-wrap" id="t-lines"></div>
+            </section>
+
+            <!-- Commands → TicketCommandsTable (as a timeline, newest first) -->
+            <section class="card" role="tabpanel" id="panel-commands" aria-labelledby="tab-commands" hidden>
+              <div class="card__content" id="t-commands"></div>
+            </section>
+
+            <!-- Bet requests → TicketBetRequest (only when there are any) -->
+            <section class="card" role="tabpanel" id="panel-requests" aria-labelledby="tab-requests" hidden>
+              <div class="table-wrap" id="t-requests"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/domain/tickets.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/tickets.js"></script>
+  <script src="../assets/js/pages/ticket-detail.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

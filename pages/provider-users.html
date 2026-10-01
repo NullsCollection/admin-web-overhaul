@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Provider users | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Provider users  (Phase 11a, list template)
+  Route:  /providers/[id]/users   (provider-users.html?id=101)
+  Source: src/pages/providers/[id]/users/index.tsx → views/pages/provider/user/table/ProviderUserTable.tsx
+          + the reset password action from views/pages/provider/ProviderUsersTable.tsx (option A: one users page)
+  Data:   useGetUsers({ search, page, pageSize, filter: { providerId } })
+  Engine: core/list.js   Logic: pages/provider-users.js   Mock: mock/users.js
+-->
+<body data-page="providers" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div id="provider-header"></div>
+
+        <section class="card list-card" id="users-card" aria-label="Users of this provider">
+          <div class="list-toolbar">
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by name or email" aria-label="Search users">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+            <div class="list-toolbar__end">
+              <span class="t-body2 t-muted" data-list-count aria-live="polite"></span>
+            </div>
+          </div>
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/users.js"></script>
+  <script src="../assets/js/domain/providers.js"></script>
+  <script src="../assets/js/pages/provider-users.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

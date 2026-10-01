@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Config | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Config new / edit  (Phase 7a, form template)
+  New:  lotto-config-form.html          → src/pages/lotto/configs/new.tsx
+  Edit: lotto-config-form.html?id=201   → src/pages/lotto/configs/[id]/edit.tsx
+  Form: src/views/pages/lotto/config/ConfigForm.tsx (+ config-form/*: one pay-rate set per type)
+  Engine: core/form.js (showIf swaps the pay rates by type). Page logic: pages/lotto-config-form.js
+-->
+<body data-page="lotto-configs" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Header ============ -->
+        <a class="back-link" href="lotto-configs.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Config management</a>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title" id="form-title">New config</h1>
+            <p class="page-header__sub" id="form-sub">Name it, pick the lottery type, then set the payout rates.</p>
+          </div>
+        </div>
+
+        <!-- ============ The form ============ -->
+        <form class="form-page" id="config-form" novalidate>
+          <div class="alert alert--error form-summary" data-form-summary role="alert" hidden>
+            <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+            <div class="alert__body">
+              <div class="alert__title"></div>
+              <ul class="alert__text"></ul>
+            </div>
+          </div>
+
+          <div class="stack" data-form-body></div>
+
+          <div class="form-bar">
+            <div class="form-bar__status" data-form-status aria-live="polite"></div>
+            <div class="form-bar__actions">
+              <button type="button" class="btn btn--outlined" data-form-cancel>Cancel</button>
+              <button type="submit" class="btn btn--contained" data-form-submit id="form-submit">Create config</button>
+            </div>
+          </div>
+        </form>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/form.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/pages/lotto-config-form.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Settings  (Phase 11e)
+  Source: src/pages/settings/index.tsx + views/pages/settings/PrivateKey.tsx   acl settings.read
+          (the nav item is commented out in navigationConfig.ts: the page is reachable by URL only)
+  Data:   getPrivateKey() → string; generatePrivateKey() → toast "Key generated successfully"
+  Logic:  pages/settings.js
+-->
+<body data-page="settings" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Settings</h1>
+          </div>
+        </div>
+
+        <div class="form-page">
+          <section class="card" aria-labelledby="key-title">
+            <header class="card__header card__header--divided">
+              <div class="card__heading">
+                <h2 class="card__title" id="key-title">Private key</h2>
+                <p class="card__subheader">Keep it secret. Show it only when you need to copy it.</p>
+              </div>
+            </header>
+            <div class="card__content" id="key-body"></div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/pages/settings.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

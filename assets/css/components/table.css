@@ -1,0 +1,376 @@
+/* ==========================================================================
+   Table → MUI <Table> / <TableContainer> (small fixed tables)
+   For big server-paginated lists the app uses DataGrid; it takes the same look
+   (header bg = --bg-subtle, row hover = --bg-hover, borders = --border).
+   ========================================================================== */
+
+.table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.table th {
+  padding: var(--space-2-5, 10px) var(--space-4);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 16px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+.table th:first-child,
+.table td:first-child {
+  padding-left: var(--space-6);
+}
+.table th:last-child,
+.table td:last-child {
+  padding-right: var(--space-6);
+}
+.table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.table tbody tr:hover td {
+  background: var(--bg-hover);
+}
+
+.table .is-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.table .is-strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+.table .is-negative {
+  color: var(--error-text);
+}
+
+.table tfoot td {
+  border-top: 1px solid var(--border);
+  border-bottom: 0;
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+/* Compact: rows inside cards */
+.table--compact td {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+/* In a card with padding: no outer side padding */
+.table--inset th:first-child,
+.table--inset td:first-child {
+  padding-left: 0;
+}
+.table--inset th:last-child,
+.table--inset td:last-child {
+  padding-right: 0;
+}
+.table--inset th {
+  background: transparent;
+}
+
+.table__cell-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.table__swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--c);
+  flex: none;
+}
+
+/* ---------- Sortable header → DataGrid column sorting ---------- */
+.th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
+.th-sort iconify-icon {
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+.th-sort:hover {
+  color: var(--text-primary);
+}
+.th-sort:hover iconify-icon {
+  opacity: 0.5;
+}
+th[aria-sort="ascending"] .th-sort,
+th[aria-sort="descending"] .th-sort {
+  color: var(--text-primary);
+}
+th[aria-sort="ascending"] .th-sort iconify-icon,
+th[aria-sort="descending"] .th-sort iconify-icon {
+  opacity: 1;
+}
+.is-num .th-sort {
+  flex-direction: row-reverse;
+}
+
+/* Row actions cell: edit icon + ⋮ menu, right-aligned */
+.table td.is-actions {
+  width: 1%;
+  white-space: nowrap;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.table .row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+}
+/* Disabled row action: the wrapper carries the tooltip (a disabled button gets no hover) */
+.table .row-actions__off {
+  display: inline-flex;
+  cursor: not-allowed;
+}
+/* Long free text in a cell (notes): one line, cut with … (full text in the title) */
+.table .cell-clip {
+  display: inline-block;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.table .cell-sub {
+  margin-left: var(--space-1-5);
+  color: var(--text-muted);
+}
+
+/* ---------- Pagination → MUI TablePagination (DataGrid footer) ---------- */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-6);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+.pagination__size {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.pagination__size .field__control {
+  width: 76px;
+}
+.pagination__range {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.pagination__nav {
+  display: flex;
+  gap: 2px;
+}
+.pagination .icon-btn:disabled {
+  color: var(--text-faint);
+  background: transparent;
+  cursor: not-allowed;
+}
+
+/* Links inside rows stay ink (a whole column of brand color breaks 60/30/10);
+   they turn brand on hover so they still read as links. */
+.table td a:not(.icon-btn):not(.btn) {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+.table td a:not(.icon-btn):not(.btn):hover {
+  color: var(--primary-text);
+}
+
+/* Row selection (DataGrid checkboxSelection): narrow first column, selected rows tinted */
+.table th.is-select,
+.table td.is-select {
+  width: 1%;
+  padding-right: 0;
+}
+.table tr.is-selected td {
+  background: var(--primary-soft);
+}
+/* Header checkbox when only some rows on the page are selected */
+.checkbox input:indeterminate + .check {
+  position: relative;
+  border-color: var(--bg-inverse);
+  background: var(--bg-inverse);
+}
+.checkbox input:indeterminate + .check iconify-icon {
+  display: none;
+}
+.checkbox input:indeterminate + .check::after {
+  content: "";
+  width: 8px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--text-inverse);
+}
+
+/* Bar under a selectable table: "3 selected · Clear · Add to game" → DataGrid footer selection */
+.selection-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-5);
+  border-top: 1px solid var(--border);
+  background: var(--primary-soft);
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.selection-bar__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Range of amounts → payout %, used in limit set previews */
+.range-pill {
+  display: inline-flex;
+  gap: 4px;
+  margin: 2px 6px 2px 0;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full, 999px);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.range-pill strong {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+
+/* Schedule cell: the schedule in words, then the cron + next run in small text */
+.sched-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 160px;
+}
+.sched-cell > a {
+  align-self: flex-start;
+}
+.is-strong .sched-cell__sub {
+  font-weight: var(--fw-regular, 400);
+}
+.sched-cell__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* ---------- Permission grid (11c user groups): areas × Read / Create / Update / Delete + extras ----------
+   Port: Table with Checkbox cells (FormControlLabel for extras), grouped tbody per sidebar section */
+.perm-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-3);
+}
+.perm-tools__search {
+  flex: 1 1 260px;
+  max-width: 360px;
+}
+.perm-tools__count {
+  margin-right: auto;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.perm-tools__count strong {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+.perm-tools__none {
+  margin: var(--space-4) 0 0;
+}
+.perm-grid {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+/* Row + section headings are body text, not column headers (sentence case, no caps) */
+.perm-grid tbody th {
+  height: auto;
+  background: none;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--text-primary);
+  text-align: left;
+  white-space: nowrap;
+}
+.perm-grid__col {
+  width: 88px;
+  text-align: center;
+}
+.perm-grid td.perm-grid__col .checkbox {
+  justify-content: center;
+}
+.perm-grid__extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+}
+.perm-grid__extras .checkbox {
+  font-size: 13px;
+}
+.perm-grid tbody .perm-grid__section th {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  background: var(--bg-subtle);
+}
+.perm-grid__section th > span:first-child {
+  margin-right: var(--space-2);
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.perm-grid__section .btn {
+  float: right;
+  margin-top: -4px;
+}
+.perm-grid tbody tr:last-child th {
+  border-bottom: 0;
+}

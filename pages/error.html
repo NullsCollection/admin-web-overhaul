@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Page not found | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Error pages  (Phase 12)   error.html?code=401 | 404 | 500  (or the devbar state)
+  Source: src/pages/401.tsx, 404.tsx, 500.tsx  (BlankLayout; h2 title, body text, "Back to Home",
+          an illustration per theme × mode: public/images/pages/<gold|blue>/<code>/error_<code>_<light|dark>.svg)
+  Logic:  pages/error.js (copy per code)   Chrome: pages/auth.js (logo, mode, language, footer)
+-->
+<body data-page="error" data-base="../">
+  <div class="auth auth--plain">
+    <div class="auth__art" aria-hidden="true"></div>
+    <main class="auth__panel">
+      <header class="auth__top" id="auth-top"></header>
+      <div class="auth__body">
+        <div class="error-page">
+          <span class="error-page__code" id="err-code"></span>
+          <h1 class="auth__title" id="err-title"></h1>
+          <p class="auth__lead" id="err-text"></p>
+          <div class="error-page__actions" id="err-actions"></div>
+          <img class="error-page__art" id="err-art" alt="">
+        </div>
+      </div>
+      <footer class="auth__foot" id="auth-foot"></footer>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/pages/auth.js"></script>
+  <script src="../assets/js/pages/error.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

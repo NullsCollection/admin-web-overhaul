@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bill details | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/pages/dashboard.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Bill details  (Phase 11e)   billing.html?id=<bill id>
+  Source: src/pages/billings/[id] → views/pages/billings/details/BillingDetailDashboard.tsx
+          (+ BetPerformanceBilling, LottoGroupBilling, dashboard WinLossStatics + PerformanceByBetType, RecentBillingBet)
+  Data:   useGetBillingDashboard(id, { lottoGameId, startDate, endDate }); export → PDF / CSV
+  Engine: the dashboard's pieces (hero, stats, Tickets, charts with table view)   Logic: pages/billing.js
+  Mock:   mock/billing.js (billing, billingDashboard)
+-->
+<body data-page="billings" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <a class="back-link" href="billings.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Billing</a>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title"><span id="bill-title">Bill</span> <span id="bill-chip"></span></h1>
+            <p class="page-header__sub" id="bill-sub"></p>
+          </div>
+          <div class="page-header__actions">
+            <button type="button" class="btn btn--outlined" id="export"><iconify-icon icon="tabler:download"></iconify-icon>Export PDF</button>
+          </div>
+        </div>
+
+        <!-- The bill itself (proposal: the app shows only the dashboard; these come from the list row) -->
+        <section class="card" style="margin-bottom:24px" aria-label="Bill">
+          <dl class="kv-rows" id="bill-facts"></dl>
+        </section>
+
+        <!-- Game (all), start + end date inside the bill's month, Apply → applied as they change -->
+        <section class="card dash-filters" aria-label="Filters" style="margin-bottom:24px">
+          <div class="list-toolbar list-toolbar--wrap">
+            <div class="field__control field__control--select">
+              <select id="f-game" aria-label="Lotto game"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">From</span>
+              <input type="date" id="f-start" aria-label="Start date">
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">To</span>
+              <input type="date" id="f-end" aria-label="End date">
+            </div>
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" id="f-clear" hidden><iconify-icon icon="tabler:x"></iconify-icon>Whole month</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="alert alert--error" id="sum-error" role="alert" hidden style="margin-bottom:24px">
+          <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+          <div class="alert__body">
+            <div class="alert__title">Couldn't load this bill</div>
+            <div class="alert__text">The server didn't respond. Your filters are kept.</div>
+          </div>
+          <div class="alert__actions"><button type="button" class="btn btn--outlined btn--sm" id="sum-retry"><iconify-icon icon="tabler:refresh"></iconify-icon>Try again</button></div>
+        </div>
+
+        <div class="stack" id="sum" aria-live="polite">
+          <!-- BetPerformanceBilling: profit, wagers, cancelled, wins, bonus, ROI (+ lotto group total) -->
+          <section class="card overview" aria-label="Overview">
+            <div class="overview__hero" id="ov-hero"></div>
+            <div class="overview__grid" id="ov-stats"></div>
+          </section>
+
+          <div class="grid">
+            <section class="card col-lg-8" id="card-winloss" aria-labelledby="winloss-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="winloss-title">Win &amp; loss</h2>
+                  <p class="card__subheader" id="winloss-sub">Daily totals</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart"><iconify-icon icon="tabler:chart-line"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table"><iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="winloss-body"></div>
+            </section>
+
+            <!-- betTicketCountOverview: total, resulted, cancelled, rejected -->
+            <section class="card col-lg-4" aria-labelledby="tickets-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="tickets-title">Tickets</h2>
+                  <p class="card__subheader">Share of all tickets in the bill</p>
+                </div>
+              </header>
+              <div class="card__content" id="tickets-body"></div>
+            </section>
+
+            <!-- betGamePerformance (dashboard PerformanceByBetType, per game here) -->
+            <section class="card col-lg-8" id="card-games" aria-labelledby="games-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="games-title">By game</h2>
+                  <p class="card__subheader">Profit, win and loss per lotto game</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart"><iconify-icon icon="tabler:chart-bar"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table"><iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="games-body"></div>
+            </section>
+
+            <!-- LottoGroupBilling: only for providers that aren't owners (group_custom lines + total) -->
+            <section class="card col-lg-4" id="card-group" aria-labelledby="group-title" hidden>
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="group-title">Set lottery</h2>
+                  <p class="card__subheader">Tickets × cost price, billed on top</p>
+                </div>
+              </header>
+              <div class="card__content card__content--flush" id="group-body"></div>
+            </section>
+
+            <!-- RecentBillingBet -->
+            <section class="card col-12" id="card-recent" aria-labelledby="recent-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="recent-title">Recent bets</h2>
+                  <p class="card__subheader">Latest tickets in this bill</p>
+                </div>
+              </header>
+              <div class="card__content card__content--flush" id="recent-body"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/charts.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/billing.js"></script>
+  <script src="../assets/js/domain/tickets.js"></script>
+  <script src="../assets/js/pages/billing.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

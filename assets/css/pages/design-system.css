@@ -1,0 +1,260 @@
+/* ==========================================================================
+   Design-system page layout (style guide only, not product UI)
+   ========================================================================== */
+
+.ds {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: var(--space-8);
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6) var(--space-16);
+}
+.ds__toc {
+  position: sticky;
+  top: var(--space-6);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.ds__toc a {
+  padding: var(--space-1-5) var(--space-3);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+.ds__toc a:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  text-decoration: none;
+}
+.ds__toc-title {
+  padding: var(--space-3) var(--space-3) var(--space-1);
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.ds__back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-3);
+}
+
+.ds__main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+.ds__intro p {
+  max-width: 72ch;
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+}
+.ds-section > h2 {
+  margin-bottom: var(--space-1);
+}
+.ds-section > .ds-lead {
+  max-width: 72ch;
+  margin-bottom: var(--space-5);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.ds-block {
+  margin-bottom: var(--space-6);
+}
+.ds-block__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.ds-block__title {
+  font-size: 15px;
+  font-weight: var(--fw-semibold);
+}
+.ds-code {
+  padding: 2px var(--space-1-5);
+  border-radius: var(--radius-xs);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 12px;
+}
+.ds-demo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.ds-demo--col {
+  flex-direction: column;
+  align-items: stretch;
+}
+.ds-demo--canvas {
+  background: var(--bg-canvas);
+}
+.ds-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+.ds-row__label {
+  width: 88px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+/* Principles */
+.ds-principles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+.ds-principle {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.ds-principle h3 {
+  margin-bottom: var(--space-1);
+}
+.ds-principle p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* 60-30-10 ratio bar */
+.ratio {
+  display: flex;
+  height: 56px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+.ratio > div {
+  display: flex;
+  align-items: flex-end;
+  padding: var(--space-2) var(--space-3);
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+}
+.ratio__60 { flex: 60; background: var(--bg-surface); color: var(--text-secondary); }
+.ratio__30 { flex: 30; background: var(--bg-inverse); color: var(--text-inverse); }
+.ratio__10 { flex: 10; background: var(--primary); color: var(--on-primary); }
+
+/* Swatches */
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--space-3);
+}
+.swatch {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+.swatch__chip {
+  height: 56px;
+  background: var(--c);
+  border-bottom: 1px solid var(--border);
+}
+.swatch__meta {
+  padding: var(--space-2) var(--space-3);
+  font-size: 12px;
+  line-height: 16px;
+}
+.swatch__name {
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.swatch__hex,
+.swatch__role {
+  color: var(--text-muted);
+}
+
+.token-dot {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  background: var(--c);
+  vertical-align: middle;
+}
+
+/* Type specimens */
+.type-row {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) 180px;
+  gap: var(--space-4);
+  align-items: baseline;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border);
+}
+.type-row:last-child {
+  border-bottom: 0;
+}
+.type-row__spec {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Spacing + radius */
+.space-bar {
+  height: 12px;
+  border-radius: 2px;
+  background: var(--primary);
+}
+.radius-box {
+  width: 72px;
+  height: 72px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-muted);
+}
+
+/* Static menu demo (menus are absolutely positioned in the app) */
+.ds-demo .menu {
+  position: static;
+}
+
+/* Mini sidebar demo */
+.ds-nav {
+  width: 260px;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+
+@media (max-width: 899.98px) {
+  .ds {
+    grid-template-columns: 1fr;
+    padding: var(--space-6) var(--space-4) var(--space-16);
+  }
+  .ds__toc {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .ds__toc-title {
+    width: 100%;
+  }
+  .type-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-1);
+  }
+}

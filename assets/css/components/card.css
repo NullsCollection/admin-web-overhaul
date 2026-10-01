@@ -1,0 +1,235 @@
+/* ==========================================================================
+   Card → MUI <Card> (elevation 0, NO top border) + CardHeader / CardContent / CardActions
+   Stat → dashboard figure (replaces WidgetCard1 / WidgetCard2)
+   Meter → MUI <LinearProgress variant="determinate">
+   ========================================================================== */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+
+.card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6) var(--space-4);
+}
+.card__header--divided {
+  border-bottom: 1px solid var(--border);
+}
+.card__heading {
+  min-width: 0;
+}
+.card__title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.card__subheader {
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-muted);
+}
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.card__content {
+  flex: 1;
+  padding: 0 var(--space-6) var(--space-6);
+}
+.card__content:first-child {
+  padding-top: var(--space-6);
+}
+.card__header--divided + .card__content {
+  padding-top: var(--space-4);
+}
+.card__content--flush {
+  padding: 0;
+}
+
+.card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6);
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------- Stat ---------- */
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+.stat__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+.stat__label iconify-icon {
+  font-size: 16px;
+  color: var(--text-muted);
+}
+.stat__value {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.stat__dec {
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.stat__meta {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+.stat__value.is-negative {
+  color: var(--error-text);
+}
+
+/* ---------- Meter ---------- */
+.meter {
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  overflow: hidden;
+}
+.meter__fill {
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--meter-fill, var(--primary)); /* MUI LinearProgress default = primary */
+  transition: width var(--dur) var(--ease);
+}
+
+/* A card holding a destructive action (Cancel round) */
+.card--danger {
+  border-color: color-mix(in srgb, var(--error) 35%, var(--border));
+}
+
+/* ---------- Selectable summary cards (10b: one per bet type, a radio group) ----------
+   Port: CardActionArea inside an outlined Card, aria radio; selected = brand ring, no lift / shadow */
+.section-title {
+  margin: 0 0 var(--space-3);
+  color: var(--text-primary);
+}
+.type-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: var(--space-3);
+}
+.type-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.type-card:hover {
+  border-color: var(--border-strong);
+}
+.type-card:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.type-card.is-selected {
+  /* 2px brand border; 1px less padding so the content doesn't move (no shadows) */
+  padding: calc(var(--space-4) - 1px);
+  border: 2px solid var(--primary);
+}
+.type-card__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+}
+.type-card__title iconify-icon {
+  font-size: 18px;
+  color: var(--primary-text);
+}
+.type-card__value {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.type-card__label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.type-card__facts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--border);
+}
+.type-card__facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 13px;
+}
+.type-card__facts dt {
+  color: var(--text-muted);
+}
+.type-card__facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.type-card--loading {
+  gap: var(--space-3);
+  cursor: default;
+}
+@media (max-width: 599.98px) {
+  .type-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .type-card {
+    padding: var(--space-3);
+  }
+  .type-card.is-selected {
+    padding: calc(var(--space-3) - 1px);
+  }
+  .type-card__value {
+    font-size: 16px;
+    line-height: 22px;
+  }
+  .type-card__facts > div {
+    flex-direction: column;
+    gap: 0;
+  }
+}

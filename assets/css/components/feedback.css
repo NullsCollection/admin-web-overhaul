@@ -1,0 +1,125 @@
+/* ==========================================================================
+   Alert → MUI <Alert variant="outlined">   Empty → empty-state pattern
+   Skeleton → MUI <Skeleton>                Spinner → replaces src/components/Spinner
+   ========================================================================== */
+
+/* ---------- Alert ---------- */
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+}
+.alert > iconify-icon {
+  flex: none;
+  margin-top: 1px;
+  font-size: 20px;
+  color: var(--text-muted);
+}
+.alert__body {
+  flex: 1;
+  min-width: 0;
+}
+.alert__title {
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.alert__text {
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-secondary);
+}
+.alert__actions {
+  flex: none;
+  align-self: center;
+}
+.alert--error   { background: var(--error-soft);   border-color: color-mix(in srgb, var(--error) 30%, transparent); }
+.alert--error > iconify-icon   { color: var(--error-text); }
+.alert--warning { background: var(--warning-soft); border-color: color-mix(in srgb, var(--warning) 30%, transparent); }
+.alert--warning > iconify-icon { color: var(--warning-text); }
+.alert--success { background: var(--success-soft); border-color: color-mix(in srgb, var(--success) 30%, transparent); }
+.alert--success > iconify-icon { color: var(--success-text); }
+.alert--info    { background: var(--info-soft);    border-color: color-mix(in srgb, var(--info) 30%, transparent); }
+.alert--info > iconify-icon    { color: var(--info-text); }
+
+/* ---------- Empty state ---------- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 100%;
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+}
+.empty .avatar {
+  margin-bottom: var(--space-2);
+}
+.empty__title {
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.empty__text {
+  max-width: 36ch;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--text-muted);
+}
+
+/* ---------- Skeleton ---------- */
+.skeleton {
+  display: block;
+  border-radius: var(--radius-sm);
+  background: var(--bg-muted);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+.skeleton--text {
+  height: 12px;
+  width: var(--w, 60%);
+}
+.skeleton--value {
+  height: 24px;
+  width: var(--w, 70%);
+}
+/* On the page canvas (headers outside cards): bg-muted is the canvas color there */
+.skeleton--on-canvas {
+  background: var(--border);
+}
+.skeleton--block {
+  height: var(--h, 240px);
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+@keyframes pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* ---------- Toast (MUI Snackbar / react-hot-toast) ---------- */
+.toast {
+  position: fixed;
+  z-index: var(--z-tooltip);
+  top: calc(var(--topbar-h) + var(--space-3));
+  right: var(--space-6);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  max-width: min(360px, calc(100vw - 32px));
+  padding: var(--space-2-5, 10px) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--bg-inverse);
+  color: var(--text-inverse);
+  font-size: 13px;
+}
+.toast[hidden] {
+  display: none;
+}

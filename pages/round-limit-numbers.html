@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round limit numbers | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Round limit numbers  (Phase 8d)
+  Route:  /lotto/rounds/[id]/limit-numbers   (round-limit-numbers.html?id=8422)
+  Source: src/views/pages/lotto/round/RoundLimitTemplateTabs.tsx (+ round/components/QuickAssignTemplate,
+          CreateLimitTemplate). group_custom rounds go back to the rounds list.
+  Engine: core/list.js   Logic: pages/round-limit-numbers.js   Mock: mock/lotto.js (roundLimitTemplates)
+-->
+<body data-page="lotto-rounds" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title, live count, main action (canCreate) ============ -->
+        <a class="back-link" href="rounds.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>Round management</a>
+        <div class="page-header">
+          <div>
+            <div class="page-header__title-row">
+              <h1 class="page-header__title">Limit numbers</h1>
+              <span id="round-chip"></span>
+            </div>
+            <p class="page-header__sub" id="round-sub"></p>
+          </div>
+        </div>
+
+        <!-- ============ List card: toolbar / table / pagination ============ -->
+        <section class="card list-card" id="sets-card" aria-labelledby="sets-title">
+          <header class="card__header card__header--divided">
+            <div class="card__heading">
+              <h2 class="card__title" id="sets-title">Limit number sets for this round</h2>
+              <p class="card__subheader">Turn a set on to apply its limits to this round only. Global sets apply to every provider; local sets to one.</p>
+            </div>
+            <div class="card__actions">
+              <a class="btn btn--outlined btn--sm" href="limit-template-form.html"><iconify-icon icon="tabler:plus"></iconify-icon>Create limit set</a>
+            </div>
+          </header>
+          <div class="list-toolbar">
+            <!-- Search (GenericFilters "search-text") -->
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by name" aria-label="Search limit sets">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="list-toolbar__filters">
+              <div class="field__control field__control--select">
+                <select id="f-active" data-list-filter="isActive" aria-label="On or off">
+                  <option value="all">On and off</option>
+                  <option value="on">On for this round</option>
+                  <option value="off">Off</option>
+                </select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/round-limit-numbers.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

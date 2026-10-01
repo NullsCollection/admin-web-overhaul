@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Billing | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Billing  (Phase 11e, list template)   billings.html (current) · billings.html?view=history (/billings/history)
+  Source: src/pages/billings/index.tsx → views/pages/billings/useBillingPage.tsx (+ useActionSection, DialogConfirmPaid,
+          useHistoryDialog, DialogExport, TiggerBillingDialog / ContentTrigger, CostPriceErrorModal);
+          src/pages/billings/history → useBillingHistoryPage.tsx (same columns, past cycles)
+  Data:   useGetBillingV2({ providerId, monthStart, monthEnd, status, contactUrl, page, pageSize })
+  Engine: core/list.js (selectable rows for CSV export)   Logic: pages/billings.js   Mock: mock/billing.js
+-->
+<body data-page="billings" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <a class="back-link" id="back" href="billings.html" hidden><iconify-icon icon="tabler:arrow-left"></iconify-icon>Billing</a>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title" id="page-title">Billing</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+          <div class="page-header__actions" id="page-actions">
+            <a class="btn btn--outlined" href="billings.html?view=history"><iconify-icon icon="tabler:history"></iconify-icon>Billing history</a>
+            <button type="button" class="btn btn--contained" id="run-billing"><iconify-icon icon="tabler:player-play"></iconify-icon>Run billing</button>
+          </div>
+        </div>
+
+        <section class="card list-card" id="bills-card" aria-label="Bills">
+          <div class="list-toolbar list-toolbar--wrap">
+            <!-- Provider: shown when the user has no provider or more than one (showProviderFilter) -->
+            <div class="field__control field__control--select">
+              <select id="f-provider" data-list-filter="provider" aria-label="Provider"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <!-- Contact URL (useGetContactUrlFilter) -->
+            <div class="field__control field__control--select">
+              <select id="f-contact" data-list-filter="contact" aria-label="Contact URL"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <!-- Month start / end (month pickers, default this month) -->
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">From</span>
+              <input type="month" id="f-from" data-list-filter="from" aria-label="From month">
+            </div>
+            <div class="field__control list-toolbar__date">
+              <span class="field__prefix">To</span>
+              <input type="month" id="f-to" data-list-filter="to" aria-label="To month">
+            </div>
+            <div class="field__control field__control--select">
+              <select data-list-filter="status" aria-label="Share status">
+                <option value="all">All share statuses</option>
+                <option value="waiting">Waiting for review</option>
+                <option value="ready">Ready to pay</option>
+                <option value="paid">Paid</option>
+                <option value="cancel">Cancelled</option>
+              </select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden><iconify-icon icon="tabler:x"></iconify-icon>Clear filters</button>
+            </div>
+          </div>
+          <!-- Export CSV for the picked bills (app: "noSelected" toast when none) -->
+          <div class="selection-bar" id="sel-bar" hidden>
+            <span class="t-body2" id="sel-count"></span>
+            <div class="selection-bar__actions">
+              <button type="button" class="btn btn--text btn--sm" id="sel-clear">Clear selection</button>
+              <button type="button" class="btn btn--contained btn--sm" id="sel-export"><iconify-icon icon="tabler:file-spreadsheet"></iconify-icon>Export CSV</button>
+            </div>
+          </div>
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/billing.js"></script>
+  <script src="../assets/js/pages/billings.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

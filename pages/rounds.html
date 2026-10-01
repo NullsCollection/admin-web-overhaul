@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round management | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Round management  (Phase 8b, list template)
+  Source: src/pages/lotto/rounds/index.tsx → src/views/pages/lotto/round/useRoundTable.tsx
+  Data:   useGetRounds({ page, pageSize, search, orderedBy, filter: { lottoGameId } })
+  Engine: core/list.js   Page config: pages/rounds.js   Mock: mock/rounds.js (+ mock/lotto.js)
+-->
+<body data-page="lotto-rounds" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header: title, live count, main action (canCreate) ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Round management</h1>
+            <p class="page-header__sub" data-list-count aria-live="polite">Loading…</p>
+          </div>
+          <a class="btn btn--contained" href="round-form.html">
+            <iconify-icon icon="tabler:plus"></iconify-icon>New round
+          </a>
+        </div>
+
+        <!-- ============ List card: toolbar / table / pagination ============ -->
+        <section class="card list-card" id="rounds-card" aria-label="Rounds">
+          <div class="list-toolbar">
+            <!-- Search (GenericFilters "search-text") -->
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by round ID or game" aria-label="Search rounds">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <!-- Game: filter[lottoGroupId] (useGetGameFilter, grouped by lotto group).
+                 PROPOSAL: status filter (needs filter[status] on the API) -->
+            <div class="list-toolbar__filters">
+              <div class="field__control field__control--select">
+                <select id="f-game" data-list-filter="lottoGameId" aria-label="Game"></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+              <div class="field__control field__control--select">
+                <select id="f-status" data-list-filter="status" aria-label="Status"></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear filters
+              </button>
+            </div>
+          </div>
+
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/rounds.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

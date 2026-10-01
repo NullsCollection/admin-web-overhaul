@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sync sites | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Sync sites  (Phase 11d)
+  Source: src/pages/sync/index.tsx (sites table + SyncSiteForm dialog) + components/SyncDataTable/ErrorReceiverEvent.tsx
+  Data:   useGetSyncSites(), toggleSyncSiteStatus(id), deleteSyncSite(id), useGetErrorSyncSiteReceivers({ page, pageSize })
+  Engine: core/list.js (two lists)   Logic: pages/sync-sites.js   Mock: mock/rounds.js (syncSites, syncErrors)
+-->
+<body data-page="sync-sites" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Sync sites</h1>
+            <p class="page-header__sub">Other sites that get rounds, games and results from this one.</p>
+          </div>
+          <button type="button" class="btn btn--contained" id="add-site"><iconify-icon icon="tabler:plus"></iconify-icon>New sync site</button>
+        </div>
+
+        <div class="stack" style="gap:24px">
+          <section class="card list-card" id="sites-card" aria-labelledby="sites-title">
+            <header class="card__header card__header--divided">
+              <div class="card__heading">
+                <h2 class="card__title" id="sites-title">Sites</h2>
+                <p class="card__subheader" data-list-count aria-live="polite"></p>
+              </div>
+            </header>
+            <div class="list-body" aria-live="polite"></div>
+            <div data-list-pager></div>
+          </section>
+
+          <!-- ErrorReceiverEvent: sync calls this site received and couldn't apply -->
+          <section class="card list-card" id="errors-card" aria-labelledby="errors-title">
+            <header class="card__header card__header--divided">
+              <div class="card__heading">
+                <h2 class="card__title" id="errors-title">Receive errors</h2>
+                <p class="card__subheader">Sync calls this site got but couldn't apply. Open one to see what was sent and why it failed.</p>
+              </div>
+            </header>
+            <div class="list-toolbar">
+              <div class="list-toolbar__search">
+                <div class="field__control">
+                  <iconify-icon icon="tabler:search"></iconify-icon>
+                  <input type="search" data-list-search placeholder="Search by reference ID or error" aria-label="Search receive errors">
+                  <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                    <iconify-icon icon="tabler:x"></iconify-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="list-body" aria-live="polite"></div>
+            <div data-list-pager></div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/sync-sites.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

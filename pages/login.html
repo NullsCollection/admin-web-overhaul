@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Login  (Phase 2)
+  Source: src/pages/login/index.tsx  (BlankLayout, guestGuard, reCAPTCHA v3, react-hook-form + yup)
+  Fields: email (valid, required) · password (min 5, required) · rememberMe (default on)
+  Logic:  assets/js/pages/auth.js
+-->
+<body data-page="login" data-base="../">
+  <div class="auth">
+    <div class="auth__art" aria-hidden="true"></div>
+
+    <main class="auth__panel">
+      <header class="auth__top" id="auth-top"></header>
+
+      <div class="auth__body">
+        <form class="auth__form" id="login-form" novalidate>
+          <h1 class="auth__title">Log in</h1>
+          <p class="auth__lead">Welcome back. Use your admin email and password.</p>
+
+          <!-- Server error (today a toast from errorHandler(error)); shown inline instead -->
+          <div class="alert alert--error auth__alert" id="login-error" role="alert" hidden>
+            <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+            <div class="alert__body">
+              <div class="alert__title">Couldn't log you in</div>
+              <div class="alert__text">The email or password is incorrect. Check them and try again.</div>
+            </div>
+          </div>
+
+          <div class="auth__fields">
+            <div class="field">
+              <label class="field__label" for="email">Email</label>
+              <div class="field__control">
+                <input id="email" name="email" type="email" autocomplete="username" placeholder="you@company.com" autofocus>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="password">Password</label>
+              <div class="field__control field__control--adorned">
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter your password">
+                <button type="button" class="icon-btn icon-btn--sm field__adornment" data-toggle-password aria-label="Show password" aria-pressed="false">
+                  <iconify-icon icon="tabler:eye"></iconify-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="auth__row">
+              <label class="checkbox">
+                <input type="checkbox" id="remember" name="remember" checked>
+                <span class="check"><iconify-icon icon="tabler:check"></iconify-icon></span>
+                Remember me
+              </label>
+              <a href="forgot-password.html">Forgot password?</a>
+            </div>
+          </div>
+
+          <div class="auth__actions">
+            <button type="submit" class="btn btn--contained btn--lg btn--block" id="login-submit">Log in</button>
+          </div>
+
+          <!-- reCAPTCHA v3: if the badge is hidden, Google requires this notice -->
+          <p class="auth__legal">
+            Protected by reCAPTCHA. The Google <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms">Terms of Service</a> apply.
+          </p>
+        </form>
+      </div>
+
+      <footer class="auth__foot" id="auth-foot"></footer>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/pages/auth.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

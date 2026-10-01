@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Round result | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Round result  (Phase 8c)
+  Route:  /lotto/rounds/[id]/result   (round-result.html?id=8423)
+  Source: src/views/pages/lotto/round/Result/ResultList.tsx (+ ResultForm, ResultInput/*, ResultDetail,
+          CancelRoundForm, _ResultLottoInfo, _PriceConfigInfo). CalculatedResult is unused in the app.
+  Logic:  pages/round-result.js   Domain: domain/rounds.js (result fields, chips)   Mock: mock/rounds.js
+-->
+<body data-page="lotto-rounds" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div id="result-root"></div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/round-result.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

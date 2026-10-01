@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Summary by bet type | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Summary by bet type  (Phase 10b)
+  Source: src/pages/lotto/bet-tickets/summary_by_bet_type/index.tsx → views/pages/bet-ticket/summary-by-bet-type/*
+  Data:   useGetLatestRounds(gameId, providerId) → round options
+          useGetBetTicketSummaryByType({ filter }) → [{ type, bet_amount, reward_paid, max_reward_amount, bet_count }]
+          useGetBetTicketSummaryByTypeAndNumber({ filter + type }) → [{ type, data: [{ bet_number, bet_amount, bet_count, total_reward_amount }] }]
+  Engine: core/list.js (numbers table)   Logic: pages/ticket-summary-bet-type.js
+-->
+<body data-page="ticket-summary-bet-type" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Summary by bet type</h1>
+            <p class="page-header__sub" id="sbt-sub">Pick a game and a round to see what was bet on it.</p>
+          </div>
+          <button type="button" class="btn btn--outlined" id="sbt-refresh" hidden><iconify-icon icon="tabler:refresh"></iconify-icon>Refresh</button>
+        </div>
+
+        <!-- ============ Filters: game + round required (validateApply), the rest optional ============ -->
+        <section class="card" style="margin-bottom:24px" aria-label="Filters">
+          <div class="list-toolbar list-toolbar--wrap" style="border-bottom:0">
+            <div class="field__control field__control--select">
+              <select id="f-game" aria-label="Game (required)"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="field__control field__control--select" id="f-round-wrap">
+              <select id="f-round" aria-label="Round (required)" disabled><option value="">Pick a game first</option></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="field__control field__control--select">
+              <select id="f-provider" aria-label="Provider"></select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="field__control">
+              <iconify-icon icon="tabler:ticket"></iconify-icon>
+              <input type="search" id="f-ticket" placeholder="Ticket ID" aria-label="Ticket ID">
+            </div>
+            <div class="field__control">
+              <iconify-icon icon="tabler:user"></iconify-icon>
+              <input type="search" id="f-user" placeholder="Username" aria-label="Username">
+            </div>
+            <div class="field__control field__control--select">
+              <select id="f-status" aria-label="Status">
+                <option value="all">All statuses</option>
+                <option value="waiting">Waiting</option>
+                <option value="approved">Waiting for result</option>
+                <option value="rejected">Rejected</option>
+                <option value="settled">Resulted</option>
+              </select>
+              <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+            </div>
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" id="f-clear" hidden><iconify-icon icon="tabler:x"></iconify-icon>Clear filters</button>
+            </div>
+          </div>
+        </section>
+
+        <div class="alert alert--error" id="sbt-error" role="alert" hidden style="margin-bottom:24px">
+          <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+          <div class="alert__body">
+            <div class="alert__title">Couldn't load the summary</div>
+            <div class="alert__text">The server didn't respond. Your filters are kept.</div>
+          </div>
+          <div class="alert__actions"><button type="button" class="btn btn--outlined btn--sm" id="sbt-retry"><iconify-icon icon="tabler:refresh"></iconify-icon>Try again</button></div>
+        </div>
+
+        <!-- Nothing picked yet -->
+        <section class="card" id="sbt-pick">
+          <div class="empty list-state">
+            <span class="avatar avatar--lg avatar--square"><iconify-icon icon="tabler:report-search"></iconify-icon></span>
+            <div class="empty__title">Pick a game and a round</div>
+            <div class="empty__text">The summary is for one round at a time. Rounds show once you pick the game.</div>
+          </div>
+        </section>
+
+        <div class="stack" id="sbt-body" hidden>
+          <!-- SummaryByType: a card per bet type; picking one loads its numbers -->
+          <section aria-labelledby="types-title">
+            <h2 class="t-subtitle1 section-title" id="types-title">By bet type</h2>
+            <div class="type-cards" id="type-cards" role="radiogroup" aria-labelledby="types-title"></div>
+          </section>
+
+          <!-- SummaryByTypeAndNumber -->
+          <section class="card list-card" id="numbers-card" aria-labelledby="numbers-title">
+            <header class="card__header card__header--divided">
+              <div class="card__heading">
+                <h2 class="card__title" id="numbers-title">Numbers</h2>
+                <p class="card__subheader" id="numbers-sub"></p>
+              </div>
+            </header>
+            <div class="list-toolbar">
+              <div class="list-toolbar__search">
+                <div class="field__control">
+                  <iconify-icon icon="tabler:search"></iconify-icon>
+                  <input type="search" data-list-search inputmode="numeric" placeholder="Search a number" aria-label="Search a number">
+                  <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                    <iconify-icon icon="tabler:x"></iconify-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="list-body" aria-live="polite"></div>
+            <div data-list-pager></div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/domain/lotto.js"></script>
+  <script src="../assets/js/domain/tickets.js"></script>
+  <script src="../assets/js/domain/rounds.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/lotto.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/ticket-summary-bet-type.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

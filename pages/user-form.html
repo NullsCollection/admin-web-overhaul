@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New user | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: User new / edit  (Phase 11c, form template; same logic as the provider user form, global scope)
+  New:  user-form.html          → src/pages/users/new.tsx
+  Edit: user-form.html?user=1   → src/pages/users/[id]/edit.tsx
+  Form: views/pages/user/UserForm.tsx
+  Engine: core/form.js. Page logic: pages/provider-user-form.js
+-->
+<body data-page="users" data-base="../" data-scope="global">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <a class="back-link" id="back" href="users.html"><iconify-icon icon="tabler:arrow-left"></iconify-icon>User management</a>
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title" id="form-title">New user</h1>
+            <p class="page-header__sub" id="form-sub"></p>
+          </div>
+        </div>
+
+        <form class="form-page" id="user-form" novalidate>
+          <div class="alert alert--error form-summary" data-form-summary role="alert" hidden>
+            <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+            <div class="alert__body">
+              <div class="alert__title"></div>
+              <ul class="alert__text"></ul>
+            </div>
+          </div>
+          <div class="stack" data-form-body></div>
+          <div class="form-bar">
+            <div class="form-bar__status" data-form-status aria-live="polite"></div>
+            <div class="form-bar__actions">
+              <button type="button" class="btn btn--outlined" data-form-cancel>Cancel</button>
+              <button type="submit" class="btn btn--contained" data-form-submit id="form-submit">Create user</button>
+            </div>
+          </div>
+        </form>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/form.js"></script>
+  <script src="../assets/js/mock/providers.js"></script>
+  <script src="../assets/js/mock/users.js"></script>
+  <script src="../assets/js/domain/providers.js"></script>
+  <script src="../assets/js/pages/provider-user-form.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

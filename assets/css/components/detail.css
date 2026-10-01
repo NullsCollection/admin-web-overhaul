@@ -1,0 +1,522 @@
+/* ==========================================================================
+   Detail-page components (Phase 5)
+   .kv          key–value list   → Grid + Typography (UserInfo "InfoRow/Label/Value")
+   .timeline    event log         → @mui/lab Timeline (TicketCommandsTable rows)
+   .code-block  request / JSON    → <Box component="pre">
+   .bet-number  a lotto number    → Typography with tabular digits
+   .dialog--wide                  → Dialog maxWidth="md" (ResultModal)
+   ========================================================================== */
+
+/* ---------- Key–value list ---------- */
+.kv {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4) var(--space-6);
+  margin: 0;
+}
+@media (min-width: 600px) {
+  .kv {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1200px) {
+  .kv--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+.kv__item {
+  min-width: 0;
+}
+.kv dt {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+.kv dd {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1-5);
+  margin: var(--space-1) 0 0;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+.kv dd a {
+  color: var(--primary-text);
+}
+/* inline copy button must not make its row taller */
+.kv dd .icon-btn {
+  width: 24px;
+  height: 24px;
+  margin: -2px 0;
+}
+.kv dd .icon-btn iconify-icon {
+  font-size: 16px;
+}
+
+/* ---------- Summary card: facts + totals side by side ---------- */
+.summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.summary__facts {
+  display: flex;
+  align-items: center;
+  padding: var(--space-6);
+}
+.summary__facts > .kv {
+  flex: 1;
+}
+.summary__totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--border);
+}
+.summary__totals .stat {
+  padding: var(--space-5) var(--space-6);
+}
+.summary__totals .stat + .stat {
+  border-left: 1px solid var(--border);
+}
+@media (min-width: 900px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+  .summary__totals {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: stretch;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+  .summary__totals .stat {
+    justify-content: center;
+  }
+  .summary__totals .stat + .stat {
+    border-left: 0;
+    border-top: 1px solid var(--border);
+  }
+}
+
+/* ---------- Bet number ---------- */
+.bet-number {
+  display: inline-block;
+  min-width: 32px;
+  padding: 1px var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.12em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Timeline ---------- */
+.timeline {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.timeline__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  gap: var(--space-4);
+  padding-bottom: var(--space-6);
+}
+.timeline__item:last-child {
+  padding-bottom: 0;
+}
+/* the rail between dots */
+.timeline__item:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  top: 36px;
+  bottom: 4px;
+  left: 15px;
+  width: 2px;
+  border-radius: 1px;
+  background: var(--border);
+}
+.timeline__dot {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+}
+.timeline__dot iconify-icon {
+  font-size: 16px;
+}
+.timeline__dot--error {
+  background: var(--error-soft);
+  color: var(--error-text);
+}
+.timeline__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  min-height: 32px;
+}
+.timeline__title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-size: 14px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.timeline__title.is-danger {
+  color: var(--error-text);
+}
+.timeline__actor {
+  font-size: 12px;
+  font-weight: var(--fw-regular);
+  color: var(--text-muted);
+}
+.timeline__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  margin-top: var(--space-1);
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.timeline__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+.timeline__meta .is-warning {
+  color: var(--warning-text);
+}
+.timeline__body > .alert,
+.timeline__body > .code-block {
+  margin-top: var(--space-3);
+}
+
+/* ---------- Code block ---------- */
+.code-block {
+  position: relative;
+  margin: 0;
+  padding: var(--space-4);
+  padding-right: var(--space-12);
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-primary);
+  font-family: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: pre;
+  tab-size: 2;
+}
+.code-block__copy {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+}
+.code-block[hidden] {
+  display: none;
+}
+
+/* ---------- Wide dialog (JSON results) ---------- */
+.dialog--wide {
+  max-width: 720px;
+}
+.dialog--wide .code-block {
+  max-height: 360px;
+  overflow: auto;
+}
+.dialog__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4) var(--space-6) 0;
+}
+/* maxWidth="lg" (PreviewModal) */
+.dialog--xl {
+  max-width: 1040px;
+}
+.dialog--xl .dialog__body {
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- Summary v2: identity row + aligned label/value rows ---------- */
+.summary__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.summary__who {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+.summary__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+.summary__name {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+}
+.summary__sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.summary__aside {
+  text-align: right;
+}
+.summary__aside .summary__sub {
+  display: block;
+}
+.summary__aside strong {
+  display: block;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+
+/* Label/value rows: labels share one column so values line up */
+.kv-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--space-8);
+  margin: 0;
+  padding: var(--space-2) var(--space-6) var(--space-3);
+}
+@media (min-width: 900px) {
+  .kv-rows {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.kv-row {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+/* last row of each column has no divider */
+.kv-rows > .kv-row:last-child,
+.kv-rows > .kv-row:nth-last-child(2):nth-child(odd) {
+  border-bottom: 0;
+}
+@media (max-width: 899.98px) {
+  .kv-rows > .kv-row:nth-last-child(2):nth-child(odd) {
+    border-bottom: 1px solid var(--border);
+  }
+}
+.kv-row dt {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.kv-row dd {
+  display: flex;
+  flex-wrap: wrap; /* a value + its note wrap as whole pieces on phones, not mid-number */
+  align-items: center;
+  gap: 0 var(--space-1-5);
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+.kv-row dd .icon-btn {
+  width: 24px;
+  height: 24px;
+  margin: -2px 0;
+}
+.kv-row dd .icon-btn iconify-icon {
+  font-size: 16px;
+}
+
+/* ---------- Limit number set preview: a card per bet type, grid, each card as tall as its table ---------- */
+.limit-section {
+  margin: 0 0 var(--space-3);
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.limit-section:not(:first-child) {
+  margin-top: var(--space-6);
+}
+.limit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+  align-items: start;
+}
+.limit-grid--wide {
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+}
+.limit-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+.limit-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) var(--space-2);
+}
+.limit-card__title {
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.limit-card__max {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.limit-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1-5);
+  padding: 0 var(--space-3) var(--space-2);
+}
+.limit-card__meta > .t-body2 {
+  width: 72px;
+}
+.limit-card__table th:first-child,
+.limit-card__table td:first-child {
+  padding-left: var(--space-3);
+}
+.limit-card__table th:last-child,
+.limit-card__table td:last-child {
+  padding-right: var(--space-3);
+}
+.limit-card__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+.limit-card__table th,
+.limit-card__table td {
+  height: 32px;
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+  font-size: 13px;
+}
+.limit-card__table th {
+  height: 28px;
+}
+.limit-card__none {
+  margin: 0;
+  padding: 0 var(--space-3) var(--space-3);
+}
+
+/* ---------- Worked sum (8e yeekee result: sum − row 16 = result) ----------
+   Port: Box + Typography rows (no new MUI component). Operator column keeps the numbers lined up. */
+.calc__title {
+  margin: 0 0 var(--space-3);
+}
+/* Result card (8e): winning numbers | worked sum, side by side ≥ 900px, stacked below */
+.result-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+@media (min-width: 900px) {
+  .result-split {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+  .result-split__side {
+    padding-left: var(--space-8);
+    border-left: 1px solid var(--border);
+  }
+  .result-split .calc {
+    max-width: none;
+  }
+}
+.calc__note {
+  margin: var(--space-4) 0 0;
+}
+.calc {
+  max-width: 560px;
+  margin: 0;
+}
+.calc__row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+.calc__row:last-child {
+  border-bottom: 0;
+}
+.calc__row dt {
+  position: relative;
+  padding-left: var(--space-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-2);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+.calc__row dt small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+.calc__op {
+  position: absolute;
+  left: 0;
+  color: var(--text-muted);
+  font-weight: var(--fw-medium);
+}
+.calc__row dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.calc__row--total dt,
+.calc__row--total dd {
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+}
+.calc__row--total dd {
+  font-size: 16px;
+}
+
+/* Long single-line values (signatures, hashes): wrap anywhere instead of scrolling sideways */
+.code-block--wrap {
+  white-space: pre-wrap;
+  word-break: break-all;
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pending rounds | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Pending rounds  (Phase 6)
+  Source: src/pages/pending-round/index.tsx → views/pages/pending-round/usePendingRoundPage.tsx
+          = the Round table (views/pages/lotto/round/useRoundTable.tsx) with a fixed filter:
+            status "close_bet", is_result_confirmed false, close_at within the last 7 days
+  Columns: ID, Game name, Opened at, Closed at (+ Waiting, derived)   Filter: search text
+  Row actions: Manage result, Current bet, Limit numbers, Edit round (if editable)
+  Engine: core/list.js   Page config: assets/js/pages/pending-round.js
+-->
+<body data-page="pending-round" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Pending rounds</h1>
+            <p class="page-header__sub"><span data-list-count>Loading…</span> closed in the last 7 days and still need a result.</p>
+          </div>
+        </div>
+
+        <section class="card list-card" id="rounds-card" aria-label="Pending rounds">
+          <div class="list-toolbar">
+            <div class="list-toolbar__search">
+              <div class="field__control">
+                <iconify-icon icon="tabler:search"></iconify-icon>
+                <input type="search" data-list-search placeholder="Search by game or round ID" aria-label="Search pending rounds">
+                <button type="button" class="icon-btn icon-btn--sm" data-list-search-clear aria-label="Clear search" hidden>
+                  <iconify-icon icon="tabler:x"></iconify-icon>
+                </button>
+              </div>
+            </div>
+            <div></div>
+            <div class="list-toolbar__end">
+              <button type="button" class="btn btn--text btn--sm" data-list-clear hidden>
+                <iconify-icon icon="tabler:x"></iconify-icon>Clear search
+              </button>
+            </div>
+          </div>
+          <div class="list-body" aria-live="polite"></div>
+          <div data-list-pager></div>
+        </section>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/dialog.js"></script>
+  <script src="../assets/js/core/list.js"></script>
+  <script src="../assets/js/mock/rounds.js"></script>
+  <script src="../assets/js/pages/pending-round.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>

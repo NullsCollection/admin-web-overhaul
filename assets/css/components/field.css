@@ -1,0 +1,513 @@
+/* ==========================================================================
+   Field → src/@core/components/mui/text-field (CustomTextField: label ABOVE the box)
+   .field__control              → the input box (MuiInputBase-root)
+   .field__control--select      → <CustomTextField select> / native select
+   .multiselect                 → src/@core/components/mui/autocomplete (multiple)
+   Sizes: default = size="small" (40px). Filter bars use this size.
+   ========================================================================== */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+  position: relative;
+}
+
+.field__label {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.field__label .req {
+  color: var(--error-text);
+  margin-left: 2px;
+}
+
+.field__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-md);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  transition: border-color var(--dur-fast) var(--ease);
+}
+.field__control:hover {
+  border-color: var(--border-strong);
+}
+/* Focus = 2px ring made from border + 1px inset outline. No box-shadow. */
+.field__control:focus-within {
+  border-color: var(--focus-ring);
+  outline: 1px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+.field__control input,
+.field__control select,
+.field__control textarea {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: inherit;
+}
+.field__control input::placeholder {
+  color: var(--text-faint);
+}
+.field__control > iconify-icon {
+  flex: none;
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+.field__control--sm {
+  height: var(--control-sm);
+  border-radius: var(--radius-sm);
+}
+
+/* Select: native element fills the box, chevron sits on top */
+.field__control--select {
+  padding: 0;
+}
+.field__control--select select {
+  width: 100%;
+  padding: 0 var(--space-10) 0 var(--space-3);
+  appearance: none;
+  cursor: pointer;
+}
+.field__control--select > iconify-icon {
+  position: absolute;
+  right: var(--space-3);
+  pointer-events: none;
+}
+/* Open (our menu is showing): same ring as focus, chevron flips */
+.field__control--select.is-open {
+  border-color: var(--focus-ring);
+  outline: 1px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+.field__control--select > iconify-icon {
+  transition: transform var(--dur-fast) var(--ease);
+}
+.field__control--select.is-open > iconify-icon {
+  transform: rotate(180deg);
+}
+.field__control--select select option {
+  background: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+/* Number (MUI TextField + inputMode="decimal"): tabular figures so rates line up */
+.field__control--number input {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Date/time: native picker, themed through color-scheme */
+.field__control input[type="datetime-local"],
+.field__control input[type="date"] {
+  font-variant-numeric: tabular-nums;
+}
+.field__control input::-webkit-calendar-picker-indicator {
+  opacity: 0.55;
+  cursor: pointer;
+}
+
+.field__helper {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+/* States */
+.field--error .field__control {
+  border-color: var(--error);
+}
+.field--error .field__control:focus-within {
+  outline-color: var(--error);
+}
+.field--error .field__helper {
+  color: var(--error-text);
+}
+.field__control:has(:disabled) {
+  background: var(--bg-subtle);
+  color: var(--text-faint);
+  border-color: var(--border);
+  cursor: not-allowed;
+}
+
+/* ---------- Multi-select (Autocomplete multiple) ---------- */
+.multiselect {
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  padding-right: var(--space-10);
+  overflow: hidden;
+}
+.multiselect__value {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 0;
+  overflow: hidden;
+}
+.multiselect__placeholder {
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.multiselect__more {
+  flex: none;
+  font-size: 12px;
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
+}
+.multiselect > iconify-icon.multiselect__chevron {
+  position: absolute;
+  right: var(--space-3);
+}
+.multiselect[aria-expanded="true"] {
+  border-color: var(--focus-ring);
+  outline: 1px solid var(--focus-ring);
+  outline-offset: -2px;
+}
+
+/* Checkbox (menu rows, tables) → MUI <Checkbox>; checked = ink, not primary */
+.check {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xs);
+  background: var(--bg-surface);
+  color: transparent;
+}
+.check iconify-icon {
+  font-size: 12px;
+}
+[aria-checked="true"] > .check,
+.check.is-checked {
+  border-color: var(--bg-inverse);
+  background: var(--bg-inverse);
+  color: var(--text-inverse);
+}
+
+/* ---------- Checkbox + label → <FormControlLabel control={<Checkbox/>}> ---------- */
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 14px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+}
+.checkbox input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.checkbox input:checked + .check {
+  border-color: var(--bg-inverse);
+  background: var(--bg-inverse);
+  color: var(--text-inverse);
+}
+.checkbox input:focus-visible + .check {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- End adornment (show/hide password) → InputAdornment position="end" ---------- */
+.field__control--adorned {
+  padding-right: var(--space-1);
+}
+.field__adornment {
+  flex: none;
+  color: var(--text-muted);
+}
+
+/* ---------- Switch → MUI <Switch> inside <FormControlLabel> ---------- */
+.switch {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+.switch input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.switch__track {
+  position: relative;
+  flex: none;
+  width: 36px;
+  height: 20px;
+  margin-top: 1px;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  transition: transform var(--dur) var(--ease);
+}
+.switch input:checked + .switch__track {
+  background: var(--primary);
+}
+.switch input:checked + .switch__track .switch__thumb {
+  transform: translateX(16px);
+  background: var(--on-primary);
+}
+.switch input:focus-visible + .switch__track {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.switch input:disabled + .switch__track {
+  opacity: 0.5;
+}
+.switch:has(input:disabled) {
+  cursor: not-allowed;
+}
+.switch__label {
+  display: block;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.switch__helper {
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+/* ---------- Multi-select that shows every tag (forms), vs. 1 tag + "+N" (filter bars) ---------- */
+.multiselect--wrap {
+  height: auto;
+  min-height: var(--control-md);
+  padding-top: var(--space-1);
+  padding-bottom: var(--space-1);
+}
+.multiselect--wrap .multiselect__value {
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+/* ---------- Read-only (derived value, e.g. price from the config) → InputProps readOnly ---------- */
+.field--readonly .field__control {
+  background: var(--bg-subtle);
+  border-style: dashed;
+}
+.field--readonly .field__control:hover {
+  border-color: var(--border);
+}
+
+/* ---------- Rich text → src/components/TextEditor/Lexical ---------- */
+.richtext {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  height: auto;
+  padding: 0;
+  overflow: hidden;
+}
+.richtext__bar {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: var(--space-1);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-subtle);
+}
+.richtext__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 var(--space-1);
+  background: var(--border);
+}
+.richtext__area {
+  min-height: 112px;
+  padding: var(--space-3);
+  font-size: 14px;
+  line-height: 1.55;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+.richtext__area:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-faint);
+}
+.richtext__area p,
+.richtext__area ul,
+.richtext__area ol {
+  margin: 0 0 var(--space-2);
+}
+.richtext__area ul,
+.richtext__area ol {
+  padding-left: var(--space-5);
+}
+
+/* ---------- Image picker (radio cards) → src/components/FlagSelect ---------- */
+.imagepick__search {
+  max-width: 320px;
+}
+.imagepick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  max-height: 392px;
+  overflow-y: auto;
+  padding: 2px;
+  outline: none;
+}
+@media (min-width: 600px) {
+  .imagepick { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (min-width: 900px) {
+  .imagepick { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+}
+.imagepick__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5);
+  min-width: 0;
+  cursor: pointer;
+}
+.imagepick__item input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.imagepick__img {
+  position: relative;
+  display: block;
+  aspect-ratio: 300 / 171;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--bg-muted);
+}
+.imagepick__img img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.imagepick__item:hover .imagepick__img {
+  border-color: var(--border-strong);
+}
+/* Selected: 2px brand ring + check badge (replaces the 60% purple overlay) */
+.imagepick__item input:checked + .imagepick__img {
+  border-color: var(--primary);
+  outline: 1px solid var(--primary);
+}
+.imagepick__item input:focus-visible + .imagepick__img {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+.imagepick__check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 14px;
+}
+.imagepick__item input:checked + .imagepick__img .imagepick__check {
+  display: grid;
+}
+.imagepick__label {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.imagepick__item input:checked ~ .imagepick__label {
+  color: var(--text-primary);
+  font-weight: var(--fw-medium);
+}
+.field--error .imagepick__img {
+  border-color: var(--error);
+}
+
+/* A custom widget with its own inline errors (limit set cards): the field-level error doesn't
+   paint every input red; each bad input gets .is-invalid instead */
+.field--error .field__custom .field__control {
+  border-color: var(--border);
+}
+.field__control.is-invalid,
+.field--error .field__custom .field__control.is-invalid {
+  border-color: var(--error);
+}
+
+/* ---------- File upload (11e payment slip) → MUI: a Button component="label" + hidden input,
+   restyled as a drop zone. Click or drop; the picked file shows below with a remove button. */
+.file-drop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background var(--dur-fast) var(--ease);
+}
+.file-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.file-drop iconify-icon { font-size: 24px; color: var(--text-muted); flex: none; }
+.file-drop__text { display: flex; flex-direction: column; gap: 2px; }
+.file-drop__text strong { color: var(--text-primary); font-weight: var(--fw-medium); }
+.file-drop:hover, .file-drop.is-over { border-color: var(--primary); }
+.file-drop:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 2px; }
+.file-drop.is-invalid { border-color: var(--error); }
+.file-drop.is-invalid iconify-icon { color: var(--error); }
+.file-pick {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+.file-pick > iconify-icon { color: var(--success-text); font-size: 20px; }
+.file-pick .icon-btn { margin-left: auto; }
+.slip-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 280px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+}
+.slip-preview iconify-icon { font-size: 48px; color: var(--text-faint); }

@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Entry point. Pages link ONLY this file (+ their own pages/<page>.css).
+   Order matters: fonts → tokens → base → components → layout.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap");
+
+@import url("tokens/primitives.css");
+@import url("tokens/semantic.css");
+
+@import url("base.css");
+
+@import url("components/button.css");
+@import url("components/chip.css");
+@import url("components/field.css");
+@import url("components/card.css");
+@import url("components/table.css");
+@import url("components/menu.css");
+@import url("components/feedback.css");
+@import url("components/chart.css");
+@import url("components/dialog.css");
+@import url("components/detail.css");
+
+@import url("layout/shell.css");
+@import url("layout/auth.css");
+@import url("layout/list.css");
+@import url("layout/form.css");
+@import url("layout/devbar.css");

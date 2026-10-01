@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en" data-theme="gold" data-mode="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard | Admin prototype</title>
+  <link rel="stylesheet" href="../assets/css/main.css">
+  <link rel="stylesheet" href="../assets/css/pages/dashboard.css">
+  <script src="../assets/js/core/theme.js"></script>
+</head>
+
+<!--
+  PAGE: Dashboard  (Phase 1)
+  Source: src/views/pages/dashboard/index.tsx
+          BetPerformance.tsx · WinLossStatics.tsx · PerformanceByBetType.tsx
+  Data:   useGetDashboard({ startDate, endDate, providerIds, currencyId, lottoGameId })
+  Mock:   assets/js/pages/dashboard.js
+-->
+<body data-page="dashboard" data-base="../">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
+
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Dashboard</h1>
+            <p class="page-header__sub" id="range-summary">Loading range…</p>
+          </div>
+        </div>
+
+        <!-- ============ Filters ============
+             Port: Grid of CustomAutocomplete (currency, providers[multiple], lotto game),
+             DatePicker ×2 (start/end, 10-min steps, min = 3 months ago), Apply button.
+             Filters apply only on "Apply" (tmp* state → applied state), same as today. -->
+        <form class="card filters" id="filters" aria-label="Dashboard filters">
+          <div class="filters__grid">
+            <div class="field filters__currency">
+              <label class="field__label" for="f-currency">Currency</label>
+              <div class="field__control field__control--select">
+                <select id="f-currency" name="currency">
+                  <option value="THB" selected>THB</option>
+                  <option value="USD">USD</option>
+                  <option value="LAK">LAK</option>
+                </select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="field filters__providers" id="f-providers">
+              <span class="field__label" id="f-providers-label">Providers</span>
+              <button type="button" class="field__control multiselect" data-menu="providers-menu"
+                aria-haspopup="menu" aria-expanded="false" aria-labelledby="f-providers-label">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu filters__menu" id="providers-menu" role="menu" hidden>
+                <div class="field__control field__control--sm menu__search">
+                  <iconify-icon icon="tabler:search"></iconify-icon>
+                  <input type="search" placeholder="Search providers" aria-label="Search providers">
+                </div>
+                <div data-options></div>
+              </div>
+            </div>
+
+            <div class="field filters__game">
+              <label class="field__label" for="f-game">Lotto game</label>
+              <div class="field__control field__control--select">
+                <select id="f-game" name="game"></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="field filters__start">
+              <label class="field__label" for="f-start">Start</label>
+              <div class="field__control">
+                <input id="f-start" name="start" type="datetime-local" step="600" value="2026-09-11T00:00">
+              </div>
+            </div>
+
+            <div class="field filters__end">
+              <label class="field__label" for="f-end">End</label>
+              <div class="field__control">
+                <input id="f-end" name="end" type="datetime-local" step="600" value="2026-09-24T23:59">
+              </div>
+            </div>
+
+            <div class="filters__apply">
+              <button type="submit" class="btn btn--contained btn--block" id="f-apply">
+                <iconify-icon icon="tabler:filter-check"></iconify-icon>Apply
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- ============ Error state ============ -->
+        <div class="alert alert--error dash-error" id="dash-error" role="alert" hidden>
+          <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+          <div class="alert__body">
+            <div class="alert__title">Couldn't load the dashboard</div>
+            <div class="alert__text">The server didn't respond. Your filters are kept, so you can try again.</div>
+          </div>
+          <div class="alert__actions">
+            <button type="button" class="btn btn--outlined btn--sm" id="dash-retry">
+              <iconify-icon icon="tabler:refresh"></iconify-icon>Try again
+            </button>
+          </div>
+        </div>
+
+        <div class="stack" id="dash" aria-live="polite">
+
+          <!-- ============ Overview ============
+               Port: BetPerformance "Overview" (8 WidgetCard1 → 1 hero + 6 stats).
+               ROI moved into the hero. -->
+          <section class="card overview" aria-label="Overview">
+            <div class="overview__hero" id="ov-hero"></div>
+            <div class="overview__grid" id="ov-stats"></div>
+          </section>
+
+          <div class="grid">
+            <!-- ============ Win & loss over time ============
+                 Port: WinLossStatics (Recharts AreaChart → LineChart, profit keeps a 10% area) -->
+            <section class="card col-lg-8" id="card-winloss" aria-labelledby="winloss-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="winloss-title">Win &amp; loss</h2>
+                  <p class="card__subheader" id="winloss-sub">Daily totals</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart">
+                      <iconify-icon icon="tabler:chart-line"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table">
+                      <iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="winloss-body"></div>
+            </section>
+
+            <!-- ============ Tickets ============
+                 Port: BetPerformance "Tickets" (total, resulted, paid, pending).
+                 Cancelled-type ticket counts moved to the Cancellations table. -->
+            <section class="card col-lg-4" aria-labelledby="tickets-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="tickets-title">Tickets</h2>
+                  <p class="card__subheader">Share of all tickets in this range</p>
+                </div>
+              </header>
+              <div class="card__content" id="tickets-body"></div>
+            </section>
+
+            <!-- ============ Performance by bet type ============
+                 Port: PerformanceByBetType (Recharts BarChart; grouped, not stacked) -->
+            <section class="card col-lg-7" id="card-bettype" aria-labelledby="bettype-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="bettype-title">Performance by bet type</h2>
+                  <p class="card__subheader">Profit, win and loss for each bet type</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart">
+                      <iconify-icon icon="tabler:chart-bar"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table">
+                      <iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="bettype-body"></div>
+            </section>
+
+            <!-- ============ Cancellations ============
+                 Port: BetPerformance "Cancellations" amounts + the matching ticket counts. -->
+            <section class="card col-lg-5" aria-labelledby="cancel-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="cancel-title">Cancellations</h2>
+                  <p class="card__subheader">Tickets and amounts by reason</p>
+                </div>
+              </header>
+              <div class="card__content card__content--flush" id="cancel-body"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
+    </div>
+  </div>
+
+  <!-- Icons: Iconify web component (the app uses the same icon names via src/@core/components/icon) -->
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
+  <script src="../assets/js/core/format.js"></script>
+  <script src="../assets/js/core/ui.js"></script>
+  <script src="../assets/js/core/nav.js"></script>
+  <script src="../assets/js/core/shell.js"></script>
+  <script src="../assets/js/core/charts.js"></script>
+  <script src="../assets/js/pages/dashboard.js"></script>
+  <script src="../assets/js/core/devbar.js"></script>
+</body>
+</html>
