@@ -86,7 +86,13 @@
           );
         })
         .join("") +
-      "</nav>";
+      "</nav>" +
+      '<div class="sidebar__foot"><div class="queue-card">' +
+      '<span class="queue-card__icon"><iconify-icon icon="tabler:clock-pause"></iconify-icon></span>' +
+      '<span class="queue-card__title">12 rounds need results</span>' +
+      '<span class="queue-card__text">Closed, waiting for numbers</span>' +
+      '<a class="queue-card__btn" href="' + base + 'pages/pending-round.html">Open the queue<iconify-icon icon="tabler:arrow-right"></iconify-icon></a>' +
+      "</div></div>";
 
     sidebar.addEventListener("click", function (e) {
       var group = e.target.closest("button.nav-item[aria-controls]");
@@ -114,23 +120,13 @@
     topbar.innerHTML =
       '<button type="button" class="icon-btn topbar__menu" data-action="nav-open" aria-label="Open menu">' +
       '<iconify-icon icon="tabler:menu-2"></iconify-icon></button>' +
-      '<nav class="topbar__crumbs" aria-label="Breadcrumb">' +
-      crumbs
-        .filter(Boolean)
-        .map(function (c, i, all) {
-          var last = i === all.length - 1;
-          return (last ? '<span aria-current="page">' : "<span>") + esc(c) + "</span>" +
-            (last ? "" : '<iconify-icon icon="tabler:chevron-right" aria-hidden="true"></iconify-icon>');
-        })
-        .join("") +
-      "</nav>" +
-      '<div class="topbar__end">' +
       '<button type="button" class="search-trigger" data-action="palette" aria-haspopup="dialog" aria-label="Search pages">' +
-      '<iconify-icon icon="tabler:search"></iconify-icon><span class="search-trigger__text">Search pages…</span>' +
+      '<iconify-icon icon="tabler:search"></iconify-icon><span class="search-trigger__text">Search pages and actions…</span>' +
       '<span class="kbd" aria-hidden="true">' + (isMac ? "⌘" : "Ctrl") + " K</span></button>" +
+      '<div class="topbar__end">' +
       '<button type="button" class="icon-btn" data-action="mode"></button>' +
       DS.ui.langMenuHTML() +
-      '<span class="topbar__sep" aria-hidden="true"></span>' +
+      notifHTML() +
       '<div class="topbar__popover">' +
       '<button type="button" class="user-btn" data-menu="user-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Account">' +
       '<span class="avatar avatar--sm avatar--inverse">SA</span>' +
@@ -143,6 +139,64 @@
       '<div class="menu__divider"></div>' +
       '<a class="menu__item" role="menuitem" href="' + base + 'pages/login.html"><iconify-icon icon="tabler:logout"></iconify-icon>Log out</a>' +
       "</div></div></div>";
+
+    // Hairline under the bar once content scrolls beneath it
+    var paintScrolled = function () {
+      topbar.classList.toggle("is-scrolled", window.scrollY > 4);
+    };
+    window.addEventListener("scroll", paintScrolled, { passive: true });
+    paintScrolled();
+  }
+
+  /* ---------- Breadcrumbs: above the page title (pages with a back link already show the parent) ---------- */
+  var header = document.querySelector(".content > .page-header");
+  var hasBack = document.querySelector(".content > .back-link");
+  if (header && !hasBack && crumbs.filter(Boolean).length > 1) {
+    var head = header.firstElementChild;
+    var nav = document.createElement("nav");
+    nav.className = "crumbs";
+    nav.setAttribute("aria-label", "Breadcrumb");
+    var hrefs = {};
+    trail.forEach(function (t) {
+      if (t.href && t.id !== page) hrefs[t.label] = base + "pages/" + t.href;
+    });
+    nav.innerHTML =
+      '<a href="' + base + 'pages/dashboard.html"><iconify-icon icon="tabler:home" aria-label="Home"></iconify-icon></a>' +
+      '<iconify-icon icon="tabler:chevron-right" aria-hidden="true"></iconify-icon>' +
+      crumbs
+        .filter(Boolean)
+        .map(function (c, i, all) {
+          var last = i === all.length - 1;
+          var inner = hrefs[c] ? '<a href="' + hrefs[c] + '">' + esc(c) + "</a>" : esc(c);
+          return (last ? '<span aria-current="page">' : "<span>") + inner + "</span>" +
+            (last ? "" : '<iconify-icon icon="tabler:chevron-right" aria-hidden="true"></iconify-icon>');
+        })
+        .join("");
+    if (head) head.insertBefore(nav, head.firstChild);
+  }
+
+  /* ---------- Notifications (mock: the same queues the nav counts) ---------- */
+  function notifHTML() {
+    var items = [
+      { icon: "tabler:clock-pause", tone: "warning", title: "12 rounds need a result", text: "Oldest closed 2 days ago", href: "pending-round.html" },
+      { icon: "tabler:activity", tone: "error", title: "4 providers went quiet", text: "No bets in over 24 hours", href: "provider-activity.html" },
+      { icon: "tabler:ticket", tone: "info", title: "Bet failed on ticket 482271", text: "Retry from the ticket page", href: "ticket-detail.html" },
+    ];
+    return (
+      '<div class="topbar__popover">' +
+      '<button type="button" class="icon-btn" data-menu="notif-menu" aria-haspopup="menu" aria-expanded="false" aria-label="Notifications, 3 new">' +
+      '<iconify-icon icon="tabler:bell"></iconify-icon><span class="icon-btn__dot" aria-hidden="true"></span></button>' +
+      '<div class="menu notif-menu" id="notif-menu" role="menu" hidden>' +
+      '<div class="notif-menu__head">Notifications<span class="badge">3</span></div><div class="notif-menu__list">' +
+      items.map(function (n) {
+        return (
+          '<a class="notif-item" role="menuitem" href="' + base + "pages/" + n.href + '"><span class="avatar avatar--square avatar--' + n.tone +
+          '"><iconify-icon icon="' + n.icon + '"></iconify-icon></span><span><span class="notif-item__title">' + esc(n.title) +
+          '</span><br><span class="notif-item__text">' + esc(n.text) + "</span></span></a>"
+        );
+      }).join("") +
+      "</div></div></div>"
+    );
   }
 
   var footer = document.getElementById("app-footer");

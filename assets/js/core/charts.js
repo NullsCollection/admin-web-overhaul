@@ -203,10 +203,16 @@
         })
         .join("");
       if (s.area && n > 1) {
+        // Soft vertical fade under the line (SVG gradient, colored by the series token)
+        var gid = "g" + Math.random().toString(36).slice(2, 8);
+        var defs = el("defs", {}, gSeries);
+        var lg = el("linearGradient", { id: gid, x1: 0, y1: 0, x2: 0, y2: 1 }, defs);
+        el("stop", { offset: "0%", style: "stop-color: var(" + s.color + "); stop-opacity: 0.22" }, lg);
+        el("stop", { offset: "100%", style: "stop-color: var(" + s.color + "); stop-opacity: 0" }, lg);
         el("path", {
-          d: d + "L" + x(n - 1) + "," + f.y(0) + "L" + x(0) + "," + f.y(0) + "Z",
+          d: d + "L" + x(n - 1) + "," + f.y(f.sc.lo) + "L" + x(0) + "," + f.y(f.sc.lo) + "Z",
           class: "chart__area",
-          style: "fill: var(" + s.color + ")",
+          fill: "url(#" + gid + ")",
         }, gSeries);
       }
       if (n > 1) el("path", { d: d, class: "chart__line", style: "stroke: var(" + s.color + ")" }, gSeries);
@@ -215,7 +221,7 @@
 
     var cross = el("line", { class: "chart__cross", y1: f.m.t, y2: f.m.t + f.ih, visibility: "hidden" }, f.svg);
     var dots = opts.series.map(function (s) {
-      return el("circle", { r: 5, class: "chart__dot", style: "fill: var(" + s.color + ")", visibility: "hidden" }, f.svg);
+      return el("circle", { r: 5, class: "chart__dot chart__dot--hover", style: "stroke: var(" + s.color + ")", visibility: "hidden" }, f.svg);
     });
 
     interact(
@@ -263,13 +269,13 @@
     var k = opts.series.length;
     var GAP = 2;
     var band = f.iw / n;
-    var barW = Math.max(4, Math.min(16, (band * 0.64 - GAP * (k - 1)) / k));
+    var barW = Math.max(4, Math.min(18, (band * 0.62 - GAP * (k - 1)) / k));
     var groupW = barW * k + GAP * (k - 1);
     var cx = function (i) {
       return f.m.l + band * i + band / 2;
     };
 
-    var hl = el("rect", { class: "chart__band", y: f.m.t, height: f.ih, width: band, rx: 6, visibility: "hidden" }, f.svg);
+    var hl = el("rect", { class: "chart__band", y: f.m.t, height: f.ih, width: band, rx: 10, visibility: "hidden" }, f.svg);
     xTicks(f, opts, cx);
 
     var y0 = f.y(0);
@@ -277,7 +283,7 @@
     opts.labels.forEach(function (_, i) {
       var left = cx(i) - groupW / 2;
       opts.series.forEach(function (s, j) {
-        var d = barPath(left + j * (barW + GAP), y0, f.y(s.values[i]), barW, 4);
+        var d = barPath(left + j * (barW + GAP), y0, f.y(s.values[i]), barW, 6);
         if (d) el("path", { d: d, style: "fill: var(" + s.color + ")" }, gBars);
       });
     });
@@ -300,7 +306,58 @@
     );
   }
 
+  /* ---------- Gauge (returns markup): a half ring of ticks, the filled share in brand ----------
+     gauge({ value, max, label, caption }) → html. Port: MUI X <Gauge> with a custom tick arc. */
+  function gauge(o) {
+    var N = 36;
+    var W = 240;
+    var R = 104;
+    var cx = W / 2;
+    var cy = 116;
+    var share = Math.max(0, Math.min(1, (o.value || 0) / (o.max || 1)));
+    var on = Math.round(share * N);
+    var ticks = "";
+    for (var i = 0; i < N; i++) {
+      var a = Math.PI + (i / (N - 1)) * Math.PI; // left → right across the top
+      var r1 = R - 22;
+      var x1 = cx + Math.cos(a) * r1;
+      var y1 = cy + Math.sin(a) * r1;
+      var x2 = cx + Math.cos(a) * R;
+      var y2 = cy + Math.sin(a) * R;
+      ticks += '<line x1="' + x1.toFixed(1) + '" y1="' + y1.toFixed(1) + '" x2="' + x2.toFixed(1) + '" y2="' + y2.toFixed(1) +
+        '" class="gauge__tick' + (i < on ? " is-on" : "") + '" style="--i:' + i + '"></line>';
+    }
+    return (
+      '<div class="gauge" role="meter" aria-label="' + DS.fmt.esc(o.label || "") + '" aria-valuemin="0" aria-valuemax="' + o.max +
+      '" aria-valuenow="' + (o.value || 0).toFixed(2) + '"><svg viewBox="0 0 ' + W + ' 128" aria-hidden="true" focusable="false">' + ticks + "</svg>" +
+      '<div class="gauge__center"><div class="gauge__value">' + DS.fmt.esc(o.display) + "</div>" +
+      (o.caption ? '<div class="gauge__caption">' + DS.fmt.esc(o.caption) + "</div>" : "") + "</div></div>"
+    );
+  }
+
+  /* ---------- Highlight bars (returns markup): one bar per label, the top one in brand with its value ----------
+     bars({ labels, values, format, label }) → html. Port: Recharts <BarChart> with a Cell per bar. */
+  function bars(o) {
+    var max = Math.max.apply(null, o.values.concat(1));
+    var top = o.values.indexOf(Math.max.apply(null, o.values));
+    return (
+      '<div class="hbars" role="img" aria-label="' + DS.fmt.esc(o.label || "") + '">' +
+      o.values.map(function (v, i) {
+        var h = Math.max(6, (v / max) * 100);
+        return (
+          '<div class="hbars__col' + (i === top ? " is-top" : "") + '" title="' + DS.fmt.esc(o.labels[i] + ": " + o.format(v)) + '">' +
+          '<span class="hbars__value">' + (i === top ? DS.fmt.esc(o.short ? o.short(v) : o.format(v)) : "&nbsp;") + "</span>" +
+          '<span class="hbars__track"><span class="hbars__bar" style="height:' + h.toFixed(1) + '%"></span></span>' +
+          '<span class="hbars__label">' + DS.fmt.esc(o.labels[i]) + "</span></div>"
+        );
+      }).join("") +
+      "</div>"
+    );
+  }
+
   DS.charts = {
+    gauge: gauge,
+    bars: bars,
     line: function (container, opts) {
       return responsive(container, function () {
         drawLine(container, opts);

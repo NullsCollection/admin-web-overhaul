@@ -25,11 +25,26 @@
 
       <main class="content" id="content">
 
-        <!-- ============ Page header ============ -->
+        <!-- ============ Page header: greeting, range, quick ranges, filters toggle, export ============ -->
         <div class="page-header">
           <div>
-            <h1 class="page-header__title">Dashboard</h1>
+            <h1 class="page-header__title" id="greeting">Good morning, superadmin</h1>
             <p class="page-header__sub" id="range-summary">Loading range…</p>
+          </div>
+          <div class="page-header__actions">
+            <!-- Quick ranges: set Start / End and apply (Port: ToggleButtonGroup next to the DatePickers) -->
+            <div class="segmented" role="group" aria-label="Quick range" id="quick-range">
+              <button type="button" class="segmented__btn" data-days="1" aria-pressed="false">Today</button>
+              <button type="button" class="segmented__btn" data-days="7" aria-pressed="false">7 days</button>
+              <button type="button" class="segmented__btn" data-days="14" aria-pressed="true">14 days</button>
+              <button type="button" class="segmented__btn" data-days="30" aria-pressed="false">30 days</button>
+            </div>
+            <button type="button" class="btn btn--outlined" id="toggle-filters" aria-expanded="true" aria-controls="filters">
+              <iconify-icon icon="tabler:adjustments-horizontal"></iconify-icon>Filters<span class="badge" id="filter-count" hidden></span>
+            </button>
+            <button type="button" class="btn btn--contained" id="dash-export">
+              <iconify-icon icon="tabler:download"></iconify-icon>Export
+            </button>
           </div>
         </div>
 
@@ -90,7 +105,7 @@
             </div>
 
             <div class="filters__apply">
-              <button type="submit" class="btn btn--contained btn--block" id="f-apply">
+              <button type="submit" class="btn btn--contained btn--ink btn--block" id="f-apply">
                 <iconify-icon icon="tabler:filter-check"></iconify-icon>Apply
               </button>
             </div>
@@ -113,17 +128,14 @@
 
         <div class="stack" id="dash" aria-live="polite">
 
-          <!-- ============ Overview ============
-               Port: BetPerformance "Overview" (8 WidgetCard1 → 1 hero + 6 stats).
-               ROI moved into the hero. -->
-          <section class="card overview" aria-label="Overview">
-            <div class="overview__hero" id="ov-hero"></div>
-            <div class="overview__grid" id="ov-stats"></div>
-          </section>
+          <!-- ============ KPI cards ============
+               Port: BetPerformance "Overview" (8 WidgetCard1 → 4 KPI cards; the rest move to Return on wagers).
+               Deltas compare with the period of the same length just before (new API field: previous). -->
+          <section class="kpi-row" id="kpis" aria-label="Key figures"></section>
 
           <div class="grid">
             <!-- ============ Win & loss over time ============
-                 Port: WinLossStatics (Recharts AreaChart → LineChart, profit keeps a 10% area) -->
+                 Port: WinLossStatics (Recharts AreaChart → LineChart, profit keeps a soft area) -->
             <section class="card col-lg-8" id="card-winloss" aria-labelledby="winloss-title">
               <header class="card__header">
                 <div class="card__heading">
@@ -142,22 +154,21 @@
               <div class="card__content" id="winloss-body"></div>
             </section>
 
-            <!-- ============ Tickets ============
-                 Port: BetPerformance "Tickets" (total, resulted, paid, pending).
-                 Cancelled-type ticket counts moved to the Cancellations table. -->
-            <section class="card col-lg-4" aria-labelledby="tickets-title">
+            <!-- ============ Return on wagers ============
+                 Port: ROI + settled / unsettled / bonus from BetPerformance -->
+            <section class="card col-lg-4" aria-labelledby="roi-title">
               <header class="card__header">
                 <div class="card__heading">
-                  <h2 class="card__title" id="tickets-title">Tickets</h2>
-                  <p class="card__subheader">Share of all tickets in this range</p>
+                  <h2 class="card__title" id="roi-title">Return on wagers</h2>
+                  <p class="card__subheader">Profit as a share of what was bet</p>
                 </div>
               </header>
-              <div class="card__content" id="tickets-body"></div>
+              <div class="card__content" id="roi-body"></div>
             </section>
 
             <!-- ============ Performance by bet type ============
                  Port: PerformanceByBetType (Recharts BarChart; grouped, not stacked) -->
-            <section class="card col-lg-7" id="card-bettype" aria-labelledby="bettype-title">
+            <section class="card col-lg-8" id="card-bettype" aria-labelledby="bettype-title">
               <header class="card__header">
                 <div class="card__heading">
                   <h2 class="card__title" id="bettype-title">Performance by bet type</h2>
@@ -175,9 +186,36 @@
               <div class="card__content" id="bettype-body"></div>
             </section>
 
+            <!-- ============ Busiest days ============
+                 Port: new (sum of winLossStatics wagers per weekday) -->
+            <section class="card col-lg-4" aria-labelledby="days-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="days-title">Busiest days</h2>
+                  <p class="card__subheader">Wagers by day of the week</p>
+                </div>
+              </header>
+              <div class="card__content" id="days-body"></div>
+            </section>
+
+            <!-- ============ Tickets ============
+                 Port: BetPerformance "Tickets" (total, resulted, paid, pending). -->
+            <section class="card col-lg-6" aria-labelledby="tickets-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="tickets-title">Tickets</h2>
+                  <p class="card__subheader">Share of all tickets in this range</p>
+                </div>
+                <div class="card__actions">
+                  <a class="btn btn--outlined btn--sm" href="tickets.html">View all<iconify-icon icon="tabler:arrow-right"></iconify-icon></a>
+                </div>
+              </header>
+              <div class="card__content" id="tickets-body"></div>
+            </section>
+
             <!-- ============ Cancellations ============
                  Port: BetPerformance "Cancellations" amounts + the matching ticket counts. -->
-            <section class="card col-lg-5" aria-labelledby="cancel-title">
+            <section class="card col-lg-6" aria-labelledby="cancel-title">
               <header class="card__header">
                 <div class="card__heading">
                   <h2 class="card__title" id="cancel-title">Cancellations</h2>

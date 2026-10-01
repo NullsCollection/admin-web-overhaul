@@ -20,6 +20,24 @@
       return r.gameName + " " + r.id;
     },
     filters: {},
+    summary: function (all) {
+      var age = all.map(function (r) {
+        return fmt.now - r.closeAt;
+      });
+      var late = age.filter(function (a) {
+        return a > DAY;
+      }).length;
+      var games = {};
+      all.forEach(function (r) {
+        games[r.gameName] = 1;
+      });
+      return [
+        { label: "Waiting for a result", value: fmt.int(all.length), icon: "tabler:clock-pause", tone: "solid", meta: "Closed in the last 7 days" },
+        { label: "Over a day late", value: fmt.int(late), icon: "tabler:alert-triangle", tone: "warning", meta: "Players are waiting" },
+        { label: "Longest wait", value: age.length ? fmt.duration(Math.max.apply(null, age)) : "–", icon: "tabler:hourglass", tone: "error", meta: "Oldest first in the list" },
+        { label: "Games", value: fmt.int(Object.keys(games).length), icon: "tabler:clover", tone: "info", meta: "With a round waiting" },
+      ];
+    },
     columns: [
       { key: "id", label: "ID", render: function (r) {
         return '<span class="t-medium t-num">' + r.id + "</span>";

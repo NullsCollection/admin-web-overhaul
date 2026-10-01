@@ -78,6 +78,7 @@
         profitAmount: r2(profit),
         winAmount: r2(win),
         lossAmount: r2(wagers * (0.52 + rnd() * 0.1)),
+        wagerAmount: r2(wagers), // new: daily wagers (busiest days, KPI mini bars)
       });
       tot.wagers += wagers;
       tot.win += win;
@@ -114,6 +115,13 @@
       },
       betTicketCountOverview: t,
       newPlayerCount: Math.round(24.4 * winLoss.length * scale),
+      // New API field: the same figures for the period of equal length just before (for the deltas)
+      previous: {
+        profitTotalAmount: r2(tot.profit * (0.84 + rnd() * 0.12)),
+        betTotalAmount: r2(tot.wagers * (0.9 + rnd() * 0.08)),
+        winTotalAmount: r2(tot.win * (0.95 + rnd() * 0.1)),
+        newPlayerCount: Math.round(24.4 * winLoss.length * scale * (1.02 + rnd() * 0.1)),
+      },
       winLossStatics: winLoss,
       betTypesPerformance: BET_TYPES.map(function (bt) {
         var w = tot.wagers * bt.share;
@@ -137,6 +145,7 @@
       zero.betTicketCountOverview[k] = 0;
     });
     zero.newPlayerCount = 0;
+    zero.previous = { profitTotalAmount: 0, betTotalAmount: 0, winTotalAmount: 0, newPlayerCount: 0 };
     zero.winLossStatics = [];
     zero.betTypesPerformance = [];
     return zero;
@@ -194,15 +203,6 @@
   }
 
   /* ---------- Renderers ---------- */
-  function statHTML(s) {
-    return (
-      '<div class="stat"><div class="stat__label"><iconify-icon icon="' + s.icon + '"></iconify-icon>' + esc(s.label) +
-      '</div><div class="stat__value">' + s.value + "</div>" +
-      (s.meta ? '<div class="stat__meta">' + esc(s.meta) + "</div>" : "") +
-      "</div>"
-    );
-  }
-
   function daysInRange() {
     var f = readFilters();
     var a = new Date(f.start);
@@ -212,61 +212,111 @@
     return Math.max(1, Math.round((b - a) / 864e5) + 1);
   }
 
-  /* Daily profit as a tiny area + line (decorative, aria-hidden). Port: Recharts <AreaChart> with no axes. */
-  function sparkHTML(values) {
-    if (values.length < 2) return "";
-    var W = 300;
-    var H = 56;
-    var min = Math.min.apply(null, values.concat(0));
-    var max = Math.max.apply(null, values);
-    var span = max - min || 1;
-    var pts = values.map(function (v, i) {
-      return [(i / (values.length - 1)) * W, H - 3 - ((v - min) / span) * (H - 6)];
-    });
-    var line = pts.map(function (p, i) {
-      return (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1);
-    }).join("");
+  // Change vs. the previous period. invert: a rise is bad news (more paid out in wins)
+  function deltaHTML(cur, prev, invert) {
+    if (!prev) return "";
+    var pct = ((cur - prev) / Math.abs(prev)) * 100;
+    var up = pct >= 0;
+    var good = invert ? !up : up;
     return (
-      '<svg class="hero__spark" viewBox="0 0 ' + W + " " + H + '" preserveAspectRatio="none" aria-hidden="true" focusable="false">' +
-      '<path d="' + line + "L" + W + " " + H + "L0 " + H + 'Z"></path><path d="' + line + '"></path></svg>'
+      '<span class="delta delta--' + (good ? "up" : "down") + '" title="vs. the previous ' + daysInRange() + ' days">' +
+      '<iconify-icon icon="tabler:' + (up ? "arrow-up-right" : "arrow-down-right") + '" aria-hidden="true"></iconify-icon>' +
+      '<span class="sr-only">' + (up ? "Up " : "Down ") + "</span>" + fmt.pct(Math.abs(pct), 1) + "</span>"
+    );
+  }
+
+  function minibarsHTML(values) {
+    if (values.length < 2) return "";
+    var tail = values.slice(-14);
+    var max = Math.max.apply(null, tail.map(Math.abs).concat(1));
+    return (
+      '<div class="kpi__spark" aria-hidden="true"><div class="minibars">' +
+      tail.map(function (v, i) {
+        var cls = v < 0 ? "is-neg" : i === tail.length - 1 ? "is-on" : "";
+        return '<i class="' + cls + '" style="height:' + Math.max(8, (Math.abs(v) / max) * 100).toFixed(0) + '%"></i>';
+      }).join("") +
+      "</div></div>"
+    );
+  }
+
+  function kpiHTML(k) {
+    return (
+      '<article class="kpi"><div class="kpi__head"><span class="kpi__label">' + esc(k.label) + "</span>" +
+      '<span class="kpi__icon kpi__icon--' + k.tone + '"><iconify-icon icon="' + k.icon + '"></iconify-icon></span></div>' +
+      '<div class="kpi__figure"><span class="kpi__value' + (k.negative ? " is-negative" : "") + '">' + k.value + "</span></div>" +
+      '<div class="kpi__meta">' + (k.delta || "") + "<span>" + k.meta + "</span></div>" + (k.spark || "") + "</article>"
     );
   }
 
   function renderOverview(d) {
     var p = d.betPerformance;
-    var days = daysInRange();
+    var prev = d.previous;
     var w = p.betTotalAmount;
-    var share = function (n) {
-      return w ? fmt.pct((n / w) * 100, 1) + " of wagers" : "";
+    var rows = d.winLossStatics;
+    var col = function (key) {
+      return rows.map(function (r) {
+        return r[key];
+      });
     };
-    var roiFill = Math.max(0, Math.min(100, p.roi));
+    $("kpis").innerHTML = [
+      {
+        label: "Profit", icon: "tabler:coins", tone: "solid", value: fmt.moneyHTML(p.profitTotalAmount), negative: p.profitTotalAmount < 0,
+        delta: deltaHTML(p.profitTotalAmount, prev.profitTotalAmount),
+        meta: "vs. <strong>" + fmt.money(prev.profitTotalAmount) + "</strong> last period", spark: minibarsHTML(col("profitAmount")),
+      },
+      {
+        label: "Wagers", icon: "tabler:cash", tone: "info", value: fmt.moneyHTML(w), delta: deltaHTML(w, prev.betTotalAmount),
+        meta: "<strong>" + fmt.int(d.betTicketCountOverview.total) + "</strong> tickets", spark: minibarsHTML(col("wagerAmount")),
+      },
+      {
+        label: "Wins paid", icon: "tabler:trophy", tone: "warning", value: fmt.moneyHTML(p.winTotalAmount),
+        delta: deltaHTML(p.winTotalAmount, prev.winTotalAmount, true),
+        meta: w ? "<strong>" + fmt.pct((p.winTotalAmount / w) * 100, 1) + "</strong> of wagers" : "No wagers", spark: minibarsHTML(col("winAmount")),
+      },
+      {
+        label: "New players", icon: "tabler:user-plus", tone: "success", value: fmt.int(d.newPlayerCount),
+        delta: deltaHTML(d.newPlayerCount, prev.newPlayerCount),
+        meta: "vs. <strong>" + fmt.int(prev.newPlayerCount) + "</strong> last period", spark: minibarsHTML(col("wagerAmount").map(function (v, i) {
+          return v * (0.6 + ((i * 37) % 10) / 20); // mock daily sign-ups shape
+        })),
+      },
+    ].map(kpiHTML).join("");
 
-    $("ov-hero").innerHTML =
-      "<div>" +
-      '<div class="hero__label"><iconify-icon icon="tabler:coins"></iconify-icon>Profit</div>' +
-      '<div class="hero__value' + (p.profitTotalAmount < 0 ? " is-negative" : "") + '">' + fmt.moneyHTML(p.profitTotalAmount) + "</div>" +
-      '<div class="hero__note">' +
-      (p.profitTotalAmount < 0 ? "Net loss across " : "Across ") + days +
-      (days === 1 ? " day" : " days") + "</div>" +
-      "</div>" +
-      sparkHTML(d.winLossStatics.map(function (r) {
-        return r.profitAmount;
-      })) +
-      '<div class="hero__roi"><span class="hero__roi-label">ROI</span>' +
-      '<span class="hero__roi-value">' + fmt.pct(p.roi) + "</span>" +
-      '<div class="meter" role="meter" aria-label="ROI" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' +
-      roiFill.toFixed(1) + '"><div class="meter__fill" style="width:' + roiFill + '%"></div></div></div>';
+    // Return on wagers: gauge + the bet amounts that used to be separate stat tiles
+    var share = function (n) {
+      return w ? fmt.pct((n / w) * 100, 1) : "–";
+    };
+    $("roi-body").innerHTML =
+      DS.charts.gauge({ value: Math.max(0, p.roi), max: 40, display: fmt.pct(p.roi), caption: "ROI · scale to 40%", label: "Return on wagers" }) +
+      '<dl class="facts dash-facts">' +
+      [
+        ["tabler:circle-check", "Settled bets", p.betSettledAmount],
+        ["tabler:hourglass", "Unsettled bets", p.betNotSettledAmount],
+        ["tabler:gift", "Bonus paid", p.totalBonus],
+      ].map(function (r) {
+        return (
+          '<div><dt><iconify-icon icon="' + r[0] + '" aria-hidden="true"></iconify-icon>' + r[1] + "</dt><dd>" + fmt.money(r[2]) +
+          '<span class="dash-facts__share">' + share(r[2]) + "</span></dd></div>"
+        );
+      }).join("") +
+      "</dl>";
+  }
 
-    $("ov-stats").innerHTML = [
-      { label: "Wagers", icon: "tabler:cash", value: fmt.moneyHTML(w), meta: fmt.int(d.betTicketCountOverview.total) + " tickets" },
-      { label: "Wins", icon: "tabler:trophy", value: fmt.moneyHTML(p.winTotalAmount), meta: share(p.winTotalAmount) },
-      { label: "Bonus", icon: "tabler:gift", value: fmt.moneyHTML(p.totalBonus), meta: share(p.totalBonus) },
-      { label: "Settled bets", icon: "tabler:circle-check", value: fmt.moneyHTML(p.betSettledAmount), meta: share(p.betSettledAmount) },
-      { label: "Unsettled bets", icon: "tabler:hourglass", value: fmt.moneyHTML(p.betNotSettledAmount), meta: share(p.betNotSettledAmount) },
-      { label: "New players", icon: "tabler:user-plus", value: fmt.int(d.newPlayerCount) },
-    ]
-      .map(statHTML)
-      .join("");
+  function legendStatsHTML(rows) {
+    return (
+      '<div class="legend-stats">' +
+      SERIES.map(function (s) {
+        var sum = rows.reduce(function (t, r) {
+          return t + r[s.key];
+        }, 0);
+        return (
+          '<div class="legend-stats__item"><span class="legend__item"><span class="legend__swatch legend__swatch--line" style="--c: var(' +
+          s.color + ')"></span>' + s.label + '</span><span class="legend-stats__value' + (sum < 0 ? " t-error" : "") + '">' +
+          fmt.moneyHTML(sum) + "</span></div>"
+        );
+      }).join("") +
+      "</div>"
+    );
   }
 
   function legendHTML(line) {
@@ -347,7 +397,7 @@
     $("winloss-sub").textContent =
       "Daily totals, " + fmt.dayMonth(rows[0].ticketDate) + " to " + fmt.dayMonth(rows[rows.length - 1].ticketDate);
     body.innerHTML =
-      '<div data-view-panel="chart">' + legendHTML(true) + '<div class="chart" id="winloss-chart"></div></div>' +
+      '<div data-view-panel="chart">' + legendStatsHTML(rows) + '<div class="chart" id="winloss-chart"></div></div>' +
       '<div data-view-panel="table" hidden>' +
       tableHTML("Date", rows, function (r) {
         return fmt.dayMonth(r.ticketDate);
@@ -396,23 +446,45 @@
     );
   }
 
+  var WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  function renderDays(d) {
+    var rows = d.winLossStatics;
+    if (!rows.length) {
+      $("days-body").innerHTML = emptyHTML("tabler:calendar-stats", "No bets yet", "Days fill in as tickets are placed.");
+      return;
+    }
+    var sums = [0, 0, 0, 0, 0, 0, 0];
+    rows.forEach(function (r) {
+      sums[(new Date(r.ticketDate).getDay() + 6) % 7] += r.wagerAmount;
+    });
+    var top = sums.indexOf(Math.max.apply(null, sums));
+    $("days-body").innerHTML =
+      DS.charts.bars({
+        labels: WEEKDAYS, values: sums, format: fmt.money, short: fmt.moneyCompact,
+        label: "Wagers by weekday. Busiest: " + WEEKDAYS[top] + ", " + fmt.money(sums[top]),
+      }) +
+      '<p class="dash-note"><iconify-icon icon="tabler:bulb" aria-hidden="true"></iconify-icon>' + WEEKDAYS[top] +
+      " takes the most bets. Plan result checks and limits around it.</p>";
+  }
+
   function renderTickets(d) {
     var t = d.betTicketCountOverview;
     var rows = [
-      { label: "Resulted", n: t.settled },
-      { label: "Paid", n: t.approved },
-      { label: "Pending", n: t.waiting },
+      { label: "Resulted", hint: "Have a result", n: t.settled, icon: "tabler:circle-check", tone: "primary" },
+      { label: "Paid", hint: "Winnings paid out", n: t.approved, icon: "tabler:cash", tone: "info" },
+      { label: "Pending", hint: "Waiting for a result", n: t.waiting, icon: "tabler:hourglass", tone: "warning" },
     ];
     $("tickets-body").innerHTML =
       '<div class="tickets__total"><span class="tickets__total-value">' + fmt.int(t.total) +
-      '</span><span class="t-muted">tickets</span></div><div class="tickets__list">' +
+      '</span><span class="t-muted">tickets in this range</span></div><div class="tickets__split">' +
       rows
         .map(function (r) {
           var pct = t.total ? (r.n / t.total) * 100 : 0;
           return (
-            '<div class="tickets__row"><span class="tickets__label">' + r.label + "</span>" +
-            '<span class="tickets__count">' + fmt.int(r.n) + "</span>" +
-            '<span class="tickets__pct">' + fmt.pct(pct, 1) + "</span>" +
+            '<div class="tickets__col tickets__col--' + r.tone + '"><div class="tickets__head"><iconify-icon icon="' + r.icon +
+            '" aria-hidden="true"></iconify-icon><span class="tickets__count">' + fmt.int(r.n) + "</span></div>" +
+            '<div class="tickets__label">' + r.label + ' <span class="tickets__pct">' + fmt.pct(pct, 1) + "</span></div>" +
+            '<div class="tickets__hint">' + r.hint + "</div>" +
             '<div class="meter" role="meter" aria-label="' + r.label + ' share" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' +
             pct.toFixed(1) + '"><div class="meter__fill" style="width:' + pct + '%"></div></div></div>'
           );
@@ -425,19 +497,25 @@
     var p = d.betPerformance;
     var t = d.betTicketCountOverview;
     var rows = [
-      { label: "Cancelled", n: t.cancelled, amount: p.cancelAmount },
-      { label: "Round cancelled", n: t.roundCancelled, amount: p.roundCancelledAmount },
-      { label: "Bet failed", n: t.betFailed, amount: p.betFailedAmount },
-      { label: "Cancelled by user", n: t.userCancelled, amount: p.userCancelledAmount },
+      { label: "Cancelled", icon: "tabler:ban", n: t.cancelled, amount: p.cancelAmount },
+      { label: "Round cancelled", icon: "tabler:calendar-x", n: t.roundCancelled, amount: p.roundCancelledAmount },
+      { label: "Bet failed", icon: "tabler:alert-triangle", n: t.betFailed, amount: p.betFailedAmount },
+      { label: "Cancelled by user", icon: "tabler:user-x", n: t.userCancelled, amount: p.userCancelledAmount },
     ];
+    var total = rows.reduce(function (s, r) {
+      return s + r.amount;
+    }, 0);
     $("cancel-body").innerHTML =
       '<div class="table-wrap"><table class="table"><thead><tr><th scope="col">Reason</th>' +
-      '<th scope="col" class="is-num">Tickets</th><th scope="col" class="is-num">Amount</th></tr></thead><tbody>' +
+      '<th scope="col" class="is-num">Tickets</th><th scope="col" class="is-num">Amount</th><th scope="col">Share</th></tr></thead><tbody>' +
       rows
         .map(function (r) {
+          var pct = total ? (r.amount / total) * 100 : 0;
           return (
-            '<tr><td class="is-strong">' + r.label + '</td><td class="is-num">' + fmt.int(r.n) +
-            '</td><td class="is-num">' + fmt.money(r.amount) + "</td></tr>"
+            '<tr><td><span class="ident"><span class="avatar avatar--square avatar--sm avatar--error"><iconify-icon icon="' + r.icon +
+            '"></iconify-icon></span><span class="ident__name">' + r.label + '</span></span></td><td class="is-num">' + fmt.int(r.n) +
+            '</td><td class="is-num is-strong">' + fmt.money(r.amount) + '</td><td class="dash-share"><div class="meter" aria-hidden="true">' +
+            '<div class="meter__fill" style="width:' + pct + '%"></div></div><span>' + fmt.pct(pct, 0) + "</span></td></tr>"
           );
         })
         .join("") +
@@ -449,20 +527,23 @@
     return '<span class="skeleton ' + cls + '"' + (w ? ' style="--w:' + w + '"' : "") + "></span>";
   }
   function renderLoading() {
-    $("ov-hero").innerHTML =
-      '<div class="stack" style="gap:12px">' + sk("skeleton--text", "30%") + sk("skeleton--value", "80%") + "</div>" +
-      sk("skeleton--text", "100%");
-    var cell = '<div class="stat" style="gap:10px">' + sk("skeleton--text", "45%") + sk("skeleton--value", "75%") + sk("skeleton--text", "35%") + "</div>";
-    $("ov-stats").innerHTML = new Array(7).join(cell);
-    var chart = '<div style="display:flex;gap:16px;margin-bottom:16px">' + sk("skeleton--text", "56px") + sk("skeleton--text", "56px") + sk("skeleton--text", "56px") + "</div>";
+    $("kpis").innerHTML = new Array(5).join(
+      '<article class="kpi kpi--loading">' + sk("skeleton--text", "40%") + sk("skeleton--value", "70%") + sk("skeleton--text", "55%") +
+      '<span class="skeleton skeleton--block" style="--h:36px;margin-top:16px"></span></article>'
+    );
+    var chart = '<div style="display:flex;gap:24px;margin-bottom:20px">' + sk("skeleton--value", "120px") + sk("skeleton--value", "120px") + sk("skeleton--value", "120px") + "</div>";
     $("winloss-body").innerHTML = chart + '<span class="skeleton skeleton--block" style="--h:300px"></span>';
     $("bettype-body").innerHTML = chart + '<span class="skeleton skeleton--block" style="--h:280px"></span>';
+    $("roi-body").innerHTML = '<span class="skeleton skeleton--block" style="--h:140px;max-width:260px;margin:0 auto 24px"></span>' +
+      '<div class="stack" style="gap:14px">' + new Array(4).join(sk("skeleton--text", "100%")) + "</div>";
+    $("days-body").innerHTML = '<span class="skeleton skeleton--block" style="--h:200px"></span>';
     $("tickets-body").innerHTML =
-      '<div class="stack" style="gap:20px">' + sk("skeleton--value", "50%") +
-      new Array(4).join('<div class="stack" style="gap:8px">' + sk("skeleton--text", "100%") + sk("skeleton--text", "100%") + "</div>") +
-      "</div>";
+      '<div class="stack" style="gap:20px">' + sk("skeleton--value", "40%") +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">' +
+      new Array(4).join('<div class="stack" style="gap:8px">' + sk("skeleton--value", "60%") + sk("skeleton--text", "80%") + sk("skeleton--text", "100%") + "</div>") +
+      "</div></div>";
     $("cancel-body").innerHTML =
-      '<div class="stack" style="gap:18px;padding:12px 24px 24px">' + new Array(5).join(sk("skeleton--text", "100%")) + "</div>";
+      '<div class="stack" style="gap:20px;padding:20px 24px 24px">' + new Array(5).join(sk("skeleton--text", "100%")) + "</div>";
     ["card-winloss", "card-bettype"].forEach(function (id) {
       $(id).querySelector("[data-view-toggle]").hidden = true;
     });
@@ -495,6 +576,7 @@
     renderWinLoss(current);
     renderTickets(current);
     renderBetType(current);
+    renderDays(current);
     renderCancellations(current);
   }
 
@@ -524,6 +606,56 @@
     $(id).addEventListener("viewchange", function (e) {
       if (e.detail === "chart" && current) chartCards[id](current);
     });
+  });
+
+  /* ---------- Header: greeting, quick ranges, filters toggle, export ---------- */
+  var hour = new Date().getHours();
+  $("greeting").textContent = (hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening") + ", superadmin";
+
+  function pad(n) {
+    return (n < 10 ? "0" : "") + n;
+  }
+  function localISO(d) {
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()) + "T" + pad(d.getHours()) + ":" + pad(d.getMinutes());
+  }
+  function paintQuick() {
+    var days = daysInRange();
+    var endsToday = /^2026-09-24T23:59/.test($("f-end").value) && /T00:00$/.test($("f-start").value);
+    $("quick-range").querySelectorAll("[data-days]").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(endsToday && Number(b.getAttribute("data-days")) === days));
+    });
+  }
+  $("quick-range").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-days]");
+    if (!b) return;
+    var end = new Date(2026, 8, 24, 23, 59); // "today" in the prototype
+    var start = new Date(2026, 8, 24 - Number(b.getAttribute("data-days")) + 1, 0, 0);
+    $("f-end").value = localISO(end);
+    $("f-start").value = localISO(start);
+    paintQuick();
+    if (validate(readFilters())) load("data");
+  });
+  ["f-start", "f-end"].forEach(function (id) {
+    $(id).addEventListener("change", paintQuick);
+  });
+
+  function paintFilterCount() {
+    var f = readFilters();
+    var n = (f.currency !== "THB" ? 1 : 0) + (f.providers.length ? 1 : 0) + (f.gameIndex ? 1 : 0);
+    $("filter-count").textContent = n;
+    $("filter-count").hidden = !n;
+  }
+  $("filters").addEventListener("change", paintFilterCount);
+  $("filters").addEventListener("click", function () {
+    setTimeout(paintFilterCount, 0); // multiselect picks
+  });
+  $("toggle-filters").addEventListener("click", function () {
+    var open = this.getAttribute("aria-expanded") !== "true";
+    this.setAttribute("aria-expanded", String(open));
+    $("filters").hidden = !open;
+  });
+  $("dash-export").addEventListener("click", function () {
+    DS.ui.toast("Export downloads a CSV of this range in the app.", "tabler:download");
   });
 
   var states = ["data", "loading", "empty", "error"];

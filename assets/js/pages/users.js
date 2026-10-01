@@ -53,12 +53,23 @@
         return r.groups.indexOf(Number(v)) > -1;
       },
     },
+    summary: function (all) {
+      var admins = all.filter(function (r) {
+        return !r.providers.length;
+      }).length;
+      return [
+        { label: "All users", value: fmt.int(all.length), icon: "tabler:users", tone: "solid", meta: "People who can sign in" },
+        { label: "Admins", value: fmt.int(admins), icon: "tabler:shield", tone: "primary", meta: "See every provider", filter: { key: "provider", value: "none" } },
+        { label: "Provider staff", value: fmt.int(all.length - admins), icon: "tabler:building-store", tone: "info", meta: "Limited to their providers" },
+        { label: "User groups", value: fmt.int(M.userGroups.length), icon: "tabler:users-group", tone: "success", meta: "Permission sets" },
+      ];
+    },
     columns: [
       { key: "id", label: "ID", num: true, render: function (r) {
         return '<span class="t-muted">' + r.id + "</span>";
       } },
-      { key: "name", label: "Name", className: "is-strong", render: function (r) {
-        return esc(r.name) + '<span class="cell-sub">' + esc(r.email) + "</span>";
+      { key: "name", label: "Name", render: function (r) {
+        return DS.ui.ident(r.name, r.email);
       } },
       { key: "providers", label: "Providers", sortable: false, render: function (r) {
         if (!r.providers.length) return '<span class="chip chip--outlined"><iconify-icon icon="tabler:shield"></iconify-icon>Admin · all providers</span>';

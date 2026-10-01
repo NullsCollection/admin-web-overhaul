@@ -21,6 +21,7 @@
 .chart__grid {
   stroke: var(--chart-grid);
   stroke-width: 1;
+  stroke-dasharray: 3 5;
   shape-rendering: crispEdges;
 }
 .chart__zero {
@@ -30,21 +31,26 @@
 }
 .chart__line {
   fill: none;
-  stroke-width: 2;
+  stroke-width: 2.25;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 .chart__area {
-  opacity: 0.1;
+  stroke: none;
 }
 .chart__cross {
   stroke: var(--chart-cross);
   stroke-width: 1;
+  stroke-dasharray: 4 4;
   shape-rendering: crispEdges;
 }
 .chart__dot {
   stroke: var(--bg-surface);
   stroke-width: 2;
+}
+.chart__dot--hover {
+  fill: var(--bg-surface);
+  stroke-width: 2.5;
 }
 .chart__band {
   fill: var(--bg-hover);
@@ -60,10 +66,10 @@
   z-index: var(--z-tooltip);
   top: 0;
   left: 0;
-  min-width: 180px;
-  padding: var(--space-2) var(--space-3);
+  min-width: 190px;
+  padding: var(--space-2-5) var(--space-3);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background: var(--bg-surface);
   font-size: 12px;
   line-height: 18px;
@@ -116,4 +122,93 @@
   width: 14px;
   height: 3px;
   border-radius: 2px;
+}
+
+/* ---------- Gauge (DS.charts.gauge) ---------- */
+.gauge {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+}
+.gauge svg {
+  width: 100%;
+  height: auto;
+}
+.gauge__tick {
+  stroke: var(--bg-muted);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+.gauge__tick.is-on {
+  stroke: var(--primary);
+}
+.gauge__center {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4px;
+  text-align: center;
+}
+.gauge__value {
+  font-size: 34px;
+  line-height: 40px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.gauge__caption {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+
+/* ---------- Highlight bars (DS.charts.bars) ---------- */
+.hbars {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-2);
+  height: 200px;
+}
+.hbars__col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-2);
+}
+.hbars__value {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: var(--fw-semibold);
+  color: var(--text-primary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.hbars__track {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  flex: 1;
+  width: 100%;
+  max-width: 40px;
+}
+.hbars__bar {
+  width: 100%;
+  border-radius: 10px;
+  background: var(--bg-muted);
+}
+.hbars__col.is-top .hbars__bar {
+  background: var(--primary);
+}
+.hbars__label {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+.hbars__col.is-top .hbars__label {
+  color: var(--primary-text);
+  font-weight: var(--fw-semibold);
 }

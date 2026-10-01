@@ -37,6 +37,9 @@
      empty: { icon, title, text, actionHTML },    // no rows at all
      noResults: { icon, title, text },            // filters/search hide everything
      pageSize: 10,
+     summary: function (rows) → [{ label, value, icon, tone?, meta?, filter?: { key, value } }],
+                                          // KPI cards above the list card (counts from the whole dataset);
+                                          // a card with `filter` is a toggle that applies that filter
      selectable: false,                   // checkbox column (DataGrid checkboxSelection)
      onSelect: function (ids),            // selection changed; ids survive paging + filtering
    }) → { refresh(), setMode(mode), setFilter(key, value), selected(), clearSelection() }
@@ -60,6 +63,58 @@
     progress.className = "list-progress";
     progress.hidden = true;
     body.parentNode.insertBefore(progress, body);
+
+    /* ---------- Summary strip (KPI cards above the card) ---------- */
+    var summaryEl = null;
+    if (o.summary) {
+      summaryEl = document.createElement("section");
+      summaryEl.className = "kpi-row list-summary";
+      summaryEl.setAttribute("aria-label", "Summary");
+      root.parentNode.insertBefore(summaryEl, root);
+      summaryEl.addEventListener("click", function (e) {
+        var b = e.target.closest("[data-summary-filter]");
+        if (!b) return;
+        var key = b.getAttribute("data-summary-filter");
+        var val = b.getAttribute("data-summary-value");
+        var next = st.filters[key] === val ? defaults[key] || "all" : val;
+        var el = root.querySelector('[data-list-filter="' + key + '"]');
+        if (el) {
+          el.value = next;
+          el.dispatchEvent(new Event("change", { bubbles: true }));
+        } else {
+          setFilter(key, next);
+        }
+      });
+    }
+    function paintSummary() {
+      if (!summaryEl) return;
+      summaryEl.hidden = st.mode === "error";
+      if (st.mode === "loading") {
+        var n = summaryEl.children.length || 4;
+        summaryEl.innerHTML = new Array(n + 1).join(
+          '<div class="kpi kpi--loading"><span class="skeleton skeleton--text" style="--w:45%"></span>' +
+          '<span class="skeleton skeleton--value" style="--w:35%"></span><span class="skeleton skeleton--text" style="--w:60%"></span></div>'
+        );
+        return;
+      }
+      var items = o.summary(st.mode === "empty" ? [] : o.rows());
+      summaryEl.innerHTML = items.map(function (it) {
+        var tag = it.filter ? "button" : "div";
+        var on = it.filter && st.filters[it.filter.key] === it.filter.value;
+        var attrs = it.filter
+          ? ' type="button" data-summary-filter="' + esc(it.filter.key) + '" data-summary-value="' + esc(it.filter.value) +
+            '" aria-pressed="' + !!on + '" title="' + (on ? "Show all" : "Show only these") + '"'
+          : "";
+        return (
+          "<" + tag + ' class="kpi kpi--summary' + (it.filter ? " kpi--action" : "") + (on ? " is-on" : "") + '"' + attrs + ">" +
+          '<span class="kpi__head"><span class="kpi__label">' + esc(it.label) + "</span>" +
+          '<span class="kpi__icon kpi__icon--' + (it.tone || "primary") + '"><iconify-icon icon="' + it.icon + '"></iconify-icon></span></span>' +
+          '<span class="kpi__figure"><span class="kpi__value">' + it.value + "</span></span>" +
+          (it.meta ? '<span class="kpi__meta"><span>' + it.meta + "</span></span>" : "") +
+          "</" + tag + ">"
+        );
+      }).join("");
+    }
 
     var st = { q: "", scope: null, filters: {}, sort: null, page: 0, pageSize: o.pageSize || 10, mode: "data", firstLoad: true };
     var defaults = {}; // filter key → default value (not counted as "active")
@@ -219,7 +274,7 @@
         '<div class="table-wrap"><table class="table"><thead><tr>' +
         (o.selectable ? '<th scope="col" class="is-select">' + checkHTML("data-select-page", "Select all on this page") + "</th>" : "") +
         o.columns.map(thHTML).join("") +
-        (hasActions() ? '<th scope="col" class="is-num">Actions</th>' : "") +
+        (hasActions() ? '<th scope="col" class="is-num is-actions">Actions</th>' : "") +
         "</tr></thead><tbody>" +
         rows
           .map(function (r) {
@@ -256,7 +311,7 @@
         o.columns.map(function (c) {
           return "<th" + (c.num ? ' class="is-num"' : "") + ">" + esc(c.label) + "</th>";
         }).join("") +
-        (hasActions() ? '<th class="is-num">Actions</th>' : "") + "</tr></thead><tbody>" +
+        (hasActions() ? '<th class="is-num is-actions">Actions</th>' : "") + "</tr></thead><tbody>" +
         new Array(Math.min(st.pageSize, 10) + 1).join(row) +
         "</tbody></table></div>"
       );
@@ -280,13 +335,26 @@
       );
     }
 
+    // Page numbers: first, last, current ±1, with "…" for the gaps (MUI <Pagination> look)
+    function pageList(cur, last) {
+      var out = [];
+      for (var i = 0; i <= last; i++) {
+        if (i === 0 || i === last || Math.abs(i - cur) <= 1) out.push(i);
+        else if (out[out.length - 1] !== "…") out.push("…");
+      }
+      return out;
+    }
+
     function pagerHTML(res) {
       var from = res.total ? st.page * st.pageSize + 1 : 0;
       var to = Math.min(res.total, (st.page + 1) * st.pageSize);
       var last = Math.max(0, Math.ceil(res.total / st.pageSize) - 1);
       var id = "pg-size-" + Math.random().toString(36).slice(2, 7);
       return (
-        '<div class="pagination"><div class="pagination__size"><label for="' + id + '">Rows per page</label>' +
+        '<div class="pagination">' +
+        '<span class="pagination__range" aria-live="polite">Showing <strong>' + from + "–" + to + "</strong> of <strong>" +
+        DS.fmt.int(res.total) + "</strong> " + esc(res.total === 1 ? o.noun[0] : o.noun[1]) + "</span>" +
+        '<div class="pagination__end"><div class="pagination__size"><label for="' + id + '">Rows per page</label>' +
         '<div class="field__control field__control--sm field__control--select"><select id="' + id + '" data-page-size>' +
         [5, 10, 25, 50, 100]
           .map(function (n) {
@@ -294,12 +362,18 @@
           })
           .join("") +
         '</select><iconify-icon icon="tabler:chevron-down"></iconify-icon></div></div>' +
-        '<span class="pagination__range" aria-live="polite">' + from + "–" + to + " of " + DS.fmt.int(res.total) + "</span>" +
-        '<div class="pagination__nav">' +
-        '<button type="button" class="icon-btn icon-btn--sm" data-page-step="-1" aria-label="Previous page"' + (st.page === 0 ? " disabled" : "") +
+        '<nav class="pagination__pages" aria-label="Pages">' +
+        '<button type="button" class="page-btn" data-page-step="-1" aria-label="Previous page"' + (st.page === 0 ? " disabled" : "") +
         '><iconify-icon icon="tabler:chevron-left"></iconify-icon></button>' +
-        '<button type="button" class="icon-btn icon-btn--sm" data-page-step="1" aria-label="Next page"' + (st.page >= last ? " disabled" : "") +
-        '><iconify-icon icon="tabler:chevron-right"></iconify-icon></button></div></div>'
+        pageList(st.page, last)
+          .map(function (p) {
+            if (p === "…") return '<span class="pagination__gap" aria-hidden="true">…</span>';
+            return '<button type="button" class="page-btn" data-page-go="' + p + '"' + (p === st.page ? ' aria-current="page"' : "") +
+              ' aria-label="Page ' + (p + 1) + '">' + (p + 1) + "</button>";
+          })
+          .join("") +
+        '<button type="button" class="page-btn" data-page-step="1" aria-label="Next page"' + (st.page >= last ? " disabled" : "") +
+        '><iconify-icon icon="tabler:chevron-right"></iconify-icon></button></nav></div></div>'
       );
     }
 
@@ -326,6 +400,7 @@
     /* ---------- fetch cycle ---------- */
     function render() {
       closeRowMenu();
+      paintSummary();
       if (st.mode === "loading") {
         body.innerHTML = skeletonHTML();
         pager.innerHTML = "";
@@ -370,6 +445,12 @@
       if (st.firstLoad) {
         st.firstLoad = false;
         body.innerHTML = skeletonHTML();
+        if (summaryEl && !summaryEl.children.length) {
+          var m = st.mode;
+          st.mode = "loading";
+          paintSummary();
+          st.mode = m;
+        }
       } else {
         body.classList.add("is-fetching");
       }
@@ -472,6 +553,12 @@
       var step = e.target.closest("[data-page-step]");
       if (step) {
         st.page += Number(step.getAttribute("data-page-step"));
+        refresh();
+        return;
+      }
+      var go = e.target.closest("[data-page-go]");
+      if (go) {
+        st.page = Number(go.getAttribute("data-page-go"));
         refresh();
         return;
       }

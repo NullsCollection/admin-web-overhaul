@@ -120,15 +120,15 @@
   /* ---- Radius (MUI shape.borderRadius = 8) ---- */
   --radius-xs: 4px;
   --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-md: 10px;  /* controls: buttons, inputs, nav items */
+  --radius-lg: 14px;  /* inner panels, menus, alerts */
+  --radius-xl: 20px;  /* cards, dialogs, sidebar panel */
   --radius-pill: 999px;
 
   /* ---- Control sizes (MUI small / medium / large) ---- */
   --control-sm: 32px;
-  --control-md: 38px;
-  --control-lg: 44px;
+  --control-md: 40px;
+  --control-lg: 48px;
 
   /* ---- Motion ---- */
   --ease: cubic-bezier(0.2, 0, 0, 1);
@@ -136,10 +136,11 @@
   --dur: 200ms;
 
   /* ---- Layout ---- */
-  --sidebar-w: 256px;
-  --sidebar-w-collapsed: 68px;
-  --topbar-h: 60px;
-  --content-max: 1440px;
+  --sidebar-w: 252px;           /* the floating panel itself */
+  --sidebar-w-collapsed: 72px;
+  --sidebar-inset: 12px;        /* gap between the panel and the window edge */
+  --topbar-h: 72px;
+  --content-max: 1480px;
 
   /* ---- Z-index (MUI zIndex) ---- */
   --z-appbar: 1100;

@@ -44,6 +44,21 @@
         return t.name;
       }).join(" ") + " " + r.code + " " + r.id;
     },
+    summary: function (all) {
+      var on = all.filter(function (r) {
+        return r.isEnable === "yes";
+      }).length;
+      var groups = {};
+      all.forEach(function (r) {
+        groups[r.lottoGroupId] = 1;
+      });
+      return [
+        { label: "Games", value: fmt.int(all.length), icon: "tabler:clover", tone: "solid", meta: "Across every group" },
+        { label: "Enabled", value: fmt.int(on), icon: "tabler:circle-check", tone: "success", meta: "Shown to players", filter: { key: "isEnable", value: "enabled" } },
+        { label: "Disabled", value: fmt.int(all.length - on), icon: "tabler:circle-off", tone: "error", meta: "Hidden from players", filter: { key: "isEnable", value: "disabled" } },
+        { label: "Groups", value: fmt.int(Object.keys(groups).length), icon: "tabler:folders", tone: "info", meta: "Used by these games" },
+      ];
+    },
     filters: {
       lottoGroupId: function (r, v) {
         return String(r.lottoGroupId) === v;

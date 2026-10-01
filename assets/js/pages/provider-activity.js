@@ -31,6 +31,20 @@
     search: function () {
       return "";
     },
+    summary: function (all) {
+      var lvl = function (k) {
+        return all.filter(function (r) {
+          return r.status === k;
+        }).length;
+      };
+      var quiet = all.length - lvl("ACTIVE");
+      return [
+        { label: "Active", value: fmt.int(lvl("ACTIVE")), icon: "tabler:activity", tone: "success", meta: "Bets in the last 3 months", filter: { key: "status", value: "ACTIVE" } },
+        { label: "Inactive", value: fmt.int(quiet), icon: "tabler:activity-heartbeat", tone: "error", meta: "No bets for 3+ months", filter: { key: "status", value: "INACTIVE" } },
+        { label: "At risk or warning", value: fmt.int(lvl("AT RISK") + lvl("WARNING")), icon: "tabler:alert-triangle", tone: "warning", meta: "Quiet 3 to 6 months" },
+        { label: "Critical or severe", value: fmt.int(lvl("CRITICAL") + lvl("SEVERE")), icon: "tabler:alert-octagon", tone: "error", meta: "Quiet 7 months or more" },
+      ];
+    },
     filters: {
       start: function () {
         return true; // server aggregates the chosen range; mock rows are already this month's totals
