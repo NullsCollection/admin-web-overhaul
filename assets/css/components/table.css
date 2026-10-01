@@ -445,3 +445,9 @@ th[aria-sort="descending"] .th-sort iconify-icon {
 .perm-grid tbody tr:last-child th {
   border-bottom: 0;
 }
+@media (max-width: 599.98px) {
+  .table-wrap .table th.is-actions,
+  .table-wrap .table td.is-actions {
+    position: static;
+  }
+}

@@ -375,7 +375,7 @@
   ui.ident = function (name, sub, o) {
     o = o || {};
     var esc = DS.fmt.esc;
-    var str = String(name || "");
+    var str = String(name || "").replace(/<[^>]*>/g, "");
     var hue = 0;
     for (var i = 0; i < str.length; i++) hue = (hue * 31 + str.charCodeAt(i)) % 6;
     var initials = str.replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).slice(0, 2).map(function (w) {

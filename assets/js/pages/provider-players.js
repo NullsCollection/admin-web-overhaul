@@ -35,8 +35,8 @@
       { key: "id", label: "ID", num: true, render: function (r) {
         return '<span class="t-muted">' + r.id + "</span>";
       } },
-      { key: "username", label: "Player", className: "is-strong", render: function (r) {
-        return '<a href="provider-player.html?id=' + p.id + "&player=" + r.id + '">' + esc(r.username) + '</a><span class="cell-sub">' + esc(r.displayName) + "</span>";
+      { key: "username", label: "Player", render: function (r) {
+        return DS.ui.ident('<a href="provider-player.html?id=' + p.id + "&player=" + r.id + '">' + esc(r.username) + "</a>", r.displayName, { html: true });
       } },
       { key: "balance", label: "Balance", num: true, render: function (r) {
         return fmt.money(r.balance, cur);

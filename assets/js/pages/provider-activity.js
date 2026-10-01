@@ -58,7 +58,7 @@
     },
     columns: [
       { key: "providerName", label: "Provider", render: function (r) {
-        return '<a class="t-medium" href="provider-form.html?id=' + r.id + '">' + esc(r.providerName) + '</a><span class="cell-sub">' + esc(r.prefixCode) + "</span>";
+        return DS.ui.ident('<a href="provider-form.html?id=' + r.id + '">' + esc(r.providerName) + "</a>", r.prefixCode, { html: true, square: true });
       } },
       { key: "status", label: "Status", sortValue: function (r) {
         return r.status === "ACTIVE" ? 0 : LEVEL[r.status][0];

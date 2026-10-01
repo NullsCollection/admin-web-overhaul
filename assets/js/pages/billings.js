@@ -110,7 +110,7 @@
       { key: "provider", label: "Provider", className: "is-strong", sortValue: function (r) {
         return r.provider.name;
       }, render: function (r) {
-        return esc(r.provider.name) + '<span class="cell-sub">' + esc(r.provider.prefixCode) + "</span>";
+        return DS.ui.ident(r.provider.name, r.provider.prefixCode, { square: true });
       } },
       // A whole month reads as the month; a part month (cut-off before the end) shows its days
       { key: "reportStartAt", label: "Month", render: function (r) {

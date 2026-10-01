@@ -649,6 +649,11 @@
   $("filters").addEventListener("click", function () {
     setTimeout(paintFilterCount, 0); // multiselect picks
   });
+  // Phones and tablets: filters start folded so the figures come first
+  if (window.matchMedia("(max-width: 899.98px)").matches) {
+    $("toggle-filters").setAttribute("aria-expanded", "false");
+    $("filters").hidden = true;
+  }
   $("toggle-filters").addEventListener("click", function () {
     var open = this.getAttribute("aria-expanded") !== "true";
     this.setAttribute("aria-expanded", String(open));

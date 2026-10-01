@@ -58,10 +58,13 @@
 }
 
 /* ---------- Overview: one hero + six stats ---------- */
+/* Ticket summary + bill details: a hero tile and stat tiles, each its own card (gaps, no dividers) */
 .overview {
   display: grid;
   grid-template-columns: 1fr;
-  overflow: hidden;
+  gap: var(--space-5);
+  border: 0;
+  background: transparent;
 }
 @media (min-width: 900px) {
   .overview {
@@ -77,15 +80,10 @@
   justify-content: space-between;
   gap: var(--space-5);
   padding: var(--space-6);
-  border-bottom: 1px solid var(--border);
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-card));
+  border-radius: var(--radius-xl);
   background: var(--primary-soft);
   color: var(--text-primary);
-}
-@media (min-width: 900px) {
-  .overview__hero {
-    border-bottom: 0;
-    border-right: 1px solid var(--border);
-  }
 }
 .hero__label {
   display: flex;
@@ -176,12 +174,13 @@
 .overview__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--border); /* 1px gaps draw the cell dividers */
+  gap: var(--space-5);
 }
 .overview__grid > .stat {
   justify-content: center;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
   background: var(--bg-surface);
 }
 .overview__grid > .stat {
