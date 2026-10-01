@@ -10,12 +10,15 @@
 :root[data-mode="light"] {
   color-scheme: light;
 
-  /* Backgrounds (the 60%) */
+  /* Backgrounds (the 60%). Sidebar + top bar sit on the canvas; cards are the white surface on it. */
   --bg-canvas:  var(--ink-100); /* → palette.background.default */
   --bg-surface: var(--ink-0);   /* → palette.background.paper */
   --bg-subtle:  var(--ink-50);  /* → customColors.tableHeaderBg */
   --bg-hover:   var(--ink-100); /* → palette.action.hover */
+  --bg-row-hover: var(--ink-50); /* → DataGrid row hover (quieter than buttons) */
   --bg-selected: var(--ink-100); /* → palette.action.selected */
+  --bg-chrome:  var(--ink-0);   /* → customColors.navBg (new): the floating sidebar panel */
+  --bg-nav-active: var(--primary-soft); /* → nav active item: soft brand pill */
   --bg-muted:   var(--ink-100); /* icon tiles, tracks, skeleton base */
   --bg-inverse: var(--ink-950); /* → palette.ink.main (new): ink buttons, checkbox, toast, avatar */
   --bg-inverse-hover: var(--ink-800);
@@ -30,6 +33,8 @@
 
   /* Borders */
   --border:        var(--ink-200); /* → palette.divider */
+  --border-card:   color-mix(in srgb, var(--ink-200) 70%, var(--ink-100)); /* → card outline (Card variant="outlined") */
+  --border-subtle: color-mix(in srgb, var(--ink-200) 60%, var(--ink-100)); /* → table row dividers */
   --border-strong: var(--ink-300); /* → customColors.borderStrong (new): input hover */
   --border-inverse: var(--ink-800);
 
@@ -54,7 +59,10 @@
   --bg-surface: var(--ink-900);
   --bg-subtle:  color-mix(in srgb, var(--ink-900), var(--ink-800)); /* halfway step */
   --bg-hover:   var(--ink-800);
+  --bg-row-hover: color-mix(in srgb, var(--ink-900), var(--ink-800));
   --bg-selected: var(--ink-800);
+  --bg-chrome:  var(--ink-900);
+  --bg-nav-active: var(--primary-soft);
   --bg-muted:   var(--ink-800);
   --bg-inverse: var(--ink-50);
   --bg-inverse-hover: var(--ink-200);
@@ -66,6 +74,8 @@
   --text-inverse:   var(--ink-950);
 
   --border:        var(--ink-800);
+  --border-card:   color-mix(in srgb, var(--ink-800) 80%, var(--ink-900));
+  --border-subtle: color-mix(in srgb, var(--ink-800) 75%, var(--ink-900));
   --border-strong: var(--ink-700);
   --border-inverse: var(--ink-300);
 
@@ -137,4 +147,12 @@
   --viz-1: var(--viz-brandblue-dark);
   --viz-2: var(--viz-gold-dark);
   --viz-3: var(--viz-magenta-dark);
+}
+
+/* ---------- Derived (all themes × modes) ---------- */
+:root {
+  /* Focus halo around inputs: a soft 3px outline in the brand color (outline, not box-shadow) */
+  --focus-halo: color-mix(in srgb, var(--focus-ring) 24%, transparent);
+  /* Hairline in the brand color: active nav marker, selected cards */
+  --primary-line: var(--primary);
 }

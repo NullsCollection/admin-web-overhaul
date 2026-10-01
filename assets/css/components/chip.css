@@ -5,12 +5,13 @@
    ========================================================================== */
 
 /* ---------- Chip ---------- */
+/* Soft pill: tinted fill, same-hue text, no outline */
 .chip {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1-5);
   height: 24px;
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-2-5);
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
   background: var(--bg-muted);
@@ -78,7 +79,7 @@
   place-items: center;
   min-width: 20px;
   height: 20px;
-  padding: 0 6px;
+  padding: 0 7px;
   border-radius: var(--radius-pill);
   background: var(--primary);
   color: var(--on-primary);
@@ -113,7 +114,7 @@
   background: var(--bg-muted);
   color: var(--text-secondary);
   font-size: 14px;
-  font-weight: var(--fw-medium);
+  font-weight: var(--fw-semibold);
   overflow: hidden;
 }
 .avatar iconify-icon {
@@ -150,14 +151,16 @@
 .code {
   display: inline-block;
   white-space: nowrap; /* codes never break mid-word */
-  padding: 1px var(--space-1-5);
-  border-radius: var(--radius-xs);
-  background: var(--bg-muted);
+  padding: 0 var(--space-1-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle);
   color: var(--text-primary);
+  font-family: var(--font-mono);
   font-size: 12px;
-  line-height: 18px;
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.04em;
+  line-height: 20px;
+  font-weight: var(--fw-medium);
+  letter-spacing: 0.02em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -255,3 +258,40 @@
   border: 1px dashed var(--border-strong);
   border-radius: var(--radius-md);
 }
+
+/* ---------- Identity cell: avatar/tile + name + secondary line (table first columns, summaries) ---------- */
+.ident {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  vertical-align: middle;
+}
+.ident .avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 13px;
+}
+.ident__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.ident__name {
+  color: var(--text-primary);
+  font-weight: var(--fw-semibold);
+  line-height: 20px;
+  white-space: nowrap;
+}
+.ident__sub {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 16px;
+}
+/* Hue for initials avatars (DS.ui.ident picks one per name) */
+.avatar--hue-0 { background: var(--primary-soft); color: var(--primary-soft-text); }
+.avatar--hue-1 { background: var(--info-soft); color: var(--info-text); }
+.avatar--hue-2 { background: var(--success-soft); color: var(--success-text); }
+.avatar--hue-3 { background: var(--warning-soft); color: var(--warning-text); }
+.avatar--hue-4 { background: var(--error-soft); color: var(--error-text); }
+.avatar--hue-5 { background: var(--bg-muted); color: var(--text-secondary); }

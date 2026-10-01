@@ -370,13 +370,40 @@
   });
 
   /* ---------- Brand logo (theme-aware; CSS in layout/shell.css → .brand-logo) ---------- */
+  /* ---------- Identity cell: avatar (initials, hue per name) or icon tile + name + sub line ----------
+     ui.ident(name, sub, { icon?, square?, tone? }) → html  (port: a small <Stack direction="row"> with <Avatar>) */
+  ui.ident = function (name, sub, o) {
+    o = o || {};
+    var esc = DS.fmt.esc;
+    var str = String(name || "").replace(/<[^>]*>/g, "");
+    var hue = 0;
+    for (var i = 0; i < str.length; i++) hue = (hue * 31 + str.charCodeAt(i)) % 6;
+    var initials = str.replace(/[^\p{L}\p{N} ]/gu, " ").trim().split(/\s+/).slice(0, 2).map(function (w) {
+      return w.charAt(0);
+    }).join("").toUpperCase() || "?";
+    var av = '<span class="avatar avatar--sm' + (o.square || o.icon ? " avatar--square" : "") + " " +
+      (o.tone ? "avatar--" + o.tone : "avatar--hue-" + hue) + '" aria-hidden="true">' +
+      (o.icon ? '<iconify-icon icon="' + o.icon + '"></iconify-icon>' : esc(initials)) + "</span>";
+    return (
+      '<span class="ident">' + av + '<span class="ident__text"><span class="ident__name">' + (o.html ? name : esc(str)) + "</span>" +
+      (sub ? '<span class="ident__sub">' + (o.subHtml ? sub : esc(sub)) + "</span>" : "") + "</span></span>"
+    );
+  };
+
   ui.logoHTML = function (base) {
     var p = base + "../../public/images/logos/";
+    // Logo files live in the app repo (public/). If they can't load (prototype opened on its own),
+    // the wrapper gets .is-fallback and a text wordmark shows instead of a broken image.
+    var fail = ' onerror="this.parentNode.classList.add(\'is-fallback\')"';
     return (
-      '<img class="rb7-on-light" src="' + p + 'RB7-dark.svg" alt="RB7">' +
-      '<img class="rb7-on-dark" src="' + p + 'RB7-light.svg" alt="RB7">' +
-      '<img class="lp-on-light" src="' + p + 'lottoplus-light.svg" alt="Lotto Plus">' +
-      '<img class="lp-on-dark" src="' + p + 'lottoplus-dark.svg" alt="Lotto Plus">'
+      '<img class="rb7-on-light" src="' + p + 'RB7-dark.svg" alt="RB7"' + fail + ">" +
+      '<img class="rb7-on-dark" src="' + p + 'RB7-light.svg" alt="RB7"' + fail + ">" +
+      '<img class="lp-on-light" src="' + p + 'lottoplus-light.svg" alt="Lotto Plus"' + fail + ">" +
+      '<img class="lp-on-dark" src="' + p + 'lottoplus-dark.svg" alt="Lotto Plus"' + fail + ">" +
+      '<span class="brand-word brand-word--rb7"><span class="brand-word__mark">RB7</span>' +
+      '<span class="brand-word__text">RB7 Admin</span></span>' +
+      '<span class="brand-word brand-word--lp"><span class="brand-word__mark">LP</span>' +
+      '<span class="brand-word__text">Lotto Plus</span></span>'
     );
   };
 

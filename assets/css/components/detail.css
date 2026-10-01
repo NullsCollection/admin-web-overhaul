@@ -56,7 +56,8 @@
   font-size: 16px;
 }
 
-/* ---------- Summary card: facts + totals side by side ---------- */
+/* ---------- Summary card: facts + totals side by side ----------
+   Totals sit in a padded column as soft tiles (not divided cells). */
 .summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -72,30 +73,30 @@
 .summary__totals {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  border-top: 1px solid var(--border);
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
 }
 .summary__totals .stat {
-  padding: var(--space-5) var(--space-6);
+  justify-content: center;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
 }
-.summary__totals .stat + .stat {
-  border-left: 1px solid var(--border);
+.summary__totals .stat:first-child {
+  background: var(--primary-soft);
+}
+.summary__totals .stat:first-child .stat__label,
+.summary__totals .stat:first-child .stat__label iconify-icon {
+  color: var(--primary-soft-text);
 }
 @media (min-width: 900px) {
   .summary {
-    grid-template-columns: minmax(0, 1fr) 300px;
+    grid-template-columns: minmax(0, 1fr) 320px;
   }
   .summary__totals {
     grid-template-columns: minmax(0, 1fr);
     align-content: stretch;
-    border-top: 0;
-    border-left: 1px solid var(--border);
-  }
-  .summary__totals .stat {
-    justify-content: center;
-  }
-  .summary__totals .stat + .stat {
-    border-left: 0;
-    border-top: 1px solid var(--border);
+    padding: var(--space-4) var(--space-4) var(--space-4) 0;
   }
 }
 
@@ -253,7 +254,10 @@
 }
 .dialog--xl .dialog__body {
   padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border);
+}
+/* A scrolling body ends at the action bar's top border */
+.dialog__body + .dialog__actions {
+  margin-top: var(--space-4);
 }
 
 /* ---------- Summary v2: identity row + aligned label/value rows ---------- */
@@ -268,8 +272,13 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: var(--space-3) var(--space-6);
-  padding: var(--space-5) var(--space-6);
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-6);
+  border-bottom: 1px dashed var(--border);
+}
+.summary__person .avatar {
+  width: 48px;
+  height: 48px;
+  font-size: 16px;
 }
 .summary__person {
   display: flex;
@@ -278,8 +287,9 @@
   min-width: 0;
 }
 .summary__name {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 18px;
+  line-height: 26px;
+  letter-spacing: -0.015em;
   font-weight: var(--fw-semibold);
   color: var(--text-primary);
 }
@@ -308,7 +318,7 @@
   grid-template-columns: minmax(0, 1fr);
   column-gap: var(--space-8);
   margin: 0;
-  padding: var(--space-2) var(--space-6) var(--space-3);
+  padding: var(--space-3) var(--space-6) var(--space-4);
 }
 @media (min-width: 900px) {
   .kv-rows {
@@ -320,9 +330,9 @@
   grid-template-columns: 104px minmax(0, 1fr);
   align-items: center;
   gap: var(--space-3);
-  min-height: 44px;
+  min-height: 48px;
   padding: var(--space-2) 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px dashed var(--border);
 }
 /* last row of each column has no divider */
 .kv-rows > .kv-row:last-child,
@@ -331,7 +341,7 @@
 }
 @media (max-width: 899.98px) {
   .kv-rows > .kv-row:nth-last-child(2):nth-child(odd) {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px dashed var(--border);
   }
 }
 .kv-row dt {

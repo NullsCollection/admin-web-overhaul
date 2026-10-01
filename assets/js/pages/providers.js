@@ -43,12 +43,27 @@
         return v === "enabled" ? r.isEnable === "yes" : r.isEnable !== "yes";
       },
     },
+    summary: function (rows) {
+      var on = rows.filter(function (r) {
+        return r.isEnable === "yes";
+      }).length;
+      var cur = {};
+      rows.forEach(function (r) {
+        cur[r.currency.code] = 1;
+      });
+      return [
+        { label: "All providers", value: fmt.int(rows.length), icon: "tabler:building-store", tone: "solid", meta: "Connected partner sites" },
+        { label: "Enabled", value: fmt.int(on), icon: "tabler:circle-check", tone: "success", meta: "Taking bets now", filter: { key: "isEnable", value: "enabled" } },
+        { label: "Disabled", value: fmt.int(rows.length - on), icon: "tabler:circle-off", tone: "error", meta: "Not taking bets", filter: { key: "isEnable", value: "disabled" } },
+        { label: "Currencies", value: fmt.int(Object.keys(cur).length), icon: "tabler:coin", tone: "info", meta: Object.keys(cur).join(" · ") || "None" },
+      ];
+    },
     columns: [
       { key: "id", label: "ID", num: true, render: function (r) {
         return '<span class="t-muted">' + r.id + "</span>";
       } },
-      { key: "name", label: "Provider name", className: "is-strong", render: function (r) {
-        return esc(r.name);
+      { key: "name", label: "Provider name", render: function (r) {
+        return DS.ui.ident(r.name, null, { square: true });
       } },
       { key: "prefixCode", label: "Prefix code", render: function (r) {
         return '<span class="code">' + esc(r.prefixCode) + "</span>";

@@ -8,8 +8,8 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
   background: var(--bg-surface);
 }
 
@@ -21,7 +21,8 @@
   padding: var(--space-5) var(--space-6) var(--space-4);
 }
 .card__header--divided {
-  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
 }
 .card__heading {
   min-width: 0;
@@ -30,6 +31,7 @@
   font-size: 16px;
   line-height: 24px;
   font-weight: var(--fw-semibold);
+  letter-spacing: -0.015em;
   color: var(--text-primary);
 }
 .card__subheader {
@@ -53,7 +55,7 @@
   padding-top: var(--space-6);
 }
 .card__header--divided + .card__content {
-  padding-top: var(--space-4);
+  padding-top: var(--space-5);
 }
 .card__content--flush {
   padding: 0;
@@ -64,9 +66,148 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-6);
-  border-top: 1px solid var(--border);
+  padding: var(--space-4) var(--space-6);
+  border-top: 1px solid var(--border-subtle);
   font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ---------- KPI card → a small Card with label, icon tile, figure, delta and an optional mini chart ---------- */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: var(--space-5);
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-5);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  container-type: inline-size;
+}
+a.kpi:hover {
+  border-color: var(--border-strong);
+  text-decoration: none;
+}
+.kpi__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.kpi__label {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--fw-medium);
+  color: var(--text-secondary);
+}
+.kpi__icon {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: 19px;
+}
+.kpi__icon--primary { background: var(--primary-soft); color: var(--primary-text); }
+.kpi__icon--success { background: var(--success-soft); color: var(--success-text); }
+.kpi__icon--error   { background: var(--error-soft);   color: var(--error-text); }
+.kpi__icon--warning { background: var(--warning-soft); color: var(--warning-text); }
+.kpi__icon--info    { background: var(--info-soft);    color: var(--info-text); }
+.kpi__icon--solid   { background: var(--primary);      color: var(--on-primary); }
+.kpi__figure {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  margin-top: var(--space-4);
+}
+.kpi__value {
+  font-size: min(30px, 13cqi);
+  line-height: 1.2;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.kpi__value .stat__dec {
+  color: var(--text-faint);
+}
+.kpi__value.is-negative {
+  color: var(--error-text);
+}
+.kpi__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-1-5) var(--space-2);
+  margin-top: var(--space-2);
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-muted);
+}
+.kpi__meta strong {
+  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+}
+.kpi__spark {
+  margin-top: auto;
+  padding-top: var(--space-4);
+}
+.kpi--loading .skeleton + .skeleton {
+  margin-top: var(--space-3);
+}
+
+/* Mini bars: one bar per day, the latest in brand, the rest muted (decorative, aria-hidden) */
+.minibars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 36px;
+}
+.minibars i {
+  flex: 1;
+  min-height: 3px;
+  border-radius: 3px 3px 1px 1px;
+  background: var(--bg-muted);
+}
+.minibars i.is-on {
+  background: var(--primary);
+}
+.minibars i.is-neg {
+  background: color-mix(in srgb, var(--error) 35%, transparent);
+}
+
+/* ---------- Delta chip: change vs. the previous period ---------- */
+.delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  padding: 0 var(--space-2) 0 var(--space-1-5);
+  border-radius: var(--radius-pill);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1;
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.delta iconify-icon {
+  font-size: 13px;
+}
+.delta--up   { background: var(--success-soft); color: var(--success-text); }
+.delta--down { background: var(--error-soft);   color: var(--error-text); }
+
+/* Small "more" button in a card header (⋯) */
+.card-more {
   color: var(--text-muted);
 }
 
@@ -83,24 +224,25 @@
   gap: var(--space-1-5);
   font-size: 13px;
   line-height: 20px;
-  color: var(--text-secondary);
+  font-weight: var(--fw-medium);
+  color: var(--text-muted);
 }
 .stat__label iconify-icon {
   font-size: 16px;
   color: var(--text-muted);
 }
 .stat__value {
-  font-size: 20px;
-  line-height: 28px;
+  font-size: 24px;
+  line-height: 32px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .stat__dec {
   font-weight: var(--fw-medium);
-  color: var(--text-muted);
+  color: var(--text-faint);
 }
 .stat__meta {
   font-size: 12px;
@@ -113,7 +255,7 @@
 
 /* ---------- Meter ---------- */
 .meter {
-  height: 6px;
+  height: 8px;
   border-radius: var(--radius-pill);
   background: var(--bg-muted);
   overflow: hidden;
@@ -146,8 +288,8 @@
   flex-direction: column;
   gap: 2px;
   padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
   background: var(--bg-surface);
   color: var(--text-primary);
   font: inherit;
@@ -162,9 +304,10 @@
   outline-offset: 2px;
 }
 .type-card.is-selected {
-  /* 2px brand border; 1px less padding so the content doesn't move (no shadows) */
+  /* 2px brand border + soft brand fill; 1px less padding so the content doesn't move (no shadows) */
   padding: calc(var(--space-4) - 1px);
   border: 2px solid var(--primary);
+  background: color-mix(in srgb, var(--primary-soft) 55%, var(--bg-surface));
 }
 .type-card__title {
   display: flex;
@@ -231,5 +374,81 @@
   .type-card__facts > div {
     flex-direction: column;
     gap: 0;
+  }
+}
+
+/* ---------- List summary strip (core/list.js `summary`) ---------- */
+.list-summary {
+  margin-bottom: var(--space-5);
+}
+.list-summary[hidden] {
+  display: none;
+}
+.kpi--summary {
+  padding: var(--space-4) var(--space-5);
+}
+.kpi--summary .kpi__figure {
+  margin-top: var(--space-2);
+}
+.kpi--summary .kpi__value {
+  font-size: min(26px, 12cqi);
+}
+.kpi--summary .kpi__icon {
+  width: 32px;
+  height: 32px;
+  font-size: 17px;
+}
+/* A card that filters the list: a toggle button */
+.kpi--action {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+.kpi--action:hover {
+  border-color: var(--border-strong);
+}
+.kpi--action.is-on {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary-soft) 60%, var(--bg-surface));
+}
+.kpi--action:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Phones: KPI cards two per row, tighter */
+@media (max-width: 599.98px) {
+  .kpi-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+  .kpi,
+  .kpi--summary {
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+  }
+  .kpi__icon,
+  .kpi--summary .kpi__icon {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+  .kpi__label {
+    font-size: 13px;
+  }
+  .kpi__value,
+  .kpi--summary .kpi__value {
+    font-size: min(22px, 14cqi);
+  }
+  .kpi__meta {
+    font-size: 11px;
+  }
+  .kpi__spark {
+    padding-top: var(--space-3);
+  }
+  .minibars {
+    height: 28px;
+    gap: 2px;
   }
 }

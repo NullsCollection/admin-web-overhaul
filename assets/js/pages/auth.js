@@ -24,6 +24,45 @@
       ui.langMenuHTML() + "</div>";
     ui.paintModeButtons();
   }
+  /* Brand art: the app serves public/images/{rb7,lottoplus}-bg. When the prototype is opened on its
+     own those files are missing, so the panel swaps to a designed fallback (CSS: .auth__art.is-fallback). */
+  var art = document.querySelector(".auth__art:not([data-no-fallback])");
+  function checkArt() {
+    var m = /url\(["']?([^"')]+)["']?\)/.exec(getComputedStyle(art).backgroundImage);
+    if (!m) return art.classList.add("is-fallback");
+    var img = new Image();
+    img.onload = function () {
+      art.classList.remove("is-fallback");
+    };
+    img.onerror = function () {
+      art.classList.add("is-fallback");
+    };
+    img.src = m[1];
+  }
+  if (art) {
+    art.innerHTML =
+      '<div class="showcase">' +
+      '<div class="showcase__body">' +
+      '<p class="showcase__kicker">Back office</p>' +
+      '<p class="showcase__title">Rounds, tickets and providers, all in one calm place.</p>' +
+      '<ul class="showcase__points">' +
+      '<li><iconify-icon icon="tabler:clock-check"></iconify-icon>Results and pending rounds as they happen</li>' +
+      '<li><iconify-icon icon="tabler:adjustments-horizontal"></iconify-icon>Limits, payouts and prices per provider</li>' +
+      '<li><iconify-icon icon="tabler:shield-lock"></iconify-icon>Role-based access for every admin</li>' +
+      "</ul></div>" +
+      '<div class="showcase__card">' +
+      '<div class="showcase__card-head"><span>Profit, last 14 days</span><span class="showcase__delta">+4.2%</span></div>' +
+      '<div class="showcase__card-value">฿3,369,959<span>.15</span></div>' +
+      '<svg viewBox="0 0 300 60" preserveAspectRatio="none" focusable="false">' +
+      '<path d="M0 44L23 40L46 42L69 30L92 34L115 50L138 28L161 30L184 22L207 26L230 18L253 24L276 12L300 16L300 60L0 60Z"></path>' +
+      '<path d="M0 44L23 40L46 42L69 30L92 34L115 50L138 28L161 30L184 22L207 26L230 18L253 24L276 12L300 16"></path></svg>' +
+      "</div></div>";
+    checkArt();
+    DS.settings.on(function (key) {
+      if (key === "theme") checkArt();
+    });
+  }
+
   var foot = $("auth-foot");
   if (foot) foot.innerHTML = "<span>© 2026 Super Admin</span><span>Design prototype</span>";
 

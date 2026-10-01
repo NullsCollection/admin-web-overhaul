@@ -25,6 +25,7 @@ body {
   background: var(--bg-canvas);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
 }
 
 h1, h2, h3, h4, h5, h6, p, figure, ul, ol, dl, dd {
@@ -104,13 +105,13 @@ a:hover {
 }
 
 /* ---------- Type scale (MUI variants) ---------- */
-.t-h1 { font-size: 32px; line-height: 40px; font-weight: var(--fw-semibold); letter-spacing: -0.02em; }
-.t-h2 { font-size: 28px; line-height: 36px; font-weight: var(--fw-semibold); letter-spacing: -0.015em; }
-.t-h3 { font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); letter-spacing: -0.01em; }
-.t-h4 { font-size: 20px; line-height: 28px; font-weight: var(--fw-semibold); letter-spacing: -0.005em; }
-.t-h5 { font-size: 18px; line-height: 26px; font-weight: var(--fw-semibold); }
-.t-h6 { font-size: 16px; line-height: 24px; font-weight: var(--fw-semibold); }
-.t-subtitle1 { font-size: 15px; line-height: 22px; font-weight: var(--fw-medium); }
+.t-h1 { font-size: 32px; line-height: 40px; font-weight: var(--fw-semibold); letter-spacing: -0.025em; }
+.t-h2 { font-size: 28px; line-height: 36px; font-weight: var(--fw-semibold); letter-spacing: -0.022em; }
+.t-h3 { font-size: 24px; line-height: 32px; font-weight: var(--fw-semibold); letter-spacing: -0.02em; }
+.t-h4 { font-size: 20px; line-height: 28px; font-weight: var(--fw-semibold); letter-spacing: -0.015em; }
+.t-h5 { font-size: 18px; line-height: 26px; font-weight: var(--fw-semibold); letter-spacing: -0.01em; }
+.t-h6 { font-size: 16px; line-height: 24px; font-weight: var(--fw-semibold); letter-spacing: -0.006em; }
+.t-subtitle1 { font-size: 15px; line-height: 22px; font-weight: var(--fw-medium); letter-spacing: -0.004em; }
 .t-subtitle2 { font-size: 13px; line-height: 20px; font-weight: var(--fw-medium); }
 .t-body1 { font-size: 14px; line-height: 22px; }
 .t-body2 { font-size: 13px; line-height: 20px; }
@@ -123,7 +124,7 @@ a:hover {
   text-transform: uppercase;
 }
 /* Big figures: not an MUI variant; port as sx on h3 */
-.t-display { font-size: 40px; line-height: 44px; font-weight: var(--fw-semibold); letter-spacing: -0.025em; }
+.t-display { font-size: 40px; line-height: 44px; font-weight: var(--fw-semibold); letter-spacing: -0.035em; }
 
 .t-primary   { color: var(--text-primary); }
 .t-secondary { color: var(--text-secondary); }

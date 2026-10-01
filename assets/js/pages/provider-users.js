@@ -44,8 +44,8 @@
       { key: "id", label: "ID", num: true, render: function (r) {
         return '<span class="t-muted">' + r.id + "</span>";
       } },
-      { key: "name", label: "Name", className: "is-strong", render: function (r) {
-        return esc(r.name);
+      { key: "name", label: "Name", render: function (r) {
+        return DS.ui.ident(r.name);
       } },
       { key: "email", label: "Email", render: function (r) {
         return esc(r.email);

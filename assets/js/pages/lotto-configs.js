@@ -27,6 +27,17 @@
     search: function (r) {
       return r.name + " " + r.id;
     },
+    // One card per config type (the first four), each filters to that type
+    summary: function (all) {
+      var icons = ["tabler:clover", "tabler:bolt", "tabler:stack-2", "tabler:numbers"];
+      var tones = ["solid", "info", "success", "warning"];
+      return L.types.slice(0, 4).map(function (t, i) {
+        var n = all.filter(function (r) {
+          return r.type === t.value;
+        }).length;
+        return { label: t.label, value: fmt.int(n), icon: icons[i], tone: tones[i], meta: n === 1 ? "config" : "configs", filter: { key: "type", value: t.value } };
+      });
+    },
     filters: {
       type: function (r, v) {
         return r.type === v;

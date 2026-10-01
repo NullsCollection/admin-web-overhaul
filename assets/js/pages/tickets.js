@@ -48,12 +48,29 @@
         return v.indexOf(r.game) > -1;
       },
     },
+    summary: function (all) {
+      var by = function (st) {
+        return all.filter(function (r) {
+          return r.status === st;
+        });
+      };
+      var amount = all.reduce(function (t, r) {
+        return t + r.betAmount;
+      }, 0);
+      return [
+        { label: "All tickets", value: fmt.int(all.length), icon: "tabler:ticket", tone: "solid", meta: fmt.money(amount) + " bet, any date" },
+        { label: "Waiting for result", value: fmt.int(by("approved").length), icon: "tabler:hourglass", tone: "warning",
+          meta: "Placed, not resulted yet", filter: { key: "status", value: "approved" } },
+        { label: "Resulted", value: fmt.int(by("settled").length), icon: "tabler:circle-check", tone: "info", meta: "Have a result", filter: { key: "status", value: "settled" } },
+        { label: "Rejected", value: fmt.int(by("rejected").length), icon: "tabler:circle-x", tone: "error", meta: "Refused by the provider", filter: { key: "status", value: "rejected" } },
+      ];
+    },
     columns: [
       { key: "id", label: "ID", render: function (r) {
         return '<a class="t-medium t-num" href="ticket-detail.html?id=' + r.id + '">' + r.id + "</a>";
       } },
-      { key: "player", label: "Member", sortable: false, className: "is-strong", render: function (r) {
-        return esc(r.player.username) + '<span class="cell-sub t-num">#' + r.player.id + "</span>";
+      { key: "player", label: "Member", sortable: false, render: function (r) {
+        return DS.ui.ident(r.player.username, "#" + r.player.id);
       } },
       { key: "provider", label: "Provider", sortValue: function (r) {
         return r.provider ? r.provider.name : "";

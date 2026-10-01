@@ -4,8 +4,11 @@
 
 /* ---------- Filters ---------- */
 .filters {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
   padding: var(--space-4) var(--space-5);
+}
+.filters[hidden] {
+  display: none;
 }
 /* < 600: one field per row */
 .filters__grid {
@@ -40,7 +43,7 @@
 }
 @media (min-width: 1200px) {
   .filters__grid {
-    grid-template-columns: 112px minmax(0, 1.25fr) minmax(0, 1fr) 196px 196px auto;
+    grid-template-columns: 112px minmax(0, 1.25fr) minmax(0, 1fr) 200px 200px auto;
   }
   .filters__grid > * {
     grid-column: auto;
@@ -55,10 +58,13 @@
 }
 
 /* ---------- Overview: one hero + six stats ---------- */
+/* Ticket summary + bill details: a hero tile and stat tiles, each its own card (gaps, no dividers) */
 .overview {
   display: grid;
   grid-template-columns: 1fr;
-  overflow: hidden;
+  gap: var(--space-5);
+  border: 0;
+  background: transparent;
 }
 @media (min-width: 900px) {
   .overview {
@@ -66,81 +72,125 @@
   }
 }
 
-/* The page's one bold moment: brand tile. Everything inside uses --on-primary. */
+/* The page's one brand moment: a tinted tile (soft brand fill, ink text) with the profit trend.
+   Calmer than a solid brand block, and the same recipe works for gold / blue × light / dark. */
 .overview__hero {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: var(--space-6);
+  gap: var(--space-5);
   padding: var(--space-6);
-  background: var(--primary);
-  color: var(--on-primary);
+  border: 1px solid color-mix(in srgb, var(--primary) 24%, var(--border-card));
+  border-radius: var(--radius-xl);
+  background: var(--primary-soft);
+  color: var(--text-primary);
 }
 .hero__label {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 20px;
-  opacity: 0.72;
+  font-weight: var(--fw-semibold);
+  color: var(--primary-soft-text);
 }
 .hero__label iconify-icon {
-  font-size: 18px;
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--on-primary);
+  font-size: 15px;
 }
 .hero__value {
-  margin-top: var(--space-2);
+  margin-top: var(--space-3);
   font-size: 40px;
   line-height: 44px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.025em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
   overflow-wrap: anywhere;
 }
 .hero__value .stat__dec {
-  color: inherit;
-  opacity: 0.5;
+  color: var(--text-muted);
+}
+.hero__value.is-negative {
+  color: var(--error-text);
 }
 .hero__note {
   margin-top: var(--space-1);
   font-size: 13px;
   line-height: 20px;
-  opacity: 0.72;
+  color: var(--text-secondary);
+}
+/* Profit trend (decorative; the Win & loss card has the full chart + table) */
+.hero__spark {
+  display: block;
+  width: 100%;
+  height: 56px;
+  overflow: visible;
+  color: var(--viz-1);
+}
+.hero__spark path:first-child {
+  fill: currentColor;
+  opacity: 0.12;
+}
+.hero__spark path:last-child {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
 .hero__roi {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: var(--space-2);
   align-items: baseline;
+  padding-top: var(--space-4);
+  border-top: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
   font-size: 13px;
 }
 .hero__roi-label {
-  opacity: 0.72;
+  color: var(--text-secondary);
 }
 .hero__roi-value {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: var(--fw-semibold);
   font-variant-numeric: tabular-nums;
 }
 .hero__roi .meter {
   grid-column: 1 / -1;
-  background: color-mix(in srgb, var(--on-primary) 18%, transparent);
-  --meter-fill: var(--on-primary);
+  background: color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 .overview__hero .skeleton {
-  background: color-mix(in srgb, var(--on-primary) 16%, transparent);
+  background: color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .overview__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1px;
-  background: var(--border); /* 1px gaps draw the cell dividers */
+  gap: var(--space-5);
 }
 .overview__grid > .stat {
   justify-content: center;
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-xl);
   background: var(--bg-surface);
+}
+.overview__grid > .stat {
+  container-type: inline-size;
+}
+/* Long amounts shrink to fit their cell instead of wrapping mid-number */
+.overview__grid .stat__value {
+  margin-top: var(--space-1);
+  font-size: min(22px, 11.5cqi);
+  white-space: nowrap;
 }
 @media (min-width: 480px) {
   .overview__grid {
@@ -155,7 +205,7 @@
 
 /* ---------- Charts ---------- */
 .chart-legend {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 #winloss-body .chart {
   --chart-h: 300px;
@@ -174,20 +224,83 @@
   top: 0;
 }
 
-/* ---------- Tickets ---------- */
+/* ---------- Tickets: total + three columns with a thick meter each ---------- */
 .tickets__total {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-5);
 }
 .tickets__total-value {
   font-size: 32px;
   line-height: 40px;
   font-weight: var(--fw-semibold);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
+.tickets__split {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.tickets__col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4);
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-lg);
+  background: var(--bg-subtle);
+}
+.tickets__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.tickets__head iconify-icon {
+  font-size: 18px;
+}
+.tickets__col--primary .tickets__head iconify-icon { color: var(--primary-text); }
+.tickets__col--info .tickets__head iconify-icon    { color: var(--info-text); }
+.tickets__col--warning .tickets__head iconify-icon { color: var(--warning-text); }
+.tickets__col--primary .meter__fill { background: var(--primary); }
+.tickets__col--info .meter__fill    { background: var(--info); }
+.tickets__col--warning .meter__fill { background: var(--warning); }
+.tickets__count {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.tickets__label {
+  font-size: 13px;
+  font-weight: var(--fw-medium);
+  color: var(--text-primary);
+}
+.tickets__pct {
+  margin-left: var(--space-1);
+  color: var(--text-muted);
+  font-weight: var(--fw-regular);
+  font-variant-numeric: tabular-nums;
+}
+.tickets__hint {
+  margin-bottom: var(--space-3);
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.tickets__col .meter {
+  margin-top: auto;
+  height: 10px;
+}
+@media (max-width: 599.98px) {
+  .tickets__split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Legacy list version (ticket summary, billing still use it) */
 .tickets__list {
   display: flex;
   flex-direction: column;
@@ -202,26 +315,105 @@
 .tickets__row .meter {
   grid-column: 1 / -1;
 }
-.tickets__label {
+.tickets__row .tickets__count {
   font-size: 14px;
-  color: var(--text-primary);
-}
-.tickets__hint {
-  display: block;
-  font-size: 12px;
-  line-height: 16px;
-  color: var(--text-muted);
-}
-.tickets__count {
+  line-height: 20px;
   font-weight: var(--fw-medium);
-  font-variant-numeric: tabular-nums;
-  color: var(--text-primary);
 }
-.tickets__pct {
+.tickets__row .tickets__pct {
   text-align: right;
   font-size: 13px;
+}
+
+/* ---------- Win & loss: series totals double as the legend ---------- */
+.legend-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-8);
+  margin-bottom: var(--space-5);
+}
+.legend-stats__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.legend-stats__value {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--fw-semibold);
+  letter-spacing: -0.025em;
   font-variant-numeric: tabular-nums;
+  color: var(--text-primary);
+}
+.legend-stats__value .stat__dec {
+  color: var(--text-faint);
+}
+
+/* ---------- Return on wagers ---------- */
+.dash-facts {
+  margin-top: var(--space-5);
+}
+.dash-facts dt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.dash-facts dt iconify-icon {
+  font-size: 17px;
+  color: var(--text-faint);
+}
+.dash-facts dd {
+  font-weight: var(--fw-semibold);
+  font-variant-numeric: tabular-nums;
+}
+.dash-facts__share {
+  display: inline-block;
+  min-width: 48px;
+  margin-left: var(--space-2);
   color: var(--text-muted);
+  font-weight: var(--fw-regular);
+  text-align: right;
+}
+
+/* ---------- Busiest days ---------- */
+.dash-note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--primary-soft);
+  color: var(--primary-soft-text);
+  font-size: 13px;
+  line-height: 18px;
+}
+.dash-note iconify-icon {
+  flex: none;
+  margin-top: 1px;
+  font-size: 16px;
+}
+
+/* ---------- Cancellations: share column ---------- */
+.dash-share {
+  min-width: 140px;
+}
+.dash-share .meter {
+  display: inline-block;
+  width: calc(100% - 44px);
+  height: 6px;
+  vertical-align: middle;
+}
+.dash-share .meter__fill {
+  background: var(--error);
+}
+.dash-share span {
+  display: inline-block;
+  width: 40px;
+  text-align: right;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Empty panels keep the card height steady ---------- */

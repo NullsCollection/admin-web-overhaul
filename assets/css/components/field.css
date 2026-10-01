@@ -18,7 +18,7 @@
   font-size: 13px;
   line-height: 16px;
   font-weight: var(--fw-medium);
-  color: var(--text-primary);
+  color: var(--text-secondary);
 }
 .field__label .req {
   color: var(--error-text);
@@ -32,20 +32,20 @@
   gap: var(--space-2);
   height: var(--control-md);
   padding: 0 var(--space-3);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-card);
   border-radius: var(--radius-md);
   background: var(--bg-surface);
   color: var(--text-primary);
-  transition: border-color var(--dur-fast) var(--ease);
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
 }
 .field__control:hover {
   border-color: var(--border-strong);
 }
-/* Focus = 2px ring made from border + 1px inset outline. No box-shadow. */
+/* Focus = brand border + a soft 3px halo drawn with outline (outside the border). No box-shadow. */
 .field__control:focus-within {
   border-color: var(--focus-ring);
-  outline: 1px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: 3px solid var(--focus-halo);
+  outline-offset: 0;
 }
 .field__control input,
 .field__control select,
@@ -71,7 +71,7 @@
 
 .field__control--sm {
   height: var(--control-sm);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 /* Select: native element fills the box, chevron sits on top */
@@ -92,8 +92,8 @@
 /* Open (our menu is showing): same ring as focus, chevron flips */
 .field__control--select.is-open {
   border-color: var(--focus-ring);
-  outline: 1px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: 3px solid var(--focus-halo);
+  outline-offset: 0;
 }
 .field__control--select > iconify-icon {
   transition: transform var(--dur-fast) var(--ease);
@@ -132,7 +132,7 @@
   border-color: var(--error);
 }
 .field--error .field__control:focus-within {
-  outline-color: var(--error);
+  outline-color: color-mix(in srgb, var(--error) 22%, transparent);
 }
 .field--error .field__helper {
   color: var(--error-text);
@@ -175,8 +175,8 @@
 }
 .multiselect[aria-expanded="true"] {
   border-color: var(--focus-ring);
-  outline: 1px solid var(--focus-ring);
-  outline-offset: -2px;
+  outline: 3px solid var(--focus-halo);
+  outline-offset: 0;
 }
 
 /* Checkbox (menu rows, tables) → MUI <Checkbox>; checked = ink, not primary */
@@ -184,10 +184,10 @@
   display: inline-grid;
   place-items: center;
   flex: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border: 1.5px solid var(--border-strong);
-  border-radius: var(--radius-xs);
+  border-radius: 5px;
   background: var(--bg-surface);
   color: transparent;
 }
@@ -255,6 +255,7 @@
   width: 36px;
   height: 20px;
   margin-top: 1px;
+  /* thumb is the surface color: in light mode the off track needs to stay darker than it */
   border-radius: var(--radius-pill);
   background: var(--border-strong);
   transition: background-color var(--dur-fast) var(--ease);

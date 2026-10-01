@@ -58,6 +58,19 @@
     search: function (r) {
       return r.id + " " + gameName(r);
     },
+    summary: function (all) {
+      var n = function (k) {
+        return all.filter(function (r) {
+          return R.status(r).key === k;
+        }).length;
+      };
+      return [
+        { label: "Taking bets", value: fmt.int(n("enabled")), icon: "tabler:player-play", tone: "info", meta: "Open rounds", filter: { key: "status", value: "enabled" } },
+        { label: "Pending result", value: fmt.int(n("close_bet")), icon: "tabler:clock-pause", tone: "warning", meta: "Closed, need numbers", filter: { key: "status", value: "close_bet" } },
+        { label: "Resulted", value: fmt.int(n("resulted")), icon: "tabler:circle-check", tone: "success", meta: "Paid or paying", filter: { key: "status", value: "resulted" } },
+        { label: "Cancelled", value: fmt.int(n("cancelled")), icon: "tabler:ban", tone: "error", meta: "Bets refunded", filter: { key: "status", value: "cancelled" } },
+      ];
+    },
     filters: {
       lottoGameId: function (r, v) {
         return String(r.lottoGameId) === v;
