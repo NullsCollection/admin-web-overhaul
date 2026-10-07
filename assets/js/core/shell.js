@@ -61,7 +61,7 @@
     }
 
     var active = it.id === page;
-    var href = it.href ? base + "pages/" + it.href : "#";
+    var href = it.href ? base + (it.href === "index.html" ? "" : "pages/") + it.href : "#";
     return (
       '<li><a class="nav-item' + (active ? " is-active" : "") + '" href="' + href + '"' +
       (active ? ' aria-current="page"' : "") + (it.href ? "" : " data-todo") +

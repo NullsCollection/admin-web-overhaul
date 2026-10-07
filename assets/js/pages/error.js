@@ -19,20 +19,20 @@
     401: {
       title: "You don't have access to this page",
       text: "Your account can't open this page. Ask your site admin to add it to your user group.",
-      actions: '<a class="btn btn--contained" href="dashboard.html">Back to dashboard</a>' +
+      actions: '<a class="btn btn--contained" href="../index.html">Back to dashboard</a>' +
         '<a class="btn btn--outlined" href="login.html">Log in as someone else</a>',
     },
     404: {
       title: "Page not found",
       text: "The link may be old or typed wrong. Check the address, or go back to the dashboard.",
-      actions: '<a class="btn btn--contained" href="dashboard.html">Back to dashboard</a>' +
+      actions: '<a class="btn btn--contained" href="../index.html">Back to dashboard</a>' +
         '<button type="button" class="btn btn--outlined" data-back>Go back</button>',
     },
     500: {
       title: "Something went wrong on our side",
       text: "The server hit an error. Try again in a minute. If it keeps happening, tell your site admin.",
       actions: '<button type="button" class="btn btn--contained" data-retry><iconify-icon icon="tabler:refresh"></iconify-icon>Try again</button>' +
-        '<a class="btn btn--outlined" href="dashboard.html">Back to dashboard</a>',
+        '<a class="btn btn--outlined" href="../index.html">Back to dashboard</a>',
     },
   };
   var code = "404";

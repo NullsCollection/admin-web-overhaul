@@ -471,7 +471,7 @@
     if (!t) return;
     e.preventDefault();
     closeMenu();
-    ui.toast("Not designed yet. See PLAN.md for the order.", "tabler:hourglass");
+    ui.toast("This page is not designed yet.", "tabler:hourglass");
   });
 
   /* ---------- Copy to clipboard ([data-copy="text"]) ---------- */

@@ -3,418 +3,205 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Redesign hub | Admin prototype</title>
+  <title>Dashboard | Admin prototype</title>
   <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages/dashboard.css">
   <script src="assets/js/core/theme.js"></script>
-  <style>
-    /* Hub-only layout (tiny, so inline) */
-    .hub { max-width: 880px; margin: 0 auto; padding: 48px 24px 96px; }
-    .hub__head { margin-bottom: 32px; }
-    .hub__head p { margin-top: 8px; max-width: 64ch; color: var(--text-secondary); }
-    .hub__list { display: flex; flex-direction: column; }
-    .hub__row { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 16px; align-items: center;
-      padding: 14px 24px; border-bottom: 1px solid var(--border); color: inherit; }
-    .hub__row:last-child { border-bottom: 0; }
-    a.hub__row:hover { background: var(--bg-hover); text-decoration: none; }
-    .hub__row small { display: block; color: var(--text-muted); font-size: 13px; }
-    .hub__row.is-todo { color: var(--text-muted); }
-    .hub__refs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 24px; }
-  </style>
 </head>
-<body data-base="">
-  <main class="hub">
-    <header class="hub__head">
-      <h1 class="t-h2">Admin redesign</h1>
-      <p>Page-by-page prototype. Open a page, switch theme and mode in the toolbar (bottom right), and check each
-        state. Progress and next steps live in <span class="t-medium">prototype/PLAN.md</span>.</p>
-    </header>
 
-    <section class="card" aria-labelledby="hub-pages">
-      <header class="card__header card__header--divided">
-        <div class="card__heading"><h2 class="card__title" id="hub-pages">Pages</h2>
-          <p class="card__subheader">In build order</p></div>
-      </header>
-      <div class="hub__list">
-        <a class="hub__row" href="design-system.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:palette"></iconify-icon></span>
-          <span><span class="t-subtitle1">Design system</span><small>Phase 0: tokens, components, MUI mapping</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/dashboard.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:layout-dashboard"></iconify-icon></span>
-          <span><span class="t-subtitle1">Dashboard</span><small>Phase 1: filters, overview, charts, tickets, cancellations</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/login.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:login-2"></iconify-icon></span>
-          <span><span class="t-subtitle1">Log in</span><small>Phase 2: split layout, inline error</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/forgot-password.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:mail-question"></iconify-icon></span>
-          <span><span class="t-subtitle1">Forgot password</span><small>Phase 2: request + "check your email"</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/reset-password.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:lock-open"></iconify-icon></span>
-          <span><span class="t-subtitle1">Reset password</span><small>Phase 2: new password + expired link</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/change-password.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:key"></iconify-icon></span>
-          <span><span class="t-subtitle1">Change password</span><small>Phase 2: form card inside the app</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/providers.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:list"></iconify-icon></span>
-          <span><span class="t-subtitle1">Providers (list template)</span><small>Phase 3: search, filters, sort, pagination, row menu, delete dialogs</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:forms"></iconify-icon></span>
-          <span><span class="t-subtitle1">New provider (form template)</span><small>Phase 4: sections, validation, error summary, save bar</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-form.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:edit"></iconify-icon></span>
-          <span><span class="t-subtitle1">Edit provider</span><small>Phase 4: tabs, API keys, users, unsaved changes</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/tickets.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:list-details"></iconify-icon></span>
-          <span><span class="t-subtitle1">Ticket list</span><small>Phase 5 (from Phase 10): wide filter bar, search by, links to details</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/ticket-detail.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:ticket"></iconify-icon></span>
-          <span><span class="t-subtitle1">Ticket details (detail template)</span><small>Phase 5: summary, bet numbers, commands timeline, retry, bet requests</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/pending-round.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:clock-pause"></iconify-icon></span>
-          <span><span class="t-subtitle1">Pending rounds</span><small>Phase 6: queue, oldest first, waiting time</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-activity.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:activity"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider activity</span><small>Phase 6: severity signal, last active, inactive shortcut</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-configs.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:settings"></iconify-icon></span>
-          <span><span class="t-subtitle1">Config management</span><small>Phase 7a: type column + filter, delete blocked when in use</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-config-form.html?state=set-lottery-5">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:adjustments"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit config</span><small>Phase 7a: payout rates swap by type, Set lottery pricing + digit length</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-groups.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:folders"></iconify-icon></span>
-          <span><span class="t-subtitle1">Group management</span><small>Phase 7b: ordered list, code, name in the UI language</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-group-form.html?id=12">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:language"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit group</span><small>Phase 7b: order picker with "At the end", names per language</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-games.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:device-gamepad-2"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game management</span><small>Phase 7c: group + status filters, payout rates dialog per provider</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-game-form.html?id=301">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:photo"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit game</span><small>Phase 7c: one page instead of a stepper, config preview, language tabs, background picker</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-game-custom-price.html?id=301&state=custom">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:adjustments-dollar"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game: custom price</span><small>Phase 7d: config rate next to each input, restore config rates</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-game-provider-cost.html?id=323&state=override">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:cash"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game: provider cost</span><small>Phase 7d: Set lottery billing override, missing config cost warning</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-game-limit-numbers.html?id=301">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:numbers"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game: limit numbers</span><small>Phase 7d: sets used by the game (on/off), add from library, preview</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-game-limit-groups.html?id=323">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:list-numbers"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game: limit groups</span><small>Phase 7d: Set lottery template per owner provider, assign / unassign</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-sort.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:arrows-sort"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game sort management</span><small>Phase 7e: drag or arrow keys to reorder groups and games, show / hide per provider</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/lotto-blacklist.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:ban"></iconify-icon></span>
-          <span><span class="t-subtitle1">Game blacklist</span><small>Phase 7e: two lists with search, grouped by lotto group</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/round-schedules.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:calendar-repeat"></iconify-icon></span>
-          <span><span class="t-subtitle1">Round schedules</span><small>Phase 8a: schedule in words, cron + next run</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/round-schedule-form.html?state=filled">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:calendar-cog"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit round schedule</span><small>Phase 8a: Daily / Weekly / Monthly / Cron builder, next runs preview, exclusions</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/rounds.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:calendar-event"></iconify-icon></span>
-          <span><span class="t-subtitle1">Round management</span><small>Phase 8b: game (grouped) + status filters, app status colors, closes in</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/round-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:calendar-plus"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit round</span><small>Phase 8b: Bangkok time, close after open check, sync sites, read-only when finished</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/round-result.html?state=pending">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:clipboard-check"></iconify-icon></span>
-          <span><span class="t-subtitle1">Round result</span><small>Phase 8c: result number + result action list (confirm / cancel each), derived digits, cancel round</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/round-limit-numbers.html?id=8422">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:hash"></iconify-icon></span>
-          <span><span class="t-subtitle1">Round limit numbers</span><small>Phase 8d: on / off per round, scope, preview, on / off filter</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/current-bet.html?id=8422">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:list-numbers"></iconify-icon></span>
-          <span><span class="t-subtitle1">Current bet</span><small>Phase 10 → 8: max bet per bet type by provider, limit hits dialog</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/yeekee-rounds.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:target-arrow"></iconify-icon></span>
-          <span><span class="t-subtitle1">Yeekee rounds</span><small>Phase 8e: game + close date + provider filters, results in the list, round status chips</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/yeekee-round.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:trophy"></iconify-icon></span>
-          <span><span class="t-subtitle1">Yeekee round result</span><small>Phase 8e: winning numbers, worked sum (sum − row 16), bonus winners, shot numbers; encrypted draw</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/yeekee-configs.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:gift"></iconify-icon></span>
-          <span><span class="t-subtitle1">Yeekee bonus config</span><small>Phase 8f: provider filter, bonus rows in one column, reward in the provider's currency, delete</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/yeekee-config-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:gift-card"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit bonus config</span><small>Phase 8f: provider locked on edit, 5 rows on one line, no repeat rows, live "who wins" line</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/limit-templates.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:numbers"></iconify-icon></span>
-          <span><span class="t-subtitle1">Limit number sets</span><small>Phase 9a: search + provider filter, Scope, the provider's active set banner, View / Edit / Delete</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/limit-template.html?id=401">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:eye"></iconify-icon></span>
-          <span><span class="t-subtitle1">View limit number set</span><small>Phase 9a: a card per bet type + a card per special number, Edit / Delete</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/limit-template-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:adjustments"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit limit number set</span><small>Phase 9a: one page (no stepper), range editor per bet type, special numbers, copy from a global set</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/group-limit-templates.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:list-numbers"></iconify-icon></span>
-          <span><span class="t-subtitle1">Set lottery number limits</span><small>Phase 9b: scope chip, On / Off switch with a confirm that names what turns off, Delete greyed out with the reason</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/group-limit-template-form.html?id=502">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:adjustments"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit limit template</span><small>Phase 9b: owner providers only, 3 values on one line, Turn on / off in the header, system default locked</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/credit-types.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:arrows-exchange"></iconify-icon></span>
-          <span><span class="t-subtitle1">Credit transaction types</span><small>Phase 9c: status chip instead of green / red icons, status filter, Edit</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/credit-type-form.html?id=12">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:forms"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit credit type</span><small>Phase 9c: code locked on edit, switches in plain words, Cancel goes back</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/transfer-types.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:transfer"></iconify-icon></span>
-          <span><span class="t-subtitle1">Credit transfer types</span><small>Phase 9c: both names shown, color swatch</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/transfer-type-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:palette"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit transfer type</span><small>Phase 9c: Thai + English fields (no language toggle), color check + preview</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/credit-transactions.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:receipt"></iconify-icon></span>
-          <span><span class="t-subtitle1">Credit transactions</span><small>Phase 9d: player + related player in one cell, Credit / Debit chips, signed total, date + time, credit / debit filter</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/credit-transaction.html?state=transfer">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:receipt-2"></iconify-icon></span>
-          <span><span class="t-subtitle1">Credit transaction details</span><small>Phase 9d: detail template (summary v2): player, provider, transaction + transfer type, note, amount + total</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/ticket-summary.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:report-analytics"></iconify-icon></span>
-          <span><span class="t-subtitle1">Ticket summary</span><small>Phase 10a: ticket list filters + the dashboard's profit hero, stats, tickets and cancellations</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/ticket-summary-bet-type.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:chart-dots"></iconify-icon></span>
-          <span><span class="t-subtitle1">Summary by bet type</span><small>Phase 10b: game + round first, bet type cards as a radio group, numbers table, 3 tod flips dialog</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-form.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:building-store"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider edit (updated)</span><small>Phase 11a: shared provider header + link tabs (Details · API keys · Users · Players); Users tab moved out</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-users.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:users"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider users</span><small>Phase 11a: one users page: groups, Edit, Delete, Reset password</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-user-form.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:user-plus"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit provider user</span><small>Phase 11a: this provider pre-picked (app bug fixed), password + email fields, back to the provider</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-players.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:user-circle"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider players</span><small>Phase 11a: username + display name, balance in the provider's currency</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-player.html?id=101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:id"></iconify-icon></span>
-          <span><span class="t-subtitle1">Player details</span><small>Phase 11a: detail template, balance 0 shows as 0, last session</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-groups.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:stack-2"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider groups</span><small>Phase 11b: protected tag, Edit / Delete greyed out with the reason, API key copy + regenerate shows the new key</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-group-form.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:forms"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit provider group</span><small>Phase 11b: name, Protected switch with a confirm, protected groups open read-only</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-sizes.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:dimensions"></iconify-icon></span>
-          <span><span class="t-subtitle1">Provider sizes</span><small>Phase 11b: description under the name, limit set link + preview, can't-delete dialog</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/provider-size-form.html?id=2">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:adjustments"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit provider size</span><small>Phase 11b: limit set picker with a summary line + Preview</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/users.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:users"></iconify-icon></span>
-          <span><span class="t-subtitle1">User management</span><small>Phase 11c: providers as chips, admins read 'all providers', user groups, provider + group filters</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/user-form.html?user=1">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:user-edit"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit user</span><small>Phase 11c: same form as provider users, providers optional (none = admin)</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/user-groups.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:users-group"></iconify-icon></span>
-          <span><span class="t-subtitle1">User groups</span><small>Phase 11c: permissions 'x of 80', users count (proposal), can't-delete dialog</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/user-group-form.html?id=4">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:lock-access"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit user group</span><small>Phase 11c: permission grid by area (Read / Create / Update / Delete + more), filter, select all</small></span>
-          <span class="chip chip--success"><span class="chip__dot"></span>Approved</span>
-        </a>
-        <a class="hub__row" href="pages/currencies.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:coin"></iconify-icon></span>
-          <span><span class="t-subtitle1">Currencies</span><small>Phase 11d: the 4 bet set amounts as chips, min run bet, can't-delete when providers use it</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/currency-form.html?id=2">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:coin"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit currency</span><small>Phase 11d: code turns uppercase as you type (app bug), 4 amounts on one line</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/languages.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:language"></iconify-icon></span>
-          <span><span class="t-subtitle1">Languages</span><small>Phase 11d: Thai + English marked Required, their Delete greyed out with the reason</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/language-form.html?code=lo">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:language"></iconify-icon></span>
-          <span><span class="t-subtitle1">New / edit language</span><small>Phase 11d: code locked on edit</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/sync-sites.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:refresh"></iconify-icon></span>
-          <span><span class="t-subtitle1">Sync sites</span><small>Phase 11d: status switch (asks before turning off), add / edit dialog, receive errors with one View (error + payload)</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/billings.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:file-invoice"></iconify-icon></span>
-          <span><span class="t-subtitle1">Billing</span><small>Phase 11e: share status chips, report status only when not done, View + Delete + more, payment dialog with a file drop, run billing + cost price error</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/billings.html?view=history">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:history"></iconify-icon></span>
-          <span><span class="t-subtitle1">Billing history</span><small>Phase 11e: same list for past months</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/billing.html?id=7101">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:report-money"></iconify-icon></span>
-          <span><span class="t-subtitle1">Bill details</span><small>Phase 11e: the bill's facts + the dashboard's pieces (profit hero, charts with table view, set lottery lines, recent bets)</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/settings.html">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:settings"></iconify-icon></span>
-          <span><span class="t-subtitle1">Settings</span><small>Phase 11e: private key hidden until shown, copy, confirm before a new key</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/error.html?code=404">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:error-404"></iconify-icon></span>
-          <span><span class="t-subtitle1">Error pages (401, 404, 500)</span><small>Phase 12: plain words, a second action per case, the app's themed illustrations</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-        <a class="hub__row" href="pages/access.html?state=failed">
-          <span class="avatar avatar--square"><iconify-icon icon="tabler:link"></iconify-icon></span>
-          <span><span class="t-subtitle1">Access link</span><small>Phase 12: token login on the auth split screen: checking / failed / incomplete link</small></span>
-          <span class="chip chip--warning"><span class="chip__dot"></span>In review</span>
-        </a>
-      </div>
-    </section>
+<!--
+  PAGE: Dashboard  (Phase 1)
+  Source: src/views/pages/dashboard/index.tsx
+          BetPerformance.tsx · WinLossStatics.tsx · PerformanceByBetType.tsx
+  Data:   useGetDashboard({ startDate, endDate, providerIds, currencyId, lottoGameId })
+  Mock:   assets/js/pages/dashboard.js
+-->
+<body data-page="dashboard" data-base="">
+  <div class="app">
+    <aside class="sidebar" id="app-sidebar"></aside>
 
-    <div class="hub__refs">
-      <span class="t-body2 t-muted">Materio reference:</span>
-      <a class="btn btn--outlined btn--sm" href="image.png">Invoice list</a>
-      <a class="btn btn--outlined btn--sm" href="Screenshot%202026-09-24%20120907.png">User list</a>
-      <a class="btn btn--outlined btn--sm" href="Screenshot%202026-09-24%20120927.png">Dashboard</a>
-      <a class="btn btn--outlined btn--sm" href="Screenshot%202026-09-24%20121028.png">Login</a>
+    <div class="app__main">
+      <header class="topbar" id="app-topbar"></header>
+
+      <main class="content" id="content">
+
+        <!-- ============ Page header ============ -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-header__title">Dashboard</h1>
+            <p class="page-header__sub" id="range-summary">Loading range…</p>
+          </div>
+        </div>
+
+        <!-- ============ Filters ============
+             Port: Grid of CustomAutocomplete (currency, providers[multiple], lotto game),
+             DatePicker ×2 (start/end, 10-min steps, min = 3 months ago), Apply button.
+             Filters apply only on "Apply" (tmp* state → applied state), same as today. -->
+        <form class="card filters" id="filters" aria-label="Dashboard filters">
+          <div class="filters__grid">
+            <div class="field filters__currency">
+              <label class="field__label" for="f-currency">Currency</label>
+              <div class="field__control field__control--select">
+                <select id="f-currency" name="currency">
+                  <option value="THB" selected>THB</option>
+                  <option value="USD">USD</option>
+                  <option value="LAK">LAK</option>
+                </select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="field filters__providers" id="f-providers">
+              <span class="field__label" id="f-providers-label">Providers</span>
+              <button type="button" class="field__control multiselect" data-menu="providers-menu"
+                aria-haspopup="menu" aria-expanded="false" aria-labelledby="f-providers-label">
+                <span class="multiselect__value"></span>
+                <iconify-icon class="multiselect__chevron" icon="tabler:chevron-down"></iconify-icon>
+              </button>
+              <div class="menu filters__menu" id="providers-menu" role="menu" hidden>
+                <div class="field__control field__control--sm menu__search">
+                  <iconify-icon icon="tabler:search"></iconify-icon>
+                  <input type="search" placeholder="Search providers" aria-label="Search providers">
+                </div>
+                <div data-options></div>
+              </div>
+            </div>
+
+            <div class="field filters__game">
+              <label class="field__label" for="f-game">Lotto game</label>
+              <div class="field__control field__control--select">
+                <select id="f-game" name="game"></select>
+                <iconify-icon icon="tabler:chevron-down"></iconify-icon>
+              </div>
+            </div>
+
+            <div class="field filters__start">
+              <label class="field__label" for="f-start">Start</label>
+              <div class="field__control">
+                <input id="f-start" name="start" type="datetime-local" step="600" value="2026-09-11T00:00">
+              </div>
+            </div>
+
+            <div class="field filters__end">
+              <label class="field__label" for="f-end">End</label>
+              <div class="field__control">
+                <input id="f-end" name="end" type="datetime-local" step="600" value="2026-09-24T23:59">
+              </div>
+            </div>
+
+            <div class="filters__apply">
+              <button type="submit" class="btn btn--contained btn--block" id="f-apply">
+                <iconify-icon icon="tabler:filter-check"></iconify-icon>Apply
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- ============ Error state ============ -->
+        <div class="alert alert--error dash-error" id="dash-error" role="alert" hidden>
+          <iconify-icon icon="tabler:alert-triangle"></iconify-icon>
+          <div class="alert__body">
+            <div class="alert__title">Couldn't load the dashboard</div>
+            <div class="alert__text">The server didn't respond. Your filters are kept, so you can try again.</div>
+          </div>
+          <div class="alert__actions">
+            <button type="button" class="btn btn--outlined btn--sm" id="dash-retry">
+              <iconify-icon icon="tabler:refresh"></iconify-icon>Try again
+            </button>
+          </div>
+        </div>
+
+        <div class="stack" id="dash" aria-live="polite">
+
+          <!-- ============ Overview ============
+               Port: BetPerformance "Overview" (8 WidgetCard1 → 1 hero + 6 stats).
+               ROI moved into the hero. -->
+          <section class="card overview" aria-label="Overview">
+            <div class="overview__hero" id="ov-hero"></div>
+            <div class="overview__grid" id="ov-stats"></div>
+          </section>
+
+          <div class="grid">
+            <!-- ============ Win & loss over time ============
+                 Port: WinLossStatics (Recharts AreaChart → LineChart, profit keeps a 10% area) -->
+            <section class="card col-lg-8" id="card-winloss" aria-labelledby="winloss-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="winloss-title">Win &amp; loss</h2>
+                  <p class="card__subheader" id="winloss-sub">Daily totals</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart">
+                      <iconify-icon icon="tabler:chart-line"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table">
+                      <iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="winloss-body"></div>
+            </section>
+
+            <!-- ============ Tickets ============
+                 Port: BetPerformance "Tickets" (total, resulted, paid, pending).
+                 Cancelled-type ticket counts moved to the Cancellations table. -->
+            <section class="card col-lg-4" aria-labelledby="tickets-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="tickets-title">Tickets</h2>
+                  <p class="card__subheader">Share of all tickets in this range</p>
+                </div>
+              </header>
+              <div class="card__content" id="tickets-body"></div>
+            </section>
+
+            <!-- ============ Performance by bet type ============
+                 Port: PerformanceByBetType (Recharts BarChart; grouped, not stacked) -->
+            <section class="card col-lg-7" id="card-bettype" aria-labelledby="bettype-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="bettype-title">Performance by bet type</h2>
+                  <p class="card__subheader">Profit, win and loss for each bet type</p>
+                </div>
+                <div class="card__actions">
+                  <div class="segmented segmented--icon" data-view-toggle role="group" aria-label="View as">
+                    <button type="button" class="segmented__btn" data-view="chart" aria-pressed="true" aria-label="Chart">
+                      <iconify-icon icon="tabler:chart-bar"></iconify-icon></button>
+                    <button type="button" class="segmented__btn" data-view="table" aria-pressed="false" aria-label="Table">
+                      <iconify-icon icon="tabler:table"></iconify-icon></button>
+                  </div>
+                </div>
+              </header>
+              <div class="card__content" id="bettype-body"></div>
+            </section>
+
+            <!-- ============ Cancellations ============
+                 Port: BetPerformance "Cancellations" amounts + the matching ticket counts. -->
+            <section class="card col-lg-5" aria-labelledby="cancel-title">
+              <header class="card__header">
+                <div class="card__heading">
+                  <h2 class="card__title" id="cancel-title">Cancellations</h2>
+                  <p class="card__subheader">Tickets and amounts by reason</p>
+                </div>
+              </header>
+              <div class="card__content card__content--flush" id="cancel-body"></div>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer" id="app-footer"></footer>
     </div>
-  </main>
+  </div>
 
+  <!-- Icons: Iconify web component (the app uses the same icon names via src/@core/components/icon) -->
   <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.1.0/dist/iconify-icon.min.js"></script>
   <script src="assets/js/core/format.js"></script>
   <script src="assets/js/core/ui.js"></script>
+  <script src="assets/js/core/nav.js"></script>
+  <script src="assets/js/core/shell.js"></script>
+  <script src="assets/js/core/charts.js"></script>
+  <script src="assets/js/pages/dashboard.js"></script>
   <script src="assets/js/core/devbar.js"></script>
 </body>
 </html>

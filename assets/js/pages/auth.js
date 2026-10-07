@@ -19,7 +19,7 @@
   var top = $("auth-top");
   if (top) {
     top.innerHTML =
-      '<a class="brand-logo" href="' + base + 'index.html" aria-label="Home">' + ui.logoHTML(base) + "</a>" +
+      '<a class="brand-logo" href="' + base + 'pages/login.html" aria-label="Home">' + ui.logoHTML(base) + "</a>" +
       '<div class="auth__tools"><button type="button" class="icon-btn" data-action="mode"></button>' +
       ui.langMenuHTML() + "</div>";
     ui.paintModeButtons();
@@ -77,7 +77,7 @@
           setLogin("error");
           syncDevbar("error");
         } else {
-          location.href = "dashboard.html";
+          location.href = base + "index.html";
         }
       });
     });

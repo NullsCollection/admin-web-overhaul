@@ -15,7 +15,7 @@
     {
       section: "Overview",
       items: [
-        { id: "dashboard", label: "Dashboard", icon: "tabler:layout-dashboard", href: "dashboard.html" },
+        { id: "dashboard", label: "Dashboard", icon: "tabler:layout-dashboard", href: "index.html" },
         { id: "pending-round", label: "Pending round", icon: "tabler:clock-pause", badge: 12, href: "pending-round.html" },
         { id: "provider-activity", label: "Provider activity", icon: "tabler:activity", badge: 4, href: "provider-activity.html" },
       ],
